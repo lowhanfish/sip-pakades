@@ -1,0 +1,6 @@
+pyproject.toml
+sip_pakades_backend.egg-info/PKG-INFO
+sip_pakades_backend.egg-info/SOURCES.txt
+sip_pakades_backend.egg-info/dependency_links.txt
+sip_pakades_backend.egg-info/requires.txt
+sip_pakades_backend.egg-info/top_level.txt

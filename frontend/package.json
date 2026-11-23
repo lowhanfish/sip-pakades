@@ -35,5 +35,8 @@
     "eslint-config-next": "^15.3.2",
     "tailwindcss": "^4.1.5",
     "typescript": "^5.8.3"
+  },
+  "overrides": {
+    "magic-string": "0.30.17"
   }
 }

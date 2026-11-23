@@ -524,7 +524,7 @@ export async function handleAdminExtendedMock<T>(
     }
   }
 
-  // 5. Pelayanan Administrasi PATEN
+  // 5. Pelayanan Administrasi SIP-PAKADES
   if (pathname.startsWith("/api/v1/admin/pelayanan/")) {
     const list = readLS<ServiceRequestItem[]>(ADMIN_KEYS.SERVICES, INITIAL_SERVICE_REQUESTS);
     if (pathname === "/api/v1/admin/pelayanan/permohonan/read" && httpMethod === "GET") {
@@ -570,7 +570,7 @@ export async function handleAdminExtendedMock<T>(
       const now = new Date();
       const slaDays = srvType?.sla_days ?? 3;
       const due = new Date(now.getTime() + slaDays * 86400000).toISOString();
-      const regNo = `PATEN-740511-${now.getFullYear()}-${String(list.length + 43).padStart(4, "0")}`;
+      const regNo = `SIP-740511-${now.getFullYear()}-${String(list.length + 43).padStart(4, "0")}`;
 
       const created: ServiceRequestItem = {
         id: uuid(),
@@ -579,7 +579,7 @@ export async function handleAdminExtendedMock<T>(
         village_id: targetVillageId,
         village_name: village ? `${village.type === "kelurahan" ? "Kel." : "Desa"} ${village.name}` : "Wilayah",
         service_type_id: inp.service_type_id,
-        service_type_name: srvType?.name ?? "Layanan PATEN",
+        service_type_name: srvType?.name ?? "Layanan SIP-PAKADES",
         applicant_name: inp.applicant_name,
         applicant_nik_masked: maskNik(inp.applicant_nik),
         applicant_phone: inp.applicant_phone,
@@ -610,7 +610,7 @@ export async function handleAdminExtendedMock<T>(
     const statusMatch = pathname.match(/\/permohonan\/([^/]+)\/status$/);
     if (statusMatch && httpMethod === "PATCH") {
       if (currentUser.role === "operator_desa") {
-        throw new Error("Hanya petugas kecamatan yang dapat memproses status layanan PATEN.");
+        throw new Error("Hanya petugas kecamatan yang dapat memproses status layanan SIP-PAKADES.");
       }
       const id = statusMatch[1];
       const idx = list.findIndex((s) => s.id === id);

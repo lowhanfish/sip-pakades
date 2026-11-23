@@ -75,7 +75,7 @@ export default function AdminDashboardPage() {
               className="inline-flex items-center gap-1.5 rounded-xl bg-yellow-300/90 hover:bg-yellow-300 text-slate-900 text-xs font-semibold px-4 py-2.5 transition"
             >
               <FileCheck2 className="w-4 h-4" />
-              Pelayanan PATEN
+              Pelayanan SIP-PAKADES
             </Link>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function AdminDashboardPage() {
         </GlassCard>
 
         <GlassCard className="space-y-1">
-          <div className="text-xs opacity-70">Kepatuhan SLA PATEN</div>
+          <div className="text-xs opacity-70">Kepatuhan SLA SIP-PAKADES</div>
           <div className="flex items-center gap-2">
             <span className="text-2xl font-extrabold text-sky-500">
               {s?.services_sla_compliance_pct ?? 100}%

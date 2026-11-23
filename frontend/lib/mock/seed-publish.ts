@@ -66,7 +66,7 @@ export interface PublicRegulationItem {
   title: string;
   regulation_number: string;
   year: number;
-  category: "Perdes" | "SK Camat" | "SOP PATEN" | "Edaran";
+  category: "Perdes" | "SK Camat" | "SOP Pelayanan" | "Edaran";
   description: string;
 }
 
@@ -110,7 +110,7 @@ export const LAEYA_ORG_STRUCTURE: PublicOrgNode[] = [
   { position: "Camat Laeya", name: "Ansar", nip: "197805142005011008" },
   { position: "Sekretaris Camat (Sekcam)", name: "Hendra Wijaya, S.Sos" },
   { position: "Kasi Pemerintahan", name: "Muhammad Rizal, S.IP" },
-  { position: "Kasi Pelayanan Umum (PATEN)", name: "Siti Rahmawati, S.AP" },
+  { position: "Kasi Pelayanan Umum (SIP-PAKADES)", name: "Siti Rahmawati, S.AP" },
   { position: "Kasi Pemberdayaan Masyarakat Desa", name: "La Ode Nasrun, S.Sos" },
   { position: "Kasi Ketenteraman & Ketertiban (Trantibum)", name: "Agus Salim, S.H" },
 ];
@@ -272,12 +272,12 @@ export const MOCK_ANNOUNCEMENTS: PublicAnnouncementItem[] = [
     id: "ann-2",
     district_id: DISTRICT_LAEYA_ID,
     slug: "jadwal-pelayanan-paten-kecamatan-laeya",
-    title: "Maklumat Pelayanan PATEN & Pengurusan Rekomendasi Nikah / IUMK",
+    title: "Maklumat Pelayanan SIP-PAKADES & Pengurusan Rekomendasi Nikah / IUMK",
     category: "pengumuman",
     excerpt:
-      "Informasi jam operasional loket PATEN Kantor Kecamatan Laeya serta persyaratan pengantar dari desa/kelurahan.",
+      "Informasi jam operasional loket SIP-PAKADES Kantor Kecamatan Laeya serta persyaratan pengantar dari desa/kelurahan.",
     content:
-      "Loket Pelayanan Administrasi Terpadu Kecamatan (PATEN) Kecamatan Laeya buka setiap hari Senin hingga Jumat pukul 08.00–16.00 WITA. Warga dapat memantau progres pengajuan secara online menggunakan Nomor Registrasi layanan.",
+      "Loket Pelayanan Administrasi Kecamatan (SIP-PAKADES) Kecamatan Laeya buka setiap hari Senin hingga Jumat pukul 08.00–16.00 WITA. Warga dapat memantau progres pengajuan secara online menggunakan Nomor Registrasi layanan.",
     published_at: "2026-11-18T08:00:00Z",
   },
   {
@@ -298,10 +298,10 @@ export const MOCK_REGULATIONS: PublicRegulationItem[] = [
   {
     id: "reg-1",
     district_id: DISTRICT_LAEYA_ID,
-    title: "Standar Operasional Prosedur (SOP) Pelayanan Administrasi Terpadu Kecamatan (PATEN)",
+    title: "Standar Operasional Prosedur (SOP) Pelayanan Administrasi Kecamatan (SIP-PAKADES)",
     regulation_number: "SK Camat No. 140/12/2026",
     year: 2026,
-    category: "SOP PATEN",
+    category: "SOP Pelayanan",
     description: "Pedoman alur pelayanan, persyaratan berkas, dan target SLA layanan Kecamatan Laeya.",
   },
   {
@@ -327,7 +327,7 @@ export const MOCK_REGULATIONS: PublicRegulationItem[] = [
 export const MOCK_SERVICE_TYPES: PublicServiceTypeItem[] = [
   {
     id: "srv-nikah",
-    code: "PATEN-NKH",
+    code: "SIP-NKH",
     name: "Rekomendasi / Dispensasi Nikah",
     description:
       "Surat pengantar dan rekomendasi nikah ke KUA Kecamatan, termasuk layanan dispensasi nikah apabila pelaksanaan kurang dari 10 hari kerja.",
@@ -340,7 +340,7 @@ export const MOCK_SERVICE_TYPES: PublicServiceTypeItem[] = [
   },
   {
     id: "srv-iumk",
-    code: "PATEN-IUMK",
+    code: "SIP-IUMK",
     name: "Rekomendasi Izin Usaha Mikro & Kecil (IUMK)",
     description:
       "Penerbitan surat keterangan dan rekomendasi izin usaha mikro/kecil bagi pelaku UMKM di wilayah Kecamatan Laeya.",
@@ -353,7 +353,7 @@ export const MOCK_SERVICE_TYPES: PublicServiceTypeItem[] = [
   },
   {
     id: "srv-kependudukan",
-    code: "PATEN-ADK",
+    code: "SIP-ADK",
     name: "Pengantar Administrasi Kependudukan & Pertanahan",
     description:
       "Rekomendasi pindah datang antar-kecamatan/kabupaten, SKTM keperluan khusus (RS/beasiswa), serta register pengesahan surat keterangan ahli waris.",
@@ -368,7 +368,7 @@ export const MOCK_SERVICE_TYPES: PublicServiceTypeItem[] = [
 
 export const MOCK_TRACKING_RECORDS: PublicServiceTrackResponse[] = [
   {
-    registration_number: "PATEN-740511-2026-0042",
+    registration_number: "SIP-740511-2026-0042",
     district_name: "Laeya",
     village_name: "Kel. Puunggaluku",
     service_type_name: "Rekomendasi / Dispensasi Nikah",
@@ -392,7 +392,7 @@ export const MOCK_TRACKING_RECORDS: PublicServiceTrackResponse[] = [
     ],
   },
   {
-    registration_number: "PATEN-740511-2026-0041",
+    registration_number: "SIP-740511-2026-0041",
     district_name: "Laeya",
     village_name: "Desa Torobulu",
     service_type_name: "Rekomendasi Izin Usaha Mikro & Kecil (IUMK)",
@@ -415,13 +415,13 @@ export const MOCK_TRACKING_RECORDS: PublicServiceTrackResponse[] = [
       },
       {
         status: "selesai",
-        public_note: "Surat Rekomendasi IUMK telah terbit dan siap diambil di loket PATEN.",
+        public_note: "Surat Rekomendasi IUMK telah terbit dan siap diambil di loket SIP-PAKADES.",
         changed_at: "2026-11-21T14:00:00Z",
       },
     ],
   },
   {
-    registration_number: "PATEN-740511-2026-0040",
+    registration_number: "SIP-740511-2026-0040",
     district_name: "Laeya",
     village_name: "Desa Lamong Jaya",
     service_type_name: "Pengantar Administrasi Kependudukan & Pertanahan",
@@ -434,7 +434,7 @@ export const MOCK_TRACKING_RECORDS: PublicServiceTrackResponse[] = [
     timeline: [
       {
         status: "diterima",
-        public_note: "Permohonan diterima di loket PATEN Kecamatan Laeya.",
+        public_note: "Permohonan diterima di loket SIP-PAKADES Kecamatan Laeya.",
         changed_at: "2026-11-21T08:45:00Z",
       },
       {

@@ -36,12 +36,26 @@ class OfficialCreate(BaseModel):
 class PotentialCreate(BaseModel):
     district_id: str | None = None
     village_id: str | None = None
-    category_id: str
+    category_id: str | None = None
+    category_name: str | None = None
+    village_name: str | None = None
     title: str
     description: str | None = None
     metric_value: float = 0.0
     metric_unit: str = "Unit"
     period_year: int = 2026
+
+
+class TourismCreate(BaseModel):
+    district_id: str | None = None
+    village_id: str | None = None
+    category_id: str | None = None
+    category_name: str | None = None
+    village_name: str | None = None
+    name: str
+    description: str | None = None
+    opening_hours: str | None = "08:00 - 17:00 WITA"
+    ticket_info: str | None = "Gratis / Retribusi Desa"
 
 
 @router.get("/perangkat/read")
@@ -174,6 +188,81 @@ async def read_potentials(
     return {"total": len(data), "skip": 0, "limit": 50, "data": data}
 
 
+@router.post("/potensi/create", status_code=201, dependencies=[Depends(verify_csrf)])
+async def create_potential(
+    payload: PotentialCreate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    dist_id = resolve_district_scope(current_user, payload.district_id) or current_user.district_id
+    vill_id = resolve_village_scope(current_user, payload.village_id)
+
+    if not vill_id and payload.village_name:
+        stmt_v = select(MasterVillage).where(MasterVillage.name.ilike(f"%{payload.village_name.strip()}%"))
+        if dist_id:
+            stmt_v = stmt_v.where(MasterVillage.district_id == dist_id)
+        found_v = (await db.execute(stmt_v)).scalars().first()
+        if found_v:
+            vill_id = found_v.id
+            if not dist_id:
+                dist_id = found_v.district_id
+
+    if not dist_id:
+        def_dist = (await db.execute(select(MasterDistrict).where(MasterDistrict.is_default.is_(True)))).scalars().first()
+        dist_id = def_dist.id if def_dist else (await db.execute(select(MasterDistrict))).scalars().first().id
+
+    cat_id = payload.category_id
+    if not cat_id:
+        if payload.category_name:
+            found_c = (
+                await db.execute(
+                    select(MasterPotentialCategory).where(
+                        MasterPotentialCategory.name.ilike(f"%{payload.category_name.strip()}%")
+                    )
+                )
+            ).scalars().first()
+            if found_c:
+                cat_id = found_c.id
+        if not cat_id:
+            first_c = (await db.execute(select(MasterPotentialCategory))).scalars().first()
+            cat_id = first_c.id if first_c else "cat-pertanian"
+
+    crud = CRUDBase(RegionalPotential)
+    obj = await crud.create(
+        db,
+        obj_in={
+            "district_id": dist_id,
+            "village_id": vill_id,
+            "category_id": cat_id,
+            "title": payload.title.strip(),
+            "description": payload.description,
+            "metric_value": payload.metric_value,
+            "metric_unit": payload.metric_unit,
+            "period_year": payload.period_year,
+            "created_by": current_user.id,
+            "updated_by": current_user.id,
+        },
+    )
+    return {"success": True, "message": "Potensi ditambahkan", "data": {"id": obj.id, "title": obj.title}}
+
+
+@router.delete("/potensi/delete/{item_id}", dependencies=[Depends(verify_csrf)])
+async def delete_potential(
+    item_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    crud = CRUDBase(RegionalPotential)
+    obj = await crud.get(db, item_id)
+    if not obj:
+        raise AppError("Potensi tidak ditemukan.", code="NOT_FOUND", status_code=404)
+    resolve_district_scope(current_user, obj.district_id)
+    if current_user.role_code == "operator_desa" and obj.village_id != current_user.village_id:
+        raise AppError("Akses ditolak.", code="FORBIDDEN", status_code=403)
+    await crud.delete(db, db_obj=obj)
+    return {"success": True, "message": "Potensi dihapus", "data": {"id": item_id}}
+
+
 @router.get("/wisata/read")
 async def read_tourism(
     current_user: User = Depends(get_current_user),
@@ -200,3 +289,77 @@ async def read_tourism(
         for t, c, v in rows
     ]
     return {"total": len(data), "skip": 0, "limit": 50, "data": data}
+
+
+@router.post("/wisata/create", status_code=201, dependencies=[Depends(verify_csrf)])
+async def create_tourism(
+    payload: TourismCreate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    dist_id = resolve_district_scope(current_user, payload.district_id) or current_user.district_id
+    vill_id = resolve_village_scope(current_user, payload.village_id)
+
+    if not vill_id and payload.village_name:
+        stmt_v = select(MasterVillage).where(MasterVillage.name.ilike(f"%{payload.village_name.strip()}%"))
+        if dist_id:
+            stmt_v = stmt_v.where(MasterVillage.district_id == dist_id)
+        found_v = (await db.execute(stmt_v)).scalars().first()
+        if found_v:
+            vill_id = found_v.id
+            if not dist_id:
+                dist_id = found_v.district_id
+
+    if not dist_id:
+        def_dist = (await db.execute(select(MasterDistrict).where(MasterDistrict.is_default.is_(True)))).scalars().first()
+        dist_id = def_dist.id if def_dist else (await db.execute(select(MasterDistrict))).scalars().first().id
+
+    cat_id = payload.category_id
+    if not cat_id:
+        if payload.category_name:
+            found_c = (
+                await db.execute(
+                    select(MasterTourismCategory).where(
+                        MasterTourismCategory.name.ilike(f"%{payload.category_name.strip()}%")
+                    )
+                )
+            ).scalars().first()
+            if found_c:
+                cat_id = found_c.id
+        if not cat_id:
+            first_c = (await db.execute(select(MasterTourismCategory))).scalars().first()
+            cat_id = first_c.id if first_c else "cat-bahari"
+
+    crud = CRUDBase(TouristDestination)
+    obj = await crud.create(
+        db,
+        obj_in={
+            "district_id": dist_id,
+            "village_id": vill_id,
+            "category_id": cat_id,
+            "name": payload.name.strip(),
+            "description": payload.description,
+            "opening_hours": payload.opening_hours,
+            "ticket_info": payload.ticket_info,
+            "created_by": current_user.id,
+            "updated_by": current_user.id,
+        },
+    )
+    return {"success": True, "message": "Destinasi wisata ditambahkan", "data": {"id": obj.id, "name": obj.name}}
+
+
+@router.delete("/wisata/delete/{item_id}", dependencies=[Depends(verify_csrf)])
+async def delete_tourism(
+    item_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    crud = CRUDBase(TouristDestination)
+    obj = await crud.get(db, item_id)
+    if not obj:
+        raise AppError("Destinasi wisata tidak ditemukan.", code="NOT_FOUND", status_code=404)
+    resolve_district_scope(current_user, obj.district_id)
+    if current_user.role_code == "operator_desa" and obj.village_id != current_user.village_id:
+        raise AppError("Akses ditolak.", code="FORBIDDEN", status_code=403)
+    await crud.delete(db, db_obj=obj)
+    return {"success": True, "message": "Destinasi wisata dihapus", "data": {"id": item_id}}

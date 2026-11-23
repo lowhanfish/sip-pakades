@@ -54,7 +54,7 @@ uvicorn main:app --reload --host 127.0.0.1 --port 8000
 | `superadmin` | `superadmin_kab` | Lintas 25 Kecamatan |
 | `admin_laeya` | `admin_kecamatan` | Kecamatan Laeya |
 | `camat_laeya` | `camat_sekcam` | Camat Laeya (Ansar) |
-| `kasi_laeya` | `kasi_pelayanan` | Loket PATEN Kec. Laeya |
+| `kasi_laeya` | `kasi_pelayanan` | Loket Pelayanan SIP-PAKADES Kec. Laeya |
 | `op_torobulu` | `operator_desa` | Desa Torobulu |
 | `op_puunggaluku` | `operator_desa` | Kel. Puunggaluku |
 

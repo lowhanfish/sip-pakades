@@ -11,9 +11,9 @@ import {
 import { formatDateTimeId } from "@/utilities/pagination";
 
 const SAMPLE_REG_NUMBERS = [
-  "PATEN-740511-2026-0042",
-  "PATEN-740511-2026-0041",
-  "PATEN-740511-2026-0040",
+  "SIP-740511-2026-0042",
+  "SIP-740511-2026-0041",
+  "SIP-740511-2026-0040",
 ];
 
 export default function LayananPage() {
@@ -21,8 +21,8 @@ export default function LayananPage() {
   const { data: typesRes } = usePublicServiceTypes(slug);
   const serviceTypes = typesRes?.data ?? [];
 
-  const [inputCode, setInputCode] = useState("PATEN-740511-2026-0042");
-  const [activeCode, setActiveCode] = useState("PATEN-740511-2026-0042");
+  const [inputCode, setInputCode] = useState("SIP-740511-2026-0042");
+  const [activeCode, setActiveCode] = useState("SIP-740511-2026-0042");
   const trackQuery = useTrackServiceRequest(activeCode);
 
   function handleSubmit(e: FormEvent) {
@@ -34,7 +34,7 @@ export default function LayananPage() {
     <div className="max-w-7xl mx-auto px-4 pt-6 pb-10 space-y-10">
       <div className="glass-panel rounded-3xl p-6 md:p-8 space-y-2">
         <span className="text-xs font-bold text-sky-700 uppercase tracking-wider">
-          Pelayanan Administrasi Terpadu Kecamatan (PATEN)
+          Pelayanan Administrasi Kecamatan (SIP-PAKADES)
         </span>
         <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">
           Persyaratan Layanan &amp; Lacak Permohonan
@@ -62,7 +62,7 @@ export default function LayananPage() {
             type="text"
             value={inputCode}
             onChange={(e) => setInputCode(e.target.value)}
-            placeholder="Masukkan Nomor Registrasi (mis. PATEN-740511-2026-0042)"
+            placeholder="Masukkan Nomor Registrasi (mis. SIP-740511-2026-0042)"
             className="flex-1 rounded-xl border border-sky-200 bg-white/90 px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
           />
           <button

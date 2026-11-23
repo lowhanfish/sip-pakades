@@ -8,6 +8,7 @@ import { fetchData } from "@/lib/api_secure";
 import { useUrlStore } from "@/store/useUrlStore";
 import { CompletenessRow } from "@/lib/mock/seed-admin";
 import { PaginatedResponse } from "@/types/global";
+import { isMockMode } from "@/lib/mock";
 
 const EXPORT_SCOPES = [
   {
@@ -22,7 +23,7 @@ const EXPORT_SCOPES = [
   },
   {
     scope: "services_sla",
-    title: "Rekap Pelayanan Administrasi (PATEN) & SLA",
+    title: "Rekap Pelayanan Administrasi (SIP-PAKADES) & SLA",
     desc: "Jumlah permohonan selesai, diproses, dan kepatuhan target SLA per jenis layanan.",
   },
   {
@@ -62,6 +63,58 @@ export default function RekapEksporPage() {
     swallAlert(`Ekspor "${title}" berhasil diunduh`, "success");
   }
 
+  async function handleDownloadExcel(scope: string, title: string) {
+    if (isMockMode()) {
+      handleExportCsvPreview(title);
+      return;
+    }
+    try {
+      const res = await fetch(
+        `${baseUrl}/api/v1/admin/pemantauan/export/xlsx?report_scope=${encodeURIComponent(scope)}`,
+        { credentials: "include" }
+      );
+      if (!res.ok) throw new Error(`Gagal mengunduh Excel: HTTP ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `rekap-${scope}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+      swallAlert(`Ekspor Excel "${title}" berhasil diunduh`, "success");
+    } catch (err) {
+      swallAlert("Gagal Ekspor", "error", (err as Error).message);
+    }
+  }
+
+  async function handleDownloadPdf(scope: string, title: string) {
+    if (isMockMode()) {
+      swallAlert(
+        "Mode Mock",
+        "info",
+        `Fitur ekspor PDF (${scope}) akan digenerate otomatis dengan kop resmi saat terhubung ke backend live.`
+      );
+      return;
+    }
+    try {
+      const res = await fetch(
+        `${baseUrl}/api/v1/admin/pemantauan/export/pdf?report_scope=${encodeURIComponent(scope)}`,
+        { credentials: "include" }
+      );
+      if (!res.ok) throw new Error(`Gagal mengunduh PDF: HTTP ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `rekap-${scope}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      swallAlert(`Ekspor PDF "${title}" berhasil diunduh`, "success");
+    } catch (err) {
+      swallAlert("Gagal Ekspor", "error", (err as Error).message);
+    }
+  }
+
   return (
     <div className="space-y-4">
       <GlassCard>
@@ -81,22 +134,16 @@ export default function RekapEksporPage() {
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => handleExportCsvPreview(item.title)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-3.5 py-2 cursor-pointer"
+                onClick={() => handleDownloadExcel(item.scope, item.title)}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-3.5 py-2 cursor-pointer transition"
               >
                 <FileSpreadsheet className="w-3.5 h-3.5" />
-                Unduh Excel / CSV
+                Unduh Excel
               </button>
               <button
                 type="button"
-                onClick={() =>
-                  swallAlert(
-                    "Siap di Backend Live",
-                    "info",
-                    `Ekspor PDF (${item.scope}) akan digenerate otomatis oleh FastAPI dengan kop resmi Kab. Konawe Selatan.`
-                  )
-                }
-                className="inline-flex items-center gap-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold px-3.5 py-2 cursor-pointer"
+                onClick={() => handleDownloadPdf(item.scope, item.title)}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold px-3.5 py-2 cursor-pointer transition"
               >
                 <FileText className="w-3.5 h-3.5" />
                 Unduh PDF

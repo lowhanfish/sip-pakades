@@ -34,7 +34,7 @@ export function SiteFooter() {
           </div>
           <p className="text-xs text-slate-600 leading-relaxed">
             Sistem Informasi Penyelenggaraan Pemerintahan, Pelayanan Administrasi
-            Terpadu Kecamatan (PATEN), dan Pelaporan Desa/Kelurahan.
+            Kecamatan, dan Pelaporan Desa/Kelurahan (SIP-PAKADES).
           </p>
         </div>
 

@@ -108,7 +108,7 @@ export default function LokasiPage() {
             <div className="flex items-start gap-3">
               <Clock className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
               <div>
-                <div className="font-bold text-slate-900">Jam Pelayanan PATEN</div>
+                <div className="font-bold text-slate-900">Jam Pelayanan SIP-PAKADES</div>
                 <p>{district?.service_hours ?? "-"}</p>
               </div>
             </div>

@@ -65,7 +65,7 @@ export const INITIAL_DISTRICTS: DistrictItem[] = RAW_DISTRICTS.map((d, idx) => (
     ? "Terwujudnya Pelayanan Publik Kecamatan Laeya yang Prima, Transparan, dan Berdaya Saing Menuju Konawe Selatan Setara."
     : `Mewujudkan tata kelola pemerintahan dan pelayanan masyarakat Kecamatan ${d.name} yang profesional dan akuntabel.`,
   mission: d.is_default
-    ? "1. Meningkatkan kualitas pelayanan administrasi terpadu kecamatan (PATEN).\n2. Memperkuat koordinasi pembinaan penyelenggaraan pemerintahan 17 desa/kelurahan.\n3. Mendorong pengembangan potensi wilayah pertanian, pesisir, dan pariwisata lokal."
+    ? "1. Meningkatkan kualitas pelayanan administrasi kecamatan (SIP-PAKADES).\n2. Memperkuat koordinasi pembinaan penyelenggaraan pemerintahan 17 desa/kelurahan.\n3. Mendorong pengembangan potensi wilayah pertanian, pesisir, dan pariwisata lokal."
     : `Meningkatkan pelayanan administrasi terpadu dan pembinaan desa/kelurahan di Kecamatan ${d.name}.`,
   latitude: d.lat,
   longitude: d.lng,
@@ -91,7 +91,7 @@ const RAW_LAEYA_VILLAGES: Array<{
   desc: string;
 }> = [
   { code: "7405111001", name: "Ambalodangge", type: "kelurahan", area: 8.4, pop: 1620, kk: 430, lat: -4.258, lng: 122.455, desc: "Kelurahan di wilayah utara Kecamatan Laeya dengan potensi perdagangan dan pertanian." },
-  { id: VILLAGE_PUUNGGALUKU_ID, code: "7405111002", name: "Puunggaluku", type: "kelurahan", area: 11.2, pop: 2890, kk: 760, lat: -4.2738, lng: 122.4664, desc: "Ibu kota Kecamatan Laeya sekaligus pusat pemerintahan dan layanan PATEN." },
+  { id: VILLAGE_PUUNGGALUKU_ID, code: "7405111002", name: "Puunggaluku", type: "kelurahan", area: 11.2, pop: 2890, kk: 760, lat: -4.2738, lng: 122.4664, desc: "Ibu kota Kecamatan Laeya sekaligus pusat pemerintahan dan layanan SIP-PAKADES." },
   { code: "7405112003", name: "Aepodu", type: "desa", area: 9.8, pop: 1140, kk: 305, lat: -4.245, lng: 122.478, desc: "Desa agraris dengan komoditas utama padi sawah dan hortikultura." },
   { code: "7405112004", name: "Ambakumina", type: "desa", area: 10.5, pop: 980, kk: 260, lat: -4.289, lng: 122.435, desc: "Desa dengan potensi perkebunan kakao, lada, dan peternakan rakyat." },
   { code: "7405112005", name: "Ambesea", type: "desa", area: 12.1, pop: 1320, kk: 350, lat: -4.262, lng: 122.492, desc: "Desa berkembang dengan sektor pertanian terpadu dan UMKM olahan pangan." },

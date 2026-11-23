@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2, X } from "lucide-react";
 import { fetchData } from "@/lib/api_secure";
 import { useUrlStore } from "@/store/useUrlStore";
-import { PaginatedResponse } from "@/types/global";
+import { OptionItem, PaginatedResponse } from "@/types/global";
 import { PublicPotentialItem } from "@/lib/mock/seed-publish";
 import { GlassCard } from "@/app/(admin)/_components/ui/GlassCard";
 import { StatusBadge } from "@/app/(admin)/_components/ui/StatusBadge";
@@ -17,12 +17,26 @@ export default function PemerintahanPotensiPage() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     title: "",
-    village_name: "Torobulu",
+    category_id: "",
     category_name: "Perikanan & Kelautan",
+    village_id: "",
+    village_name: "Torobulu",
     metric_value: 100,
     metric_unit: "Ton/Tahun",
     period_year: 2026,
     description: "",
+  });
+
+  const { data: catOptions } = useQuery({
+    queryKey: ["master-kategori-potensi-option"],
+    queryFn: () =>
+      fetchData<OptionItem[]>(`${baseUrl}/api/v1/admin/master/kategori-potensi/option`),
+  });
+
+  const { data: villageOptions } = useQuery({
+    queryKey: ["master-desa-option"],
+    queryFn: () =>
+      fetchData<OptionItem[]>(`${baseUrl}/api/v1/admin/master/desa/option`),
   });
 
   const { data, isLoading } = useQuery({
@@ -153,21 +167,43 @@ export default function PemerintahanPotensiPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold mb-1">Desa/Kelurahan</label>
-                  <input
-                    type="text"
-                    value={form.village_name}
-                    onChange={(e) => setForm({ ...form, village_name: e.target.value })}
+                  <select
+                    value={form.village_id}
+                    onChange={(e) => {
+                      const sel = villageOptions?.find((v) => v.id === e.target.value);
+                      setForm({
+                        ...form,
+                        village_id: e.target.value,
+                        village_name: sel ? sel.label : form.village_name,
+                      });
+                    }}
                     className="admin-input w-full rounded-xl px-3 py-2 text-xs"
-                  />
+                  >
+                    <option value="">-- Pilih Wilayah --</option>
+                    {(villageOptions ?? []).map((v) => (
+                      <option key={v.id} value={v.id}>{v.label}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold mb-1">Kategori</label>
-                  <input
-                    type="text"
-                    value={form.category_name}
-                    onChange={(e) => setForm({ ...form, category_name: e.target.value })}
+                  <label className="block text-xs font-semibold mb-1">Kategori Potensi</label>
+                  <select
+                    value={form.category_id}
+                    onChange={(e) => {
+                      const sel = catOptions?.find((c) => c.id === e.target.value);
+                      setForm({
+                        ...form,
+                        category_id: e.target.value,
+                        category_name: sel ? sel.label : form.category_name,
+                      });
+                    }}
                     className="admin-input w-full rounded-xl px-3 py-2 text-xs"
-                  />
+                  >
+                    <option value="">-- Pilih Kategori --</option>
+                    {(catOptions ?? []).map((c) => (
+                      <option key={c.id} value={c.id}>{c.label}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">

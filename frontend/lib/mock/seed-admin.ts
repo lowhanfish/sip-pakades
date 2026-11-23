@@ -231,9 +231,9 @@ export const INITIAL_REPORT_PERIODS: SimpleMasterItem[] = [
 ];
 
 export const INITIAL_SERVICE_TYPES_MASTER: SimpleMasterItem[] = [
-  { id: "srv-nikah", code: "PATEN-NKH", name: "Rekomendasi / Dispensasi Nikah", sla_days: 2, description: "Pengantar & rekomendasi nikah ke KUA / dispensasi < 10 hari kerja.", is_active: true, created_at: NOW, updated_at: NOW },
-  { id: "srv-iumk", code: "PATEN-IUMK", name: "Rekomendasi Izin Usaha Mikro & Kecil (IUMK)", sla_days: 3, description: "Surat keterangan dan rekomendasi izin usaha mikro/kecil.", is_active: true, created_at: NOW, updated_at: NOW },
-  { id: "srv-kependudukan", code: "PATEN-ADK", name: "Pengantar Administrasi Kependudukan & Pertanahan", sla_days: 3, description: "Rekomendasi pindah datang, SKTM khusus, & register ahli waris.", is_active: true, created_at: NOW, updated_at: NOW },
+  { id: "srv-nikah", code: "SIP-NKH", name: "Rekomendasi / Dispensasi Nikah", sla_days: 2, description: "Pengantar & rekomendasi nikah ke KUA / dispensasi < 10 hari kerja.", is_active: true, created_at: NOW, updated_at: NOW },
+  { id: "srv-iumk", code: "SIP-IUMK", name: "Rekomendasi Izin Usaha Mikro & Kecil (IUMK)", sla_days: 3, description: "Surat keterangan dan rekomendasi izin usaha mikro/kecil.", is_active: true, created_at: NOW, updated_at: NOW },
+  { id: "srv-kependudukan", code: "SIP-ADK", name: "Pengantar Administrasi Kependudukan & Pertanahan", sla_days: 3, description: "Rekomendasi pindah datang, SKTM khusus, & register ahli waris.", is_active: true, created_at: NOW, updated_at: NOW },
 ];
 
 export const INITIAL_LETTER_CLASSIFICATIONS: SimpleMasterItem[] = [
@@ -400,7 +400,7 @@ export const INITIAL_REPORTS: QuarterlyReportItem[] = [
 export const INITIAL_SERVICE_REQUESTS: ServiceRequestItem[] = [
   {
     id: "sr-1",
-    registration_number: "PATEN-740511-2026-0042",
+    registration_number: "SIP-740511-2026-0042",
     district_id: DISTRICT_LAEYA_ID,
     village_id: VILLAGE_PUUNGGALUKU_ID,
     village_name: "Kel. Puunggaluku",
@@ -420,7 +420,7 @@ export const INITIAL_SERVICE_REQUESTS: ServiceRequestItem[] = [
       { id: "doc-2", doc_code: "pengantar_desa", doc_label: "Pengantar N1-N4 Kelurahan", file_name: "n1_n4_puunggaluku.pdf", mime_type: "application/pdf", is_private: true },
     ],
     histories: [
-      { status: "diterima", note: "Berkas diterima di loket PATEN", public_note: "Permohonan didaftarkan dengan pengantar kelurahan.", changed_by_name: "Kasi Pelayanan Kec. Laeya", changed_at: "2026-11-23T09:00:00Z" },
+      { status: "diterima", note: "Berkas diterima di loket SIP-PAKADES", public_note: "Permohonan didaftarkan dengan pengantar kelurahan.", changed_by_name: "Kasi Pelayanan Kec. Laeya", changed_at: "2026-11-23T09:00:00Z" },
       { status: "diproses", note: "Naik meja Camat untuk penandatanganan", public_note: "Berkas lengkap, sedang proses tanda tangan Camat.", changed_by_name: "Kasi Pelayanan Kec. Laeya", changed_at: "2026-11-23T11:15:00Z" },
     ],
     created_at: "2026-11-23T09:00:00Z",
@@ -428,7 +428,7 @@ export const INITIAL_SERVICE_REQUESTS: ServiceRequestItem[] = [
   },
   {
     id: "sr-2",
-    registration_number: "PATEN-740511-2026-0041",
+    registration_number: "SIP-740511-2026-0041",
     district_id: DISTRICT_LAEYA_ID,
     village_id: VILLAGE_TOROBULU_ID,
     village_name: "Desa Torobulu",
@@ -524,7 +524,7 @@ export const INITIAL_AUDIT_LOGS: AuditLogItem[] = [
     action: "DOWNLOAD_PRIVATE_DOC",
     entity_type: "service_documents",
     entity_id: "doc-1",
-    summary: "Mengunduh dokumen privat KTP & KK Pemohon (PATEN-740511-2026-0042)",
+    summary: "Mengunduh dokumen privat KTP & KK Pemohon (SIP-740511-2026-0042)",
     ip_address: "127.0.0.1",
     created_at: "2026-11-23T09:15:00Z",
   },

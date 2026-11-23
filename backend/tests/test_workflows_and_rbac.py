@@ -19,11 +19,15 @@ async def test_publish_endpoints_and_masked_tracking(client: AsyncClient):
     assert ov.json()["data"]["leader"]["full_name"] == "Ansar"
     assert ov.json()["data"]["logo_url"] == "/img/logo-konsel.webp"
 
-    trk = await client.get("/api/v1/publish/services/track/PATEN-740511-2026-0042")
+    trk = await client.get("/api/v1/publish/services/track/SIP-740511-2026-0042")
     assert trk.status_code == 200
     body = trk.json()["data"]
     assert body["applicant_name_masked"] == "A*** S***"
     assert "applicant_nik" not in body
+
+    # Uji kompatibilitas jika dicari dengan kode lama
+    trk_old = await client.get("/api/v1/publish/services/track/PATEN-740511-2026-0042")
+    assert trk_old.status_code == 200
 
 
 async def test_quarterly_report_workflow_and_rbac_isolation(client: AsyncClient):

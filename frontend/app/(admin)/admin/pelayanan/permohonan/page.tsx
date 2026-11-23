@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Eye, Lock, Plus, Search, X } from "lucide-react";
+import { Download, Eye, Lock, Plus, Search, X } from "lucide-react";
 import { fetchData } from "@/lib/api_secure";
 import { useUrlStore } from "@/store/useUrlStore";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -12,6 +12,7 @@ import { GlassCard } from "@/app/(admin)/_components/ui/GlassCard";
 import { StatusBadge } from "@/app/(admin)/_components/ui/StatusBadge";
 import { swallAlert } from "@/lib/show_swall";
 import { formatDateTimeId } from "@/utilities/pagination";
+import { isMockMode } from "@/lib/mock";
 
 export default function PelayananPermohonanPage() {
   const baseUrl = useUrlStore((s) => s.URL.APP);
@@ -91,6 +92,34 @@ export default function PelayananPermohonanPage() {
     await createMut.mutateAsync();
   }
 
+  async function handleDownloadDraftPdf(srId: string, regNo: string) {
+    if (isMockMode()) {
+      swallAlert(
+        "Mode Mock",
+        "info",
+        `Draf PDF untuk permohonan ${regNo} siap digenerate otomatis saat terhubung ke backend live.`
+      );
+      return;
+    }
+    try {
+      const res = await fetch(
+        `${baseUrl}/api/v1/admin/pelayanan/permohonan/${srId}/draft-pdf`,
+        { credentials: "include" }
+      );
+      if (!res.ok) throw new Error(`Gagal mengunduh draf PDF: HTTP ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `draf-rekomendasi-${regNo}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      swallAlert("Draf Surat Berhasil Diunduh", "success");
+    } catch (err) {
+      swallAlert("Gagal Mengunduh", "error", (err as Error).message);
+    }
+  }
+
   const canProcessStatus = user?.role !== "operator_desa";
 
   return (
@@ -98,7 +127,7 @@ export default function PelayananPermohonanPage() {
       <GlassCard>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-lg font-bold">Pelayanan Administrasi (PATEN)</h1>
+            <h1 className="text-lg font-bold">Pelayanan Administrasi (SIP-PAKADES)</h1>
             <p className="text-xs opacity-75">
               Pendaftaran layanan dari loket kecamatan atau pengantar desa/kelurahan beserta proteksi dokumen privat.
             </p>
@@ -196,7 +225,7 @@ export default function PelayananPermohonanPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="admin-glass rounded-3xl w-full max-w-lg p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold">Registrasi Permohonan PATEN</h2>
+              <h2 className="text-base font-bold">Registrasi Permohonan SIP-PAKADES</h2>
               <button type="button" onClick={() => setOpenCreate(false)} className="p-1.5 cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
@@ -329,6 +358,18 @@ export default function PelayananPermohonanPage() {
                   </div>
                 ))
               )}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-sky-400/20">
+              <span className="text-[11px] opacity-70">Dokumen Cetak Rekomendasi Resmi</span>
+              <button
+                type="button"
+                onClick={() => handleDownloadDraftPdf(detail.id, detail.registration_number)}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold px-4 py-2 cursor-pointer transition shadow-xs"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Cetak Draf Surat (PDF)
+              </button>
             </div>
 
             {canProcessStatus && detail.status !== "selesai" && (

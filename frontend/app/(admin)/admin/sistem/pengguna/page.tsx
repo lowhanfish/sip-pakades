@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, X } from "lucide-react";
 import { fetchData } from "@/lib/api_secure";
 import { useUrlStore } from "@/store/useUrlStore";
-import { PaginatedResponse, RoleCode, UserProfile } from "@/types/global";
+import { OptionItem, PaginatedResponse, RoleCode, UserProfile } from "@/types/global";
 import { GlassCard } from "@/app/(admin)/_components/ui/GlassCard";
 import { StatusBadge } from "@/app/(admin)/_components/ui/StatusBadge";
 import { swallAlert } from "@/lib/show_swall";
@@ -19,6 +19,14 @@ export default function SistemPenggunaPage() {
     full_name: "",
     email: "",
     role: "operator_desa" as RoleCode,
+    village_id: "",
+    password: "demo1234",
+  });
+
+  const { data: villageOptions } = useQuery({
+    queryKey: ["master-desa-option"],
+    queryFn: () =>
+      fetchData<OptionItem[]>(`${baseUrl}/api/v1/admin/master/desa/option`),
   });
 
   const { data, isLoading } = useQuery({
@@ -157,6 +165,23 @@ export default function SistemPenggunaPage() {
                 <option value="kasi_pelayanan">Kasi / Petugas Layanan</option>
                 <option value="operator_desa">Operator Desa/Kelurahan</option>
               </select>
+
+              {form.role === "operator_desa" && (
+                <div>
+                  <label className="block text-[11px] font-semibold mb-1 opacity-80">Desa/Kelurahan Penugasan *</label>
+                  <select
+                    required
+                    value={form.village_id}
+                    onChange={(e) => setForm({ ...form, village_id: e.target.value })}
+                    className="admin-input w-full rounded-xl px-3 py-2 text-xs"
+                  >
+                    <option value="">-- Pilih Wilayah Desa/Kelurahan --</option>
+                    {(villageOptions ?? []).map((v) => (
+                      <option key={v.id} value={v.id}>{v.label}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div className="flex justify-end gap-2 pt-2">
                 <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 rounded-xl text-xs font-semibold admin-glass cursor-pointer">Batal</button>
                 <button type="submit" className="px-5 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white cursor-pointer">Simpan</button>

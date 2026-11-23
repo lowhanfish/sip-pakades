@@ -9,6 +9,6 @@ export const SITE_NAV_LINKS: SiteNavLink[] = [
   { label: "Desa & Kelurahan", href: "/desa-kelurahan" },
   { label: "Potensi", href: "/potensi-wilayah" },
   { label: "Wisata", href: "/destinasi-wisata" },
-  { label: "Layanan PATEN", href: "/layanan" },
+  { label: "Layanan SIP-PAKADES", href: "/layanan" },
   { label: "Lokasi", href: "/lokasi" },
 ];

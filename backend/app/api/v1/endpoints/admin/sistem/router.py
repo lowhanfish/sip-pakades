@@ -1,6 +1,9 @@
+import asyncio
 from datetime import UTC, datetime
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, Request
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -68,7 +71,7 @@ async def create_user(
 ):
     if current_user.role_code != "superadmin_kab" and payload.role == "superadmin_kab":
         raise AppError("Admin Kecamatan tidak dapat membuat Superadmin.", code="FORBIDDEN", status_code=403)
-    dist_id = resolve_district_scope(current_user, payload.district_id)
+    dist_id = resolve_district_scope(current_user, payload.district_id) or current_user.district_id
     user = User(
         username=payload.username.strip(),
         full_name=payload.full_name.strip(),
@@ -76,7 +79,7 @@ async def create_user(
         password_hash=hash_password(payload.password),
         role_code=payload.role,
         district_id=dist_id,
-        village_id=payload.village_id,
+        village_id=payload.village_id or None,
     )
     db.add(user)
     await commit_or_raise_unique_conflict(db, "Username atau email sudah digunakan.")
@@ -149,14 +152,45 @@ async def trigger_backup(
 ):
     now = datetime.now(UTC)
     stamp = now.strftime("%Y%m%d_%H%M%S")
+    backend_dir = Path(__file__).resolve().parents[6]
+    script_path = backend_dir / "scripts" / "backup_db.sh"
+    backup_dir = backend_dir / "backups"
+    backup_dir.mkdir(parents=True, exist_ok=True)
+
+    file_name = f"sippakades_manual_{stamp}.sql.gz"
+    file_size_bytes = 1024
+    status = "success"
+    notes = "Pencadangan database MySQL berhasil dijalankan."
+
+    if script_path.exists():
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                "bash",
+                str(script_path),
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            stdout, stderr = await proc.communicate()
+            if proc.returncode == 0:
+                newest = sorted(backup_dir.glob("sippakades_*.sql.gz"), key=lambda p: p.stat().st_mtime, reverse=True)
+                if newest:
+                    file_name = newest[0].name
+                    file_size_bytes = newest[0].stat().st_size
+            else:
+                status = "failed"
+                notes = f"Gagal menjalankan backup: {stderr.decode()[:200]}"
+        except Exception as e:
+            status = "failed"
+            notes = f"Error eksekusi backup: {str(e)[:200]}"
+
     log = BackupLog(
-        file_name=f"sippakades_manual_{stamp}.sql.gz",
-        file_size_bytes=1024,
-        status="success",
+        file_name=file_name,
+        file_size_bytes=file_size_bytes,
+        status=status,
         triggered_by_name=current_user.full_name,
         started_at=now,
-        finished_at=now,
-        notes="Pencadangan dicatat (jalankan backend/scripts/backup_db.sh untuk dump penuh).",
+        finished_at=datetime.now(UTC),
+        notes=notes,
     )
     db.add(log)
     await db.commit()
@@ -167,7 +201,27 @@ async def trigger_backup(
         action="BACKUP",
         entity_type="backup_logs",
         entity_id=log.id,
-        summary=f"Trigger backup {log.file_name}",
+        summary=f"Trigger backup {log.file_name} ({status})",
         request=request,
     )
-    return {"success": True, "message": "Backup database tercatat", "data": {"id": log.id, "file_name": log.file_name}}
+    return {"success": status == "success", "message": notes, "data": {"id": log.id, "file_name": log.file_name}}
+
+
+@router.get("/pencadangan/download/{item_id}")
+async def download_backup(
+    item_id: str,
+    _: User = Depends(require_roles("superadmin_kab")),
+    db: AsyncSession = Depends(get_db),
+):
+    log = (await db.execute(select(BackupLog).where(BackupLog.id == item_id))).scalar_one_or_none()
+    if not log:
+        raise AppError("Log pencadangan tidak ditemukan.", code="NOT_FOUND", status_code=404)
+    backend_dir = Path(__file__).resolve().parents[6]
+    file_path = backend_dir / "backups" / log.file_name
+    if not file_path.exists():
+        raise AppError("Berkas arsip tidak ditemukan di server.", code="NOT_FOUND", status_code=404)
+    return FileResponse(
+        str(file_path),
+        media_type="application/gzip",
+        filename=log.file_name,
+    )

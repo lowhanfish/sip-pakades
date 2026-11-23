@@ -23,7 +23,7 @@ export default function PublikasiRegulasiPage() {
       <GlassCard>
         <h1 className="text-lg font-bold">Dokumen Regulasi &amp; SOP Layanan</h1>
         <p className="text-xs opacity-75">
-          Direktori Perdes, SK Camat, Edaran, dan SOP PATEN yang dipublikasikan.
+          Direktori Perdes, SK Camat, Edaran, dan SOP Pelayanan SIP-PAKADES yang dipublikasikan.
         </p>
       </GlassCard>
 

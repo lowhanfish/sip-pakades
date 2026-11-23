@@ -24,7 +24,7 @@ from app.models.master import MasterDistrict, MasterServiceType, MasterVillage
 from app.models.operational import ServiceDocument, ServiceRequest, ServiceStatusHistory
 from app.services.upload_service import save_private_file
 
-router = APIRouter(prefix="/pelayanan", tags=["Pelayanan PATEN"])
+router = APIRouter(prefix="/pelayanan", tags=["Pelayanan SIP-PAKADES"])
 
 
 class ServiceCreatePayload(BaseModel):
@@ -195,7 +195,7 @@ async def create_service(
     now = datetime.now(UTC)
     count_all = int((await db.execute(select(func.count(ServiceRequest.id)))).scalar_one())
     dist_code = district.code if district else "740511"
-    reg_no = f"PATEN-{dist_code}-{now.year}-{count_all + 42:04d}"
+    reg_no = f"SIP-{dist_code}-{now.year}-{count_all + 42:04d}"
 
     sr = ServiceRequest(
         registration_number=reg_no,
@@ -235,7 +235,7 @@ async def create_service(
         action="CREATE",
         entity_type="service_requests",
         entity_id=sr.id,
-        summary=f"Registrasi PATEN {reg_no}",
+        summary=f"Registrasi SIP-PAKADES {reg_no}",
         request=request,
     )
     return {
@@ -289,7 +289,7 @@ async def update_service_status(
         action="STATUS_CHANGE",
         entity_type="service_requests",
         entity_id=sr.id,
-        summary=f"Status PATEN {sr.registration_number} -> {payload.status}",
+        summary=f"Status SIP-PAKADES {sr.registration_number} -> {payload.status}",
         request=request,
     )
     return {
@@ -391,7 +391,7 @@ async def download_draft_pdf(
     c.setFont("Helvetica-Bold", 14)
     c.drawString(72, 770, "PEMERINTAH KABUPATEN KONAWE SELATAN")
     c.setFont("Helvetica-Bold", 12)
-    c.drawString(72, 752, "KANTOR KECAMATAN LAEYA — PELAYANAN PATEN")
+    c.drawString(72, 752, "KANTOR KECAMATAN LAEYA — PELAYANAN SIP-PAKADES")
     c.line(72, 742, 520, 742)
     c.setFont("Helvetica", 11)
     c.drawString(72, 710, f"Nomor Registrasi : {sr.registration_number}")

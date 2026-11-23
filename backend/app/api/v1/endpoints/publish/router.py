@@ -454,10 +454,12 @@ async def publish_service_types(db: AsyncSession = Depends(get_db)):
 
 @router.get("/services/track/{registration_number}", dependencies=[Depends(limit_track_requests)])
 async def publish_track_service(registration_number: str, db: AsyncSession = Depends(get_db)):
+    reg_clean = registration_number.strip().upper()
+    possible_codes = [reg_clean, reg_clean.replace("PATEN-", "SIP-"), reg_clean.replace("SIP-", "PATEN-")]
     sr = (
         await db.execute(
             select(ServiceRequest).where(
-                ServiceRequest.registration_number == registration_number.strip().upper()
+                ServiceRequest.registration_number.in_(possible_codes)
             )
         )
     ).scalar_one_or_none()

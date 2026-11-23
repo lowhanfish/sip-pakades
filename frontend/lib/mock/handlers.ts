@@ -229,7 +229,7 @@ export async function handleMockRequest<T>(
           : [
               { position: `Camat ${district.name}`, name: `Pimpinan Kecamatan ${district.name}` },
               { position: "Sekretaris Camat", name: "Sekretariat Kecamatan" },
-              { position: "Kasi Pelayanan Umum (PATEN)", name: "Loket PATEN" },
+              { position: "Kasi Pelayanan Umum (SIP-PAKADES)", name: "Loket SIP-PAKADES" },
             ],
         stats: {
           total_villages: villagesCount,
@@ -379,7 +379,7 @@ export async function handleMockRequest<T>(
     );
     if (!found) {
       throw new Error(
-        `Nomor registrasi "${regNo}" tidak ditemukan. Coba contoh: PATEN-740511-2026-0042.`
+        `Nomor registrasi "${regNo}" tidak ditemukan. Coba contoh: SIP-740511-2026-0042.`
       );
     }
     return { success: true, message: "Status permohonan ditemukan", data: found } as T;

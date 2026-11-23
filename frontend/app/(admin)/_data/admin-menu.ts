@@ -44,7 +44,7 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
       { code: "master-kat-wisata", label: "Kategori Wisata", href: "/admin/master/kategori-wisata", roles: KECAMATAN_LEAD_ROLES },
       { code: "master-jenis-laporan", label: "Jenis Pelaporan", href: "/admin/master/jenis-laporan", roles: KECAMATAN_LEAD_ROLES },
       { code: "master-periode-laporan", label: "Periode Triwulan", href: "/admin/master/periode-laporan", roles: KECAMATAN_LEAD_ROLES },
-      { code: "master-jenis-layanan", label: "Jenis Layanan PATEN", href: "/admin/master/jenis-layanan", roles: KECAMATAN_LEAD_ROLES },
+      { code: "master-jenis-layanan", label: "Jenis Layanan SIP-PAKADES", href: "/admin/master/jenis-layanan", roles: KECAMATAN_LEAD_ROLES },
       { code: "master-klasifikasi-surat", label: "Klasifikasi Surat", href: "/admin/master/klasifikasi-surat", roles: KECAMATAN_LEAD_ROLES },
     ],
   },
@@ -68,7 +68,7 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
   {
     group: "Pelayanan & Persuratan",
     items: [
-      { code: "pelayanan-permohonan", label: "Pelayanan PATEN", href: "/admin/pelayanan/permohonan", roles: ALL_INTERNAL_ROLES },
+      { code: "pelayanan-permohonan", label: "Pelayanan SIP-PAKADES", href: "/admin/pelayanan/permohonan", roles: ALL_INTERNAL_ROLES },
       { code: "persuratan-masuk", label: "Surat Masuk & Disposisi", href: "/admin/persuratan/surat-masuk", roles: KECAMATAN_LEAD_ROLES },
       { code: "persuratan-keluar", label: "Surat Keluar", href: "/admin/persuratan/surat-keluar", roles: KECAMATAN_LEAD_ROLES },
     ],

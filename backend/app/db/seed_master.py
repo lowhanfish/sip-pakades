@@ -73,7 +73,7 @@ DISTRICTS_DATA = [
 
 LAEYA_VILLAGES_DATA = [
     (None, "7405111001", "Ambalodangge", "kelurahan", 8.4, 1620, 430, -4.258, 122.455, "Kelurahan di wilayah utara Kecamatan Laeya."),
-    (VILLAGE_PUUNGGALUKU_ID, "7405111002", "Puunggaluku", "kelurahan", 11.2, 2890, 760, -4.2738, 122.4664, "Ibu kota Kecamatan Laeya sekaligus pusat layanan PATEN."),
+    (VILLAGE_PUUNGGALUKU_ID, "7405111002", "Puunggaluku", "kelurahan", 11.2, 2890, 760, -4.2738, 122.4664, "Ibu kota Kecamatan Laeya sekaligus pusat layanan administrasi SIP-PAKADES."),
     (None, "7405112003", "Aepodu", "desa", 9.8, 1140, 305, -4.245, 122.478, "Desa agraris dengan komoditas utama padi sawah."),
     (None, "7405112004", "Ambakumina", "desa", 10.5, 980, 260, -4.289, 122.435, "Desa dengan potensi perkebunan kakao dan lada."),
     (None, "7405112005", "Ambesea", "desa", 12.1, 1320, 350, -4.262, 122.492, "Desa berkembang dengan sektor pertanian terpadu."),
@@ -127,7 +127,7 @@ async def run_seed(db: AsyncSession) -> None:
                     else f"Mewujudkan tata kelola pemerintahan Kecamatan {name} yang profesional."
                 ),
                 mission=(
-                    "1. Meningkatkan kualitas pelayanan PATEN.\n2. Memperkuat pembinaan pemerintahan 17 desa/kelurahan."
+                    "1. Meningkatkan kualitas pelayanan administrasi kecamatan melalui SIP-PAKADES.\n2. Memperkuat pembinaan pemerintahan 17 desa/kelurahan."
                     if is_def
                     else f"Meningkatkan pelayanan administrasi dan pembinaan desa/kelurahan di Kecamatan {name}."
                 ),
@@ -229,7 +229,7 @@ async def run_seed(db: AsyncSession) -> None:
     srv_types = [
         MasterServiceType(
             id="srv-nikah",
-            code="PATEN-NKH",
+            code="SIP-NKH",
             name="Rekomendasi / Dispensasi Nikah",
             description="Surat pengantar dan rekomendasi nikah ke KUA Kecamatan.",
             sla_days=2,
@@ -241,7 +241,7 @@ async def run_seed(db: AsyncSession) -> None:
         ),
         MasterServiceType(
             id="srv-iumk",
-            code="PATEN-IUMK",
+            code="SIP-IUMK",
             name="Rekomendasi Izin Usaha Mikro & Kecil (IUMK)",
             description="Surat keterangan dan rekomendasi izin usaha mikro/kecil.",
             sla_days=3,
@@ -253,7 +253,7 @@ async def run_seed(db: AsyncSession) -> None:
         ),
         MasterServiceType(
             id="srv-kependudukan",
-            code="PATEN-ADK",
+            code="SIP-ADK",
             name="Pengantar Administrasi Kependudukan & Pertanahan",
             description="Rekomendasi pindah datang, SKTM khusus, & register ahli waris.",
             sla_days=3,
@@ -372,10 +372,10 @@ async def run_seed(db: AsyncSession) -> None:
         GovernmentRegulation(
             id="reg-1",
             district_id=DISTRICT_LAEYA_ID,
-            title="Standar Operasional Prosedur (SOP) Pelayanan PATEN Kecamatan Laeya",
+            title="Standar Operasional Prosedur (SOP) Pelayanan Administrasi SIP-PAKADES Kecamatan Laeya",
             regulation_number="SK Camat No. 140/12/2026",
             year=2026,
-            category="SOP PATEN",
+            category="SOP Pelayanan",
             description="Pedoman alur pelayanan, persyaratan berkas, dan target SLA layanan Kecamatan Laeya.",
             status="terbit",
         ),
@@ -418,7 +418,7 @@ async def run_seed(db: AsyncSession) -> None:
 
     sr1 = ServiceRequest(
         id="sr-1",
-        registration_number="PATEN-740511-2026-0042",
+        registration_number="SIP-740511-2026-0042",
         district_id=DISTRICT_LAEYA_ID,
         village_id=VILLAGE_PUUNGGALUKU_ID,
         service_type_id="srv-nikah",

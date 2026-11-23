@@ -49,7 +49,7 @@ export default function PublishHomePage() {
   const { data: announcementsRes } = usePublicAnnouncements(slug);
   const { data: servicesRes } = usePublicServiceTypes(slug);
 
-  const [trackInput, setTrackInput] = useState("PATEN-740511-2026-0042");
+  const [trackInput, setTrackInput] = useState("SIP-740511-2026-0042");
   const [activeTrackCode, setActiveTrackCode] = useState("");
   const trackQuery = useTrackServiceRequest(activeTrackCode);
 
@@ -120,7 +120,7 @@ export default function PublishHomePage() {
 
               <p className="text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
                 Sistem Informasi Penyelenggaraan Pemerintahan, Pelayanan
-                Administrasi Terpadu Kecamatan (PATEN), Profil Desa/Kelurahan,
+                Administrasi Kecamatan (SIP-PAKADES), Profil Desa/Kelurahan,
                 Potensi Wilayah, dan Destinasi Wisata.
               </p>
 
@@ -130,7 +130,7 @@ export default function PublishHomePage() {
                   className="inline-flex items-center gap-2 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm px-6 py-3 shadow-lg shadow-sky-500/25 transition"
                 >
                   <FileCheck2 className="w-4 h-4" />
-                  Layanan &amp; Lacak PATEN
+                  Layanan &amp; Lacak SIP-PAKADES
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
@@ -258,12 +258,12 @@ export default function PublishHomePage() {
         </Subtle3DCard>
       </section>
 
-      {/* 3. LAYANAN PATEN & LACAK STATUS CEPAT */}
+      {/* 3. LAYANAN SIP-PAKADES & LACAK STATUS CEPAT */}
       <section className="max-w-7xl mx-auto space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
             <span className="text-xs font-bold text-sky-700 uppercase tracking-wider">
-              Pelayanan Administrasi Terpadu Kecamatan (PATEN)
+              Pelayanan Administrasi Kecamatan (SIP-PAKADES)
             </span>
             <h2 className="text-2xl font-extrabold text-slate-900">
               Layanan Publik &amp; Pelacakan Berkas
@@ -310,7 +310,7 @@ export default function PublishHomePage() {
               <p className="text-xs text-slate-600">
                 Masukkan nomor registrasi Anda (contoh:{" "}
                 <code className="font-mono font-semibold text-sky-700">
-                  PATEN-740511-2026-0042
+                  SIP-740511-2026-0042
                 </code>
                 ).
               </p>
@@ -321,7 +321,7 @@ export default function PublishHomePage() {
                 type="text"
                 value={trackInput}
                 onChange={(e) => setTrackInput(e.target.value)}
-                placeholder="PATEN-740511-2026-0042"
+                placeholder="SIP-740511-2026-0042"
                 className="flex-1 rounded-xl border border-sky-200 bg-white/90 px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
               />
               <button

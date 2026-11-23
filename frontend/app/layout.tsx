@@ -12,7 +12,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "SIP-PAKADES | Sistem Informasi Kecamatan & Desa Kab. Konawe Selatan",
   description:
-    "Portal Penyelenggaraan Pemerintahan, Pelayanan Administrasi Terpadu Kecamatan (PATEN), dan Pelaporan Desa/Kelurahan Kabupaten Konawe Selatan.",
+    "Portal Penyelenggaraan Pemerintahan, Pelayanan Administrasi Kecamatan, dan Pelaporan Desa/Kelurahan Kabupaten Konawe Selatan melalui SIP-PAKADES.",
   icons: {
     icon: "/img/logo-konsel.webp",
   },

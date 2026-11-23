@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DatabaseBackup } from "lucide-react";
+import { DatabaseBackup, Download } from "lucide-react";
 import { fetchData } from "@/lib/api_secure";
 import { useUrlStore } from "@/store/useUrlStore";
 import { BackupLogItem } from "@/lib/mock/seed-admin";
@@ -33,7 +33,27 @@ export default function SistemPencadanganPage() {
       qc.invalidateQueries({ queryKey: ["sistem-pencadangan"] });
       swallAlert(res.message, "success");
     },
+    onError: (err: Error) => swallAlert("Gagal Backup", "error", err.message),
   });
+
+  async function handleDownloadBackup(bId: string, fileName: string) {
+    try {
+      const res = await fetch(`${baseUrl}/api/v1/admin/sistem/pencadangan/download/${bId}`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(`Gagal mengunduh berkas: HTTP ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+      swallAlert("Arsip database berhasil diunduh", "success");
+    } catch (err) {
+      swallAlert("Gagal Mengunduh", "error", (err as Error).message);
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -70,6 +90,7 @@ export default function SistemPencadanganPage() {
                   <th className="py-2.5 px-3">Pemicu</th>
                   <th className="py-2.5 px-3">Waktu</th>
                   <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2.5 px-3 text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -86,6 +107,18 @@ export default function SistemPencadanganPage() {
                         variant={b.status === "success" ? "active" : "perlu_perbaikan"}
                         label={b.status.toUpperCase()}
                       />
+                    </td>
+                    <td className="py-2.5 px-3 text-right">
+                      {b.status === "success" && (
+                        <button
+                          type="button"
+                          onClick={() => handleDownloadBackup(b.id, b.file_name)}
+                          className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11px] font-semibold bg-sky-500 hover:bg-sky-600 text-white cursor-pointer transition shadow-xs"
+                        >
+                          <Download className="w-3 h-3" />
+                          Unduh
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

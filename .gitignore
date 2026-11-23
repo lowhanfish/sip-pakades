@@ -23,4 +23,5 @@ __pycache__/
 backend/.env
 backend/storage/
 backend/backups/
+backend/*.egg-info/
 *.log

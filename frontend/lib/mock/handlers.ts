@@ -9,10 +9,22 @@ import {
 } from "@/types/global";
 import {
   BASE_ADMIN_MENUS,
+  DISTRICT_LAEYA_ID,
   INITIAL_DISTRICTS,
   INITIAL_VILLAGES,
   MOCK_USERS,
 } from "./seed-data";
+import {
+  LAEYA_LEADER,
+  LAEYA_ORG_STRUCTURE,
+  MOCK_ANNOUNCEMENTS,
+  MOCK_POTENTIALS,
+  MOCK_REGULATIONS,
+  MOCK_SERVICE_TYPES,
+  MOCK_TOURISM,
+  MOCK_TRACKING_RECORDS,
+  MOCK_VILLAGE_OFFICIALS,
+} from "./seed-publish";
 
 const STORAGE_KEYS = {
   SESSION_USER: "sippakades_mock_user_id",
@@ -183,6 +195,193 @@ export async function handleMockRequest<T>(
         village_count: villages.filter((v) => v.district_id === d.id && v.is_active).length,
       }));
     return { success: true, message: "OK", data: items } as T;
+  }
+
+  const overviewMatch = pathname.match(/^\/api\/v1\/publish\/districts\/([^/]+)\/overview$/);
+  if (overviewMatch && httpMethod === "GET") {
+    const slug = overviewMatch[1];
+    const district = getDistricts().find((d) => d.slug === slug) ?? getDistricts().find((d) => d.is_default);
+    if (!district) throw new Error("Kecamatan tidak ditemukan.");
+
+    const isLaeya = district.id === DISTRICT_LAEYA_ID;
+    const villagesCount = getVillages().filter((v) => v.district_id === district.id && v.is_active).length;
+    const potentialsCount = MOCK_POTENTIALS.filter((p) => p.district_id === district.id).length;
+    const tourismCount = MOCK_TOURISM.filter((t) => t.district_id === district.id).length;
+
+    return {
+      success: true,
+      message: "OK",
+      data: {
+        district,
+        logo_url: "/img/logo-konsel.webp",
+        leader: isLaeya
+          ? LAEYA_LEADER
+          : {
+              full_name: `Camat ${district.name}`,
+              position_name: `Camat ${district.name}`,
+              nip: null,
+              photo_url: null,
+              welcome_message: `Selamat datang di Portal Resmi Pemerintah Kecamatan ${district.name}, Kabupaten Konawe Selatan.`,
+            },
+        org_structure: isLaeya
+          ? LAEYA_ORG_STRUCTURE
+          : [
+              { position: `Camat ${district.name}`, name: `Pimpinan Kecamatan ${district.name}` },
+              { position: "Sekretaris Camat", name: "Sekretariat Kecamatan" },
+              { position: "Kasi Pelayanan Umum (PATEN)", name: "Loket PATEN" },
+            ],
+        stats: {
+          total_villages: villagesCount,
+          total_officials: isLaeya ? 54 : 6,
+          total_potentials: potentialsCount,
+          total_tourism: tourismCount,
+          total_services_completed: isLaeya ? 128 : 0,
+        },
+      },
+    } as T;
+  }
+
+  const villagesPubMatch = pathname.match(/^\/api\/v1\/publish\/districts\/([^/]+)\/villages$/);
+  if (villagesPubMatch && httpMethod === "GET") {
+    const slug = villagesPubMatch[1];
+    const district = getDistricts().find((d) => d.slug === slug);
+    const search = (params.get("search") ?? "").trim().toLowerCase();
+    const typeFilter = params.get("type") ?? "";
+    const skip = Number(params.get("skip") ?? 0);
+    const limit = Number(params.get("limit") ?? 50);
+
+    let items = district
+      ? getVillages().filter((v) => v.district_id === district.id && v.is_active)
+      : [];
+    if (typeFilter) items = items.filter((v) => v.type === typeFilter);
+    if (search) {
+      items = items.filter((v) => v.name.toLowerCase().includes(search));
+    }
+    return { total: items.length, skip, limit, data: items.slice(skip, skip + limit) } as T;
+  }
+
+  const villageDetailPubMatch = pathname.match(
+    /^\/api\/v1\/publish\/districts\/([^/]+)\/villages\/([^/]+)$/
+  );
+  if (villageDetailPubMatch && httpMethod === "GET") {
+    const [, slug, villageId] = villageDetailPubMatch;
+    const district = getDistricts().find((d) => d.slug === slug);
+    const village = getVillages().find(
+      (v) => v.id === villageId && (!district || v.district_id === district.id)
+    );
+    if (!village) throw new Error("Desa/Kelurahan tidak ditemukan.");
+
+    const officials = MOCK_VILLAGE_OFFICIALS[village.id] ?? [
+      {
+        position_name: village.type === "kelurahan" ? `Lurah ${village.name}` : `Kepala Desa ${village.name}`,
+        full_name: `Pimpinan ${village.name}`,
+      },
+      { position_name: "Sekretaris", full_name: `Sekretariat ${village.name}` },
+    ];
+    return {
+      success: true,
+      message: "OK",
+      data: {
+        village,
+        officials,
+        potentials: MOCK_POTENTIALS.filter((p) => p.village_id === village.id),
+        tourism: MOCK_TOURISM.filter((t) => t.village_id === village.id),
+      },
+    } as T;
+  }
+
+  const potentialsPubMatch = pathname.match(/^\/api\/v1\/publish\/districts\/([^/]+)\/potentials$/);
+  if (potentialsPubMatch && httpMethod === "GET") {
+    const slug = potentialsPubMatch[1];
+    const district = getDistricts().find((d) => d.slug === slug);
+    const categoryFilter = params.get("category_id") ?? "";
+    const search = (params.get("search") ?? "").trim().toLowerCase();
+
+    let items = district
+      ? MOCK_POTENTIALS.filter((p) => p.district_id === district.id)
+      : [];
+    if (categoryFilter) items = items.filter((p) => p.category_id === categoryFilter);
+    if (search) {
+      items = items.filter(
+        (p) =>
+          p.title.toLowerCase().includes(search) ||
+          p.village_name.toLowerCase().includes(search)
+      );
+    }
+
+    const summaryMap = new Map<string, { category_name: string; count: number; total_value: number; unit: string }>();
+    for (const item of items) {
+      const existing = summaryMap.get(item.category_name);
+      if (existing) {
+        existing.count += 1;
+        existing.total_value += item.metric_value;
+      } else {
+        summaryMap.set(item.category_name, {
+          category_name: item.category_name,
+          count: 1,
+          total_value: item.metric_value,
+          unit: item.metric_unit,
+        });
+      }
+    }
+
+    return {
+      success: true,
+      message: "OK",
+      data: {
+        items,
+        total: items.length,
+        chart_summary: Array.from(summaryMap.values()),
+      },
+    } as T;
+  }
+
+  const tourismPubMatch = pathname.match(/^\/api\/v1\/publish\/districts\/([^/]+)\/tourism$/);
+  if (tourismPubMatch && httpMethod === "GET") {
+    const slug = tourismPubMatch[1];
+    const district = getDistricts().find((d) => d.slug === slug);
+    const items = district
+      ? MOCK_TOURISM.filter((t) => t.district_id === district.id)
+      : [];
+    return { total: items.length, skip: 0, limit: 12, data: items } as T;
+  }
+
+  const annPubMatch = pathname.match(/^\/api\/v1\/publish\/districts\/([^/]+)\/announcements$/);
+  if (annPubMatch && httpMethod === "GET") {
+    const slug = annPubMatch[1];
+    const district = getDistricts().find((d) => d.slug === slug);
+    const items = district
+      ? MOCK_ANNOUNCEMENTS.filter((a) => a.district_id === district.id)
+      : [];
+    return { total: items.length, skip: 0, limit: 9, data: items } as T;
+  }
+
+  const regPubMatch = pathname.match(/^\/api\/v1\/publish\/districts\/([^/]+)\/regulations$/);
+  if (regPubMatch && httpMethod === "GET") {
+    const slug = regPubMatch[1];
+    const district = getDistricts().find((d) => d.slug === slug);
+    const items = district
+      ? MOCK_REGULATIONS.filter((r) => r.district_id === district.id)
+      : [];
+    return { total: items.length, skip: 0, limit: 20, data: items } as T;
+  }
+
+  if (pathname === "/api/v1/publish/services/types" && httpMethod === "GET") {
+    return { success: true, message: "OK", data: MOCK_SERVICE_TYPES } as T;
+  }
+
+  const trackPubMatch = pathname.match(/^\/api\/v1\/publish\/services\/track\/([^/]+)$/);
+  if (trackPubMatch && httpMethod === "GET") {
+    const regNo = decodeURIComponent(trackPubMatch[1]).trim().toUpperCase();
+    const found = MOCK_TRACKING_RECORDS.find(
+      (r) => r.registration_number.toUpperCase() === regNo
+    );
+    if (!found) {
+      throw new Error(
+        `Nomor registrasi "${regNo}" tidak ditemukan. Coba contoh: PATEN-740511-2026-0042.`
+      );
+    }
+    return { success: true, message: "Status permohonan ditemukan", data: found } as T;
   }
 
   // ================= MASTER KECAMATAN =================

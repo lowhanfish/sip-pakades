@@ -38,7 +38,7 @@
 
 body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 45%, #fef9c3 100%);
+  background: linear-gradient(180deg, #cfe2ff 0%, #e6f0ff 42%, #f4f8ff 100%);
   color: #0f172a;
   min-height: 100vh;
   position: relative;
@@ -67,24 +67,24 @@ body {
   max-width: 680px;
   max-height: 680px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #bae6fd 0%, #7dd3fc 45%, #38bdf8 85%);
-  filter: blur(85px);
-  opacity: 0.55;
+  background: radial-gradient(circle at 35% 35%, #bfdbfe 0%, #93c5fd 50%, #60a5fa 85%);
+  filter: blur(95px);
+  opacity: 0.42;
   animation: float-blob-1 18s ease-in-out infinite alternate;
 }
 
 .clay-blob-2 {
   position: absolute;
-  top: 30%;
+  top: 26%;
   right: -8%;
   width: 48vw;
   height: 48vw;
   max-width: 620px;
   max-height: 620px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fef08a 0%, #fde047 45%, #facc15 85%);
-  filter: blur(90px);
-  opacity: 0.45;
+  background: radial-gradient(circle at 35% 35%, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 85%);
+  filter: blur(100px);
+  opacity: 0.38;
   animation: float-blob-2 22s ease-in-out infinite alternate;
 }
 
@@ -97,9 +97,9 @@ body {
   max-width: 720px;
   max-height: 720px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #e0f2fe 0%, #a7f3d0 40%, #7dd3fc 85%);
-  filter: blur(95px);
-  opacity: 0.42;
+  background: radial-gradient(circle at 30% 30%, #dbeafe 0%, #c7d2fe 45%, #bae6fd 85%);
+  filter: blur(105px);
+  opacity: 0.35;
   animation: float-blob-3 26s ease-in-out infinite alternate;
 }
 
@@ -121,28 +121,51 @@ body {
   100% { transform: translate(-45px, -25px) scale(0.96); }
 }
 
-/* Claymorphic card style */
+/* Claymorphic + Glassmorphic card style (calm & non-glaring) */
 .glass-panel, .clay-card {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 2rem;
-  border: 2px solid rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
   box-shadow:
-    12px 18px 36px -4px rgba(186, 230, 253, 0.55),
-    -8px -8px 24px 0 rgba(255, 255, 255, 0.95),
-    inset 3px 3px 7px rgba(255, 255, 255, 0.95),
-    inset -3px -3px 8px rgba(14, 165, 233, 0.08);
+    0 18px 42px -10px rgba(37, 99, 235, 0.14),
+    0 6px 16px -4px rgba(15, 23, 42, 0.04),
+    inset 0 4px 10px rgba(255, 255, 255, 0.95),
+    inset 0 -8px 18px rgba(147, 197, 253, 0.24);
   transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .clay-card-hover:hover {
   transform: translateY(-4px) scale(1.01);
   box-shadow:
-    16px 24px 44px -4px rgba(186, 230, 253, 0.68),
-    -10px -10px 28px 0 rgba(255, 255, 255, 1),
-    inset 4px 4px 9px rgba(255, 255, 255, 0.98),
-    inset -4px -4px 10px rgba(14, 165, 233, 0.12);
+    0 24px 50px -10px rgba(37, 99, 235, 0.2),
+    0 8px 20px -4px rgba(15, 23, 42, 0.06),
+    inset 0 4px 12px rgba(255, 255, 255, 0.98),
+    inset 0 -10px 22px rgba(147, 197, 253, 0.3);
+}
+
+/* Frosted floating glass-clay card (like "Great :)" / "Amazing!" reference) */
+.clay-glass-float {
+  background: rgba(235, 245, 255, 0.68);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-radius: 1.75rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 16px 36px -8px rgba(37, 99, 235, 0.16),
+    inset 0 5px 12px rgba(255, 255, 255, 0.88),
+    inset 0 -10px 20px rgba(147, 197, 253, 0.36);
+}
+
+/* Soft icy-blue inner tile for hierarchy inside white clay cards */
+.clay-tile {
+  background: #eef5ff;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 2px 6px rgba(147, 197, 253, 0.22),
+    0 4px 12px -2px rgba(37, 99, 235, 0.06);
 }
 
 .clay-card-sky {

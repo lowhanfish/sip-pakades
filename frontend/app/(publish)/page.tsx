@@ -157,73 +157,111 @@ export default function PublishHomePage() {
                 </Link>
               </div>
 
-              {/* Quick Stats with Claymorphic Badges */}
+              {/* Quick Stats with Calm Clay-Tile Hierarchy */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-4">
-                <div className="clay-card p-4 space-y-1">
+                <div className="clay-tile p-4 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-semibold text-slate-500">
                       Desa / Kelurahan
                     </span>
-                    <span className="w-6 h-6 rounded-lg bg-sky-100 flex items-center justify-center text-sky-600">
+                    <span className="w-6 h-6 rounded-lg bg-white flex items-center justify-center text-sky-600 shadow-xs">
                       <Building2 className="w-3.5 h-3.5" />
                     </span>
                   </div>
-                  <div className="text-2xl font-black text-sky-700">
+                  <div className="text-2xl font-black text-slate-900">
                     {stats?.total_villages ?? 17}
                   </div>
-                  <div className="text-[10px] text-slate-400">Wilayah Aktif</div>
+                  <div className="text-[10px] text-slate-500">Wilayah Aktif</div>
                 </div>
 
-                <div className="clay-card p-4 space-y-1">
+                <div className="clay-tile p-4 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-semibold text-slate-500">
                       Potensi Wilayah
                     </span>
-                    <span className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                    <span className="w-6 h-6 rounded-lg bg-white flex items-center justify-center text-emerald-600 shadow-xs">
                       <Sprout className="w-3.5 h-3.5" />
                     </span>
                   </div>
-                  <div className="text-2xl font-black text-emerald-700">
+                  <div className="text-2xl font-black text-slate-900">
                     {stats?.total_potentials ?? 5}
                   </div>
-                  <div className="text-[10px] text-slate-400">Sektor Unggulan</div>
+                  <div className="text-[10px] text-slate-500">Sektor Unggulan</div>
                 </div>
 
-                <div className="clay-card p-4 space-y-1">
+                <div className="clay-tile p-4 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-semibold text-slate-500">
                       Destinasi Wisata
                     </span>
-                    <span className="w-6 h-6 rounded-lg bg-yellow-100 flex items-center justify-center text-yellow-700">
+                    <span className="w-6 h-6 rounded-lg bg-white flex items-center justify-center text-amber-600 shadow-xs">
                       <Compass className="w-3.5 h-3.5" />
                     </span>
                   </div>
-                  <div className="text-2xl font-black text-amber-700">
+                  <div className="text-2xl font-black text-slate-900">
                     {stats?.total_tourism ?? 3}
                   </div>
-                  <div className="text-[10px] text-slate-400">Titik Kunjungan</div>
+                  <div className="text-[10px] text-slate-500">Titik Kunjungan</div>
                 </div>
 
-                <div className="clay-card-yellow p-4 space-y-1">
+                <div className="rounded-[1.25rem] bg-gradient-to-br from-emerald-400 to-emerald-500 text-white p-4 space-y-1 shadow-md shadow-emerald-500/20 border border-white/60">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-semibold text-slate-700">
+                    <span className="text-[11px] font-semibold text-emerald-50">
                       Layanan Selesai
                     </span>
-                    <span className="w-6 h-6 rounded-lg bg-white/80 flex items-center justify-center text-slate-800">
+                    <span className="w-6 h-6 rounded-lg bg-white/25 flex items-center justify-center text-white">
                       <FileCheck2 className="w-3.5 h-3.5" />
                     </span>
                   </div>
-                  <div className="text-2xl font-black text-slate-900">
+                  <div className="text-2xl font-black">
                     {stats?.total_services_completed ?? 128}
                   </div>
-                  <div className="text-[10px] text-slate-600 font-medium">SIP-PAKADES</div>
+                  <div className="text-[10px] text-emerald-50 font-medium">SIP-PAKADES</div>
                 </div>
               </div>
             </motion.div>
 
-            {/* 3D WebGL Interactive Orb */}
-            <div className="lg:col-span-5 h-[280px] sm:h-[340px] lg:h-[390px] relative">
-              <HeroScene />
+            {/* 3D Clay Showcase Visual + Floating Glass-Clay Badges */}
+            <div className="lg:col-span-5 relative flex items-center justify-center py-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                className="relative w-full max-w-[460px]"
+              >
+                <div className="relative aspect-[10/7] rounded-[2rem] overflow-hidden border-2 border-white/90 shadow-2xl shadow-blue-500/15 bg-sky-50">
+                  <Image
+                    src="/img/hero-clay-showcase.webp"
+                    alt="Ilustrasi 3D Portal Terpadu SIP-PAKADES"
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 460px"
+                    className="object-cover"
+                  />
+                </div>
+
+                {/* Floating Glass-Clay Card Top-Left */}
+                <div className="clay-glass-float px-4 py-2.5 absolute -top-4 -left-2 sm:-left-5 flex items-center gap-2.5 animate-bounce [animation-duration:5s]">
+                  <span className="w-7 h-7 rounded-full bg-emerald-400 text-white flex items-center justify-center text-xs font-black shadow-sm">
+                    ✓
+                  </span>
+                  <div>
+                    <div className="text-xs font-extrabold text-slate-900">98% SLA Tepat Waktu</div>
+                    <div className="text-[10px] text-slate-600">Layanan Terpantau</div>
+                  </div>
+                </div>
+
+                {/* Floating Glass-Clay Card Bottom-Right + Mini 3D Orb */}
+                <div className="clay-glass-float px-4 py-2.5 absolute -bottom-4 -right-2 sm:-right-4 flex items-center gap-2.5">
+                  <div className="w-10 h-10 shrink-0">
+                    <HeroScene />
+                  </div>
+                  <div>
+                    <div className="text-xs font-extrabold text-slate-900">Portal 3D Interaktif</div>
+                    <div className="text-[10px] text-slate-600">Kab. Konawe Selatan</div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -345,17 +383,28 @@ export default function PublishHomePage() {
 
           {/* Inline Lacak Status */}
           <Subtle3DCard className="lg:col-span-5 p-6 space-y-4">
-            <div className="space-y-1">
-              <div className="text-sm font-extrabold text-slate-900">
-                Lacak Status Permohonan
+            <div className="flex items-center gap-4">
+              <div className="relative w-20 h-16 rounded-2xl overflow-hidden shrink-0 shadow-sm border border-white">
+                <Image
+                  src="/img/pelayanan-3d-clay.webp"
+                  alt="Pelacakan Berkas SIP-PAKADES"
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                />
               </div>
-              <p className="text-xs text-slate-600">
-                Masukkan nomor registrasi Anda (contoh:{" "}
-                <code className="font-mono font-semibold text-sky-700">
-                  SIP-740511-2026-0042
-                </code>
-                ).
-              </p>
+              <div className="space-y-1">
+                <div className="text-sm font-extrabold text-slate-900">
+                  Lacak Status Permohonan
+                </div>
+                <p className="text-xs text-slate-600">
+                  Masukkan nomor registrasi Anda (contoh:{" "}
+                  <code className="font-mono font-semibold text-sky-700">
+                    SIP-740511-2026-0042
+                  </code>
+                  ).
+                </p>
+              </div>
             </div>
 
             <form onSubmit={handleTrackSubmit} className="flex gap-2">
@@ -408,18 +457,29 @@ export default function PublishHomePage() {
 
       {/* 4. DESA & KELURAHAN */}
       <section className="max-w-7xl mx-auto space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div>
-            <span className="text-xs font-bold text-sky-700 uppercase tracking-wider">
-              Wilayah Administrasi
-            </span>
-            <h2 className="text-2xl font-extrabold text-slate-900">
-              Profil Desa &amp; Kelurahan Kecamatan {district?.name ?? "Laeya"}
-            </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:block relative w-20 h-14 rounded-2xl overflow-hidden shadow-sm border border-white shrink-0">
+              <Image
+                src="/img/wilayah-3d-clay.webp"
+                alt="Wilayah Administrasi Desa dan Kelurahan"
+                fill
+                sizes="80px"
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-sky-700 uppercase tracking-wider">
+                Wilayah Administrasi
+              </span>
+              <h2 className="text-2xl font-extrabold text-slate-900">
+                Profil Desa &amp; Kelurahan Kecamatan {district?.name ?? "Laeya"}
+              </h2>
+            </div>
           </div>
           <Link
             href="/desa-kelurahan"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-700 hover:text-sky-900"
+            className="clay-btn clay-btn-sky text-xs px-4 py-2 shrink-0 self-start sm:self-auto"
           >
             Lihat Seluruh {stats?.total_villages ?? villages.length} Wilayah
             <ArrowRight className="w-3.5 h-3.5" />

@@ -357,6 +357,7 @@ async def publish_tourism(slug: str, db: AsyncSession = Depends(get_db)):
             "facilities": t.facilities or [],
             "opening_hours": t.opening_hours or "-",
             "ticket_info": t.ticket_info or "-",
+            "cover_image_url": t.cover_image_url,
             "latitude": t.latitude or 0,
             "longitude": t.longitude or 0,
         }
@@ -391,6 +392,7 @@ async def publish_announcements(slug: str, db: AsyncSession = Depends(get_db)):
             "category": a.category,
             "excerpt": a.excerpt or "",
             "content": a.content,
+            "thumbnail_url": a.thumbnail_url,
             "published_at": a.published_at or a.created_at,
         }
         for a in rows

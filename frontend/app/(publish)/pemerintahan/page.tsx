@@ -139,20 +139,31 @@ export default function PemerintahanPage() {
               announcements.map((a) => (
                 <div
                   key={a.id}
-                  className="rounded-2xl bg-white/80 border border-sky-200/70 p-4 space-y-1.5"
+                  className="clay-tile p-4 flex flex-col sm:flex-row gap-3.5 items-start"
                 >
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 font-bold uppercase">
-                      {a.category}
-                    </span>
-                    <span className="text-slate-500">
-                      {formatDateId(a.published_at)}
-                    </span>
+                  <div className="relative w-full sm:w-28 h-24 rounded-xl overflow-hidden shrink-0 shadow-sm border border-white bg-sky-100">
+                    <Image
+                      src={a.thumbnail_url || "/img/berita-rakor.webp"}
+                      alt={a.title}
+                      fill
+                      sizes="112px"
+                      className="object-cover"
+                    />
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900">{a.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {a.content}
-                  </p>
+                  <div className="flex-1 min-w-0 space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="px-2 py-0.5 rounded-full bg-white text-sky-800 font-bold uppercase shadow-2xs">
+                        {a.category}
+                      </span>
+                      <span className="text-slate-500">
+                        {formatDateId(a.published_at)}
+                      </span>
+                    </div>
+                    <h3 className="text-sm font-bold text-slate-900">{a.title}</h3>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {a.content}
+                    </p>
+                  </div>
                 </div>
               ))
             )}

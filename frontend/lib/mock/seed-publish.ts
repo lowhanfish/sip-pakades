@@ -45,6 +45,7 @@ export interface PublicTourismItem {
   facilities: string[];
   opening_hours: string;
   ticket_info: string;
+  cover_image_url?: string | null;
   latitude: number;
   longitude: number;
 }
@@ -57,6 +58,7 @@ export interface PublicAnnouncementItem {
   category: "berita" | "pengumuman" | "agenda";
   excerpt: string;
   content: string;
+  thumbnail_url?: string | null;
   published_at: string;
 }
 
@@ -266,6 +268,7 @@ export const MOCK_ANNOUNCEMENTS: PublicAnnouncementItem[] = [
       "Camat Laeya memimpin rapat koordinasi bersama seluruh Kepala Desa dan Lurah terkait ketepatan waktu pelaporan triwulanan.",
     content:
       "Kantor Kecamatan Laeya menggelar rapat koordinasi bersama 15 Kepala Desa dan 2 Lurah guna mempercepat penyampaian Laporan Penyelenggaraan Pemerintahan Desa (LPPD) dan Realisasi APBDes Triwulan IV Tahun 2026 melalui sistem SIP-PAKADES.",
+    thumbnail_url: "/img/berita-rakor.webp",
     published_at: "2026-11-20T09:00:00Z",
   },
   {
@@ -278,6 +281,7 @@ export const MOCK_ANNOUNCEMENTS: PublicAnnouncementItem[] = [
       "Informasi jam operasional loket SIP-PAKADES Kantor Kecamatan Laeya serta persyaratan pengantar dari desa/kelurahan.",
     content:
       "Loket Pelayanan Administrasi Kecamatan (SIP-PAKADES) Kecamatan Laeya buka setiap hari Senin hingga Jumat pukul 08.00–16.00 WITA. Warga dapat memantau progres pengajuan secara online menggunakan Nomor Registrasi layanan.",
+    thumbnail_url: "/img/berita-layanan.webp",
     published_at: "2026-11-18T08:00:00Z",
   },
   {
@@ -290,6 +294,7 @@ export const MOCK_ANNOUNCEMENTS: PublicAnnouncementItem[] = [
       "Program pendampingan UMKM pesisir dan penataan destinasi wisata di Desa Torobulu, Lambakara, dan Lerepako.",
     content:
       "Kecamatan Laeya mendorong pemetaan potensi wilayah unggulan dan penerbitan rekomendasi IUMK bagi pelaku usaha mikro di kawasan pesisir dan pasar sentral Puunggaluku.",
+    thumbnail_url: "/img/berita-musrenbang.webp",
     published_at: "2026-11-12T10:30:00Z",
   },
 ];

@@ -589,7 +589,7 @@ export default function PublishHomePage() {
               >
                 <div className="relative h-24 rounded-xl overflow-hidden bg-sky-100">
                   <Image
-                    src={getTourismImage(t.name, t.category_name)}
+                    src={t.cover_image_url || getTourismImage(t.name, t.category_name)}
                     alt={t.name}
                     fill
                     sizes="(max-width: 768px) 100vw, 300px"
@@ -631,21 +631,34 @@ export default function PublishHomePage() {
             </Link>
           </div>
           <div className="space-y-3">
-            {announcements.map((a) => (
+            {announcements.slice(0, 4).map((a) => (
               <div
                 key={a.id}
-                className="rounded-2xl bg-white/75 border border-sky-200/70 p-4 space-y-1.5"
+                className="clay-tile p-3.5 flex items-start gap-3.5 hover:scale-[1.01] transition"
               >
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="font-bold uppercase text-sky-700">
-                    {a.category}
-                  </span>
-                  <span className="text-slate-500">
-                    {formatDateId(a.published_at)}
-                  </span>
+                <div className="relative w-24 h-20 rounded-xl overflow-hidden shrink-0 shadow-sm border border-white bg-sky-100">
+                  <Image
+                    src={a.thumbnail_url || "/img/berita-rakor.webp"}
+                    alt={a.title}
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                  />
                 </div>
-                <div className="text-sm font-bold text-slate-900">{a.title}</div>
-                <p className="text-xs text-slate-600 line-clamp-2">{a.excerpt}</p>
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="px-2 py-0.5 rounded-full bg-white text-sky-700 font-bold uppercase shadow-2xs">
+                      {a.category}
+                    </span>
+                    <span className="text-slate-500">
+                      {formatDateId(a.published_at)}
+                    </span>
+                  </div>
+                  <div className="text-sm font-bold text-slate-900 line-clamp-1">
+                    {a.title}
+                  </div>
+                  <p className="text-xs text-slate-600 line-clamp-2">{a.excerpt}</p>
+                </div>
               </div>
             ))}
           </div>

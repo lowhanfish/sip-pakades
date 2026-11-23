@@ -25,6 +25,7 @@ import {
   MOCK_TRACKING_RECORDS,
   MOCK_VILLAGE_OFFICIALS,
 } from "./seed-publish";
+import { handleAdminExtendedMock } from "./handlers-admin";
 
 const STORAGE_KEYS = {
   SESSION_USER: "sippakades_mock_user_id",
@@ -650,6 +651,17 @@ export async function handleMockRequest<T>(
     }
     saveVillages(list.filter((v) => v.id !== id));
     return { success: true, message: "Desa/Kelurahan berhasil dihapus", data: { id } } as T;
+  }
+
+  const extendedResult = await handleAdminExtendedMock<T>(
+    pathname,
+    params,
+    httpMethod,
+    body,
+    currentUser
+  );
+  if (extendedResult !== null) {
+    return extendedResult;
   }
 
   throw new Error(`Endpoint mock belum terdaftar: ${httpMethod} ${pathname}`);

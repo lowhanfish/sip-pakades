@@ -65,7 +65,7 @@ export default function AdminLayout({
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="admin-glass h-full rounded-3xl p-4 flex flex-col justify-between">
+        <div className="admin-glass h-full rounded-3xl p-4 flex flex-col justify-between overflow-y-auto max-h-[calc(100vh-2rem)]">
           <div className="space-y-6">
             <div className="flex items-center justify-between px-2 pt-1">
               <Link href="/admin" className="flex items-center gap-3">

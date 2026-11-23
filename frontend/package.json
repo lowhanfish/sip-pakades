@@ -1,0 +1,39 @@
+{
+  "name": "sip-pakades-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.0.8",
+    "@react-three/fiber": "^9.1.2",
+    "@tanstack/react-query": "^5.75.5",
+    "@types/leaflet": "^1.9.16",
+    "@types/three": "^0.175.0",
+    "framer-motion": "^12.9.2",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.511.0",
+    "next": "^15.3.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sweetalert2": "^11.21.2",
+    "three": "^0.175.0",
+    "zustand": "^5.0.4"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.5",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "eslint": "^9.26.0",
+    "eslint-config-next": "^15.3.2",
+    "tailwindcss": "^4.1.5",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,26 @@
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node / Frontend
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/dist/
+frontend/.env*.local
+frontend/tsconfig.tsbuildinfo
+
+# Python / Backend
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+backend/.env
+backend/storage/
+backend/backups/
+*.log

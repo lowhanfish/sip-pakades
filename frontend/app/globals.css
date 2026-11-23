@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+:root {
+  --sky-soft-50: #f0f9ff;
+  --sky-soft-100: #e0f2fe;
+  --sky-soft-300: #7dd3fc;
+  --sky-soft-400: #38bdf8;
+  --sky-soft-600: #0284c7;
+  --yellow-soft-100: #fef9c3;
+  --yellow-soft-200: #fef08a;
+  --yellow-soft-300: #fde047;
+
+  /* Admin theme variables (Light default) */
+  --admin-bg: #f0f9ff;
+  --admin-bg-accent: #fef9c3;
+  --admin-surface: rgba(255, 255, 255, 0.78);
+  --admin-surface-solid: #ffffff;
+  --admin-border: rgba(125, 211, 252, 0.45);
+  --admin-text: #0f172a;
+  --admin-text-muted: #475569;
+  --admin-input-bg: rgba(255, 255, 255, 0.9);
+}
+
+[data-admin-theme="dark"] {
+  --admin-bg: #0b1220;
+  --admin-bg-accent: #132038;
+  --admin-surface: rgba(15, 23, 42, 0.78);
+  --admin-surface-solid: #111c2e;
+  --admin-border: rgba(56, 189, 248, 0.22);
+  --admin-text: #f1f5f9;
+  --admin-text-muted: #94a3b8;
+  --admin-input-bg: rgba(15, 23, 42, 0.92);
+}
+
+body {
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 55%, #fef9c3 100%);
+  color: #0f172a;
+  min-height: 100vh;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(125, 211, 252, 0.5);
+  box-shadow: 0 10px 30px -12px rgba(2, 132, 199, 0.16);
+}
+
+.admin-shell {
+  background: radial-gradient(circle at top right, var(--admin-bg-accent) 0%, var(--admin-bg) 52%);
+  color: var(--admin-text);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.admin-glass {
+  background: var(--admin-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--admin-border);
+  box-shadow: 0 10px 30px -12px rgba(2, 132, 199, 0.14);
+}
+
+.admin-input {
+  background: var(--admin-input-bg);
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text);
+}

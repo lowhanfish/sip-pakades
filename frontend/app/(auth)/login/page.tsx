@@ -44,7 +44,7 @@ export default function LoginPage() {
       if (res.success && res.data?.user) {
         setSession(res.data.user, res.data.menus ?? []);
         await swallAlert(`Selamat datang, ${res.data.user.full_name}`, "success");
-        router.push("/admin");
+        router.replace("/admin");
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Gagal login";

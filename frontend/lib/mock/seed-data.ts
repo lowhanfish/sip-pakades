@@ -199,7 +199,7 @@ export const MOCK_USERS: UserProfile[] = [
     id: "770e8400-e29b-41d4-a716-446655440004",
     username: "kasi_laeya",
     full_name: "Kasi Pelayanan Kec. Laeya",
-    email: "paten.laeya@konaweselatankab.go.id",
+    email: "pelayanan.laeya@konaweselatankab.go.id",
     phone: "08114000004",
     nip: "198908202014022003",
     role: "kasi_pelayanan",

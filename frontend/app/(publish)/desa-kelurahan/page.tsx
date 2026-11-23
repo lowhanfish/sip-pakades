@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Building2, Search, Users, X } from "lucide-react";
 import { Subtle3DCard } from "@/components/three/Subtle3DCard";
@@ -26,35 +27,46 @@ export default function DesaKelurahanPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-6 pb-10 space-y-8">
-      <div className="glass-panel rounded-3xl p-6 md:p-8 space-y-4">
-        <div>
-          <span className="text-xs font-bold text-sky-700 uppercase tracking-wider">
-            Direktori Wilayah Administrasi
-          </span>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">
-            Profil Desa &amp; Kelurahan
-          </h1>
-          <p className="text-sm text-slate-600">
-            Menampilkan {villages.length} desa dan kelurahan aktif pada kecamatan
-            terpilih. Klik kartu wilayah untuk melihat perangkat dan rinciannya.
-          </p>
+      <div className="clay-card p-6 md:p-10 space-y-4 relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-200/90 border border-yellow-300 text-xs font-bold text-slate-800">
+              <Building2 className="w-3.5 h-3.5 text-sky-600" />
+              Direktori Wilayah Administrasi
+            </span>
+            <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+              Profil Desa &amp; Kelurahan
+            </h1>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Menampilkan {villages.length} desa dan kelurahan aktif pada kecamatan
+              terpilih. Klik tombol pada kartu wilayah untuk melihat susunan aparatur dan rincian kependudukan.
+            </p>
+          </div>
+          <div className="hidden md:block w-32 h-24 rounded-2xl overflow-hidden relative shadow-md shrink-0">
+            <Image
+              src="/img/desa-kelurahan.webp"
+              alt="Desa & Kelurahan"
+              fill
+              className="object-cover"
+            />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl pt-2">
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari nama desa atau kelurahan..."
-              className="w-full rounded-xl border border-sky-200 bg-white/90 pl-9 pr-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="clay-input w-full pl-10 pr-3.5 py-2.5 text-xs text-slate-900"
             />
           </div>
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="rounded-xl border border-sky-200 bg-white/90 px-3 py-2 text-xs text-slate-900"
+            className="clay-input w-full px-3.5 py-2.5 text-xs text-slate-900 font-semibold"
           >
             <option value="">Semua (Desa &amp; Kelurahan)</option>
             <option value="kelurahan">Kelurahan</option>
@@ -121,7 +133,7 @@ export default function DesaKelurahanPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedVillageId(v.id)}
-                  className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold py-2 transition cursor-pointer"
+                  className="clay-btn clay-btn-sky w-full py-2.5 text-xs"
                 >
                   <Building2 className="w-3.5 h-3.5" />
                   Lihat Profil &amp; Perangkat
@@ -135,7 +147,7 @@ export default function DesaKelurahanPage() {
       {/* Detail Modal */}
       {selectedVillageId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
-          <div className="glass-panel bg-white/95 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-5">
+          <div className="clay-card bg-white/95 w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 md:p-8 space-y-5">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-extrabold text-slate-900">
                 {detailQuery.data?.data?.village

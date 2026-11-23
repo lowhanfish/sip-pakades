@@ -40,6 +40,21 @@ const DistrictMap = dynamic(() => import("@/components/maps/DistrictMap"), {
   ),
 });
 
+function getTourismImage(name: string, category: string = ""): string {
+  const s = `${name} ${category}`.toLowerCase();
+  if (s.includes("torobulu") || s.includes("pantai") || s.includes("bahari")) return "/img/wisata-torobulu.webp";
+  if (s.includes("air terjun") || s.includes("moramo") || s.includes("curug")) return "/img/wisata-air-terjun.webp";
+  if (s.includes("mangrove") || s.includes("bakau") || s.includes("pesisir")) return "/img/wisata-mangrove.webp";
+  return "/img/wisata-torobulu.webp";
+}
+
+function getPotentialImage(title: string, category: string = ""): string {
+  const s = `${title} ${category}`.toLowerCase();
+  if (s.includes("ikan") || s.includes("laut") || s.includes("perikanan") || s.includes("tambak")) return "/img/potensi-perikanan.webp";
+  if (s.includes("kebun") || s.includes("kakao") || s.includes("mete") || s.includes("kopi") || s.includes("lada")) return "/img/potensi-perkebunan.webp";
+  return "/img/potensi-pertanian.webp";
+}
+
 export default function PublishHomePage() {
   const slug = usePublicDistrictStore((s) => s.selectedSlug);
   const { data: overviewRes } = usePublicOverview(slug);
@@ -127,7 +142,7 @@ export default function PublishHomePage() {
               <div className="flex flex-wrap gap-3 pt-1">
                 <Link
                   href="/layanan"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm px-6 py-3 shadow-lg shadow-sky-500/25 transition"
+                  className="clay-btn clay-btn-sky text-sm px-6 py-3.5"
                 >
                   <FileCheck2 className="w-4 h-4" />
                   Layanan &amp; Lacak SIP-PAKADES
@@ -135,46 +150,73 @@ export default function PublishHomePage() {
                 </Link>
                 <Link
                   href="/desa-kelurahan"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-yellow-300/90 hover:bg-yellow-300 text-slate-900 font-bold text-sm px-6 py-3 transition"
+                  className="clay-btn clay-btn-yellow text-sm px-6 py-3.5 text-slate-900"
                 >
                   <Building2 className="w-4 h-4" />
                   Profil Desa &amp; Kelurahan
                 </Link>
               </div>
 
-              {/* Quick Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
-                <div className="rounded-2xl bg-white/75 border border-sky-200/70 p-3.5">
-                  <div className="text-[11px] font-semibold text-slate-500">
-                    Desa / Kelurahan
+              {/* Quick Stats with Claymorphic Badges */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-4">
+                <div className="clay-card p-4 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-slate-500">
+                      Desa / Kelurahan
+                    </span>
+                    <span className="w-6 h-6 rounded-lg bg-sky-100 flex items-center justify-center text-sky-600">
+                      <Building2 className="w-3.5 h-3.5" />
+                    </span>
                   </div>
-                  <div className="text-xl font-extrabold text-sky-700">
+                  <div className="text-2xl font-black text-sky-700">
                     {stats?.total_villages ?? 17}
                   </div>
+                  <div className="text-[10px] text-slate-400">Wilayah Aktif</div>
                 </div>
-                <div className="rounded-2xl bg-white/75 border border-sky-200/70 p-3.5">
-                  <div className="text-[11px] font-semibold text-slate-500">
-                    Potensi Wilayah
+
+                <div className="clay-card p-4 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-slate-500">
+                      Potensi Wilayah
+                    </span>
+                    <span className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                      <Sprout className="w-3.5 h-3.5" />
+                    </span>
                   </div>
-                  <div className="text-xl font-extrabold text-sky-700">
+                  <div className="text-2xl font-black text-emerald-700">
                     {stats?.total_potentials ?? 5}
                   </div>
+                  <div className="text-[10px] text-slate-400">Sektor Unggulan</div>
                 </div>
-                <div className="rounded-2xl bg-white/75 border border-sky-200/70 p-3.5">
-                  <div className="text-[11px] font-semibold text-slate-500">
-                    Destinasi Wisata
+
+                <div className="clay-card p-4 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-slate-500">
+                      Destinasi Wisata
+                    </span>
+                    <span className="w-6 h-6 rounded-lg bg-yellow-100 flex items-center justify-center text-yellow-700">
+                      <Compass className="w-3.5 h-3.5" />
+                    </span>
                   </div>
-                  <div className="text-xl font-extrabold text-sky-700">
+                  <div className="text-2xl font-black text-amber-700">
                     {stats?.total_tourism ?? 3}
                   </div>
+                  <div className="text-[10px] text-slate-400">Titik Kunjungan</div>
                 </div>
-                <div className="rounded-2xl bg-yellow-100/80 border border-yellow-300/70 p-3.5">
-                  <div className="text-[11px] font-semibold text-slate-600">
-                    Layanan Selesai
+
+                <div className="clay-card-yellow p-4 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-slate-700">
+                      Layanan Selesai
+                    </span>
+                    <span className="w-6 h-6 rounded-lg bg-white/80 flex items-center justify-center text-slate-800">
+                      <FileCheck2 className="w-3.5 h-3.5" />
+                    </span>
                   </div>
-                  <div className="text-xl font-extrabold text-slate-900">
+                  <div className="text-2xl font-black text-slate-900">
                     {stats?.total_services_completed ?? 128}
                   </div>
+                  <div className="text-[10px] text-slate-600 font-medium">SIP-PAKADES</div>
                 </div>
               </div>
             </motion.div>
@@ -322,11 +364,11 @@ export default function PublishHomePage() {
                 value={trackInput}
                 onChange={(e) => setTrackInput(e.target.value)}
                 placeholder="SIP-740511-2026-0042"
-                className="flex-1 rounded-xl border border-sky-200 bg-white/90 px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                className="clay-input flex-1 px-3.5 py-2 text-xs text-slate-900"
               />
               <button
                 type="submit"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold px-4 py-2 transition cursor-pointer"
+                className="clay-btn clay-btn-sky px-4 py-2 text-xs"
               >
                 <Search className="w-3.5 h-3.5" />
                 Lacak
@@ -414,75 +456,96 @@ export default function PublishHomePage() {
 
       {/* 5. POTENSI & DESTINASI WISATA */}
       <section className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Subtle3DCard className="p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sprout className="w-5 h-5 text-sky-600" />
-              <h2 className="text-lg font-extrabold text-slate-900">
+        <Subtle3DCard className="p-6 md:p-8 space-y-5">
+          <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
+                <Sprout className="w-4 h-4" />
+              </span>
+              <h2 className="text-lg font-black text-slate-900">
                 Potensi Unggulan Wilayah
               </h2>
             </div>
             <Link
               href="/potensi-wilayah"
-              className="text-xs font-bold text-sky-700 hover:text-sky-900"
+              className="clay-btn clay-btn-sky text-xs px-3.5 py-1.5"
             >
-              Selengkapnya →
+              Lihat Semua →
             </Link>
           </div>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {potentials.slice(0, 4).map((p) => (
               <div
                 key={p.id}
-                className="rounded-2xl bg-white/75 border border-sky-200/70 p-3.5 flex items-center justify-between gap-3"
+                className="clay-card p-3 space-y-2 hover:scale-[1.02] transition"
               >
+                <div className="relative h-24 rounded-xl overflow-hidden bg-sky-100">
+                  <Image
+                    src={getPotentialImage(p.title, p.category_name)}
+                    alt={p.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 300px"
+                    className="object-cover"
+                  />
+                  <div className="absolute top-1.5 right-1.5 px-2 py-0.5 rounded-full bg-yellow-300 text-[10px] font-extrabold text-slate-900 shadow-sm">
+                    {p.metric_value} {p.metric_unit}
+                  </div>
+                </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">
+                  <div className="text-xs font-bold text-slate-900 line-clamp-1">
                     {p.title}
                   </div>
-                  <div className="text-[11px] text-slate-600">
+                  <div className="text-[10px] text-slate-500 font-medium">
                     {p.village_name} • {p.category_name}
                   </div>
                 </div>
-                <span className="shrink-0 text-xs font-extrabold px-2.5 py-1 rounded-xl bg-yellow-200/80 text-slate-900">
-                  {p.metric_value} {p.metric_unit}
-                </span>
               </div>
             ))}
           </div>
         </Subtle3DCard>
 
-        <Subtle3DCard className="p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Compass className="w-5 h-5 text-sky-600" />
-              <h2 className="text-lg font-extrabold text-slate-900">
-                Destinasi Wisata Lokal
+        <Subtle3DCard className="p-6 md:p-8 space-y-5">
+          <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shadow-sm">
+                <Compass className="w-4 h-4" />
+              </span>
+              <h2 className="text-lg font-black text-slate-900">
+                Destinasi Wisata Daerah
               </h2>
             </div>
             <Link
               href="/destinasi-wisata"
-              className="text-xs font-bold text-sky-700 hover:text-sky-900"
+              className="clay-btn clay-btn-yellow text-xs px-3.5 py-1.5 text-slate-900"
             >
-              Selengkapnya →
+              Jelajahi →
             </Link>
           </div>
-          <div className="space-y-3">
-            {tourism.slice(0, 3).map((t) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {tourism.slice(0, 4).map((t) => (
               <div
                 key={t.id}
-                className="rounded-2xl bg-white/75 border border-sky-200/70 p-3.5 space-y-1"
+                className="clay-card p-3 space-y-2 hover:scale-[1.02] transition"
               >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="text-xs font-bold text-slate-900">{t.name}</div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">
+                <div className="relative h-24 rounded-xl overflow-hidden bg-sky-100">
+                  <Image
+                    src={getTourismImage(t.name, t.category_name)}
+                    alt={t.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 300px"
+                    className="object-cover"
+                  />
+                  <div className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full bg-sky-600 text-[10px] font-bold text-white shadow-sm">
                     {t.category_name}
-                  </span>
+                  </div>
                 </div>
-                <p className="text-[11px] text-slate-600 line-clamp-2">
-                  {t.description}
-                </p>
-                <div className="text-[11px] font-medium text-sky-700">
-                  {t.village_name} • {t.ticket_info}
+                <div>
+                  <div className="text-xs font-bold text-slate-900 line-clamp-1">
+                    {t.name}
+                  </div>
+                  <div className="text-[10px] text-slate-500">
+                    {t.village_name} • {t.ticket_info}
+                  </div>
                 </div>
               </div>
             ))}

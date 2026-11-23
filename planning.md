@@ -1,21 +1,21 @@
-# Planning Project: SIP-PAKADES (Kabupaten Konawe Selatan — Pilot: Kecamatan Laeya)
+# Planning Project: SIP-PAKADES (Kabusip-pakades Konawe Selatan — Pilot: Kecamatan Laeya)
 
-Dokumen perencanaan arsitektur, fitur, desain UI/UX, keamanan, kontrak API, skema database, dan tahapan pengembangan aplikasi **Sistem Informasi Pemerintahan & Pelayanan Administrasi Kecamatan dan Desa (SIP-PAKADES)** yang dirancang **multi-kecamatan** untuk wilayah **Kabupaten Konawe Selatan** dengan **Kantor Kecamatan Laeya** sebagai kecamatan *pilot / default* awal.
+Dokumen perencanaan arsitektur, fitur, desain UI/UX, keamanan, kontrak API, skema database, dan tahapan pengembangan aplikasi **Sistem Informasi Pemerintahan & Pelayanan Administrasi Kecamatan dan Desa (SIP-PAKADES)** yang dirancang **multi-kecamatan** untuk wilayah **Kabusip-pakades Konawe Selatan** dengan **Kantor Kecamatan Laeya** sebagai kecamatan *pilot / default* awal.
 
 ---
 
 ## 1. Gambaran Umum & Konteks Wilayah
 
-- **Nama Aplikasi:** SIP-PAKADES (Skalabel Multi-Kecamatan, Kabupaten Konawe Selatan, Provinsi Sulawesi Tenggara).
+- **Nama Aplikasi:** SIP-PAKADES (Skalabel Multi-Kecamatan, Kabusip-pakades Konawe Selatan, Provinsi Sulawesi Tenggara).
 - **Arsitektur Wilayah Dinamis:** Seluruh daftar kecamatan dan desa/kelurahan tidak di-*hardcode* di dalam kode, melainkan dikelola dinamis melalui **Master Kecamatan** (`master_districts`) dan **Master Desa/Kelurahan** (`master_villages`), meliputi profil, alamat kantor, koordinat peta, jam layanan, visi-misi, serta data pemerintahan masing-masing kecamatan.
-- **Cakupan Master Awal (25 Kecamatan di Kabupaten Konawe Selatan):**
+- **Cakupan Master Awal (25 Kecamatan di Kabusip-pakades Konawe Selatan):**
   - Andoolo, Andoolo Barat, Angata, Baito, Basala, Benua, Buke, Kolono, Kolono Timur, Konda, **Laeya**, Lainea, Lalembuu, Landono, Laonti, Moramo, Moramo Utara, Mowila, Palangga, Palangga Selatan, Ranomeeto, Ranomeeto Barat, Sabulakoa, Tinanggea, dan Wolasi.
 - **Kecamatan *Pilot / Default* Awal — Kecamatan Laeya (17 Wilayah Desa/Kelurahan):**
   - **2 Kelurahan:** Ambalodangge, Puunggaluku *(Ibu Kota Kecamatan Laeya)*.
   - **15 Desa:** Aepodu, Ambakumina, Ambesea, Anduna, Anggoroboti, Labokeo, Laeya, Lambakara, Lamong Jaya, Lerepako, Ombu-Ombu Jaya, Puuwulo, Rambu-Rambu, Torobulu, Wonua Kongga.
 - **Tujuan Sistem:**
   1. Menyediakan portal informasi penyelenggaraan pemerintahan kecamatan & desa/kelurahan (profil wilayah, perangkat, potensi wilayah, destinasi wisata, berita/regulasi publik, lokasi kantor, serta info/lacak layanan) yang mendukung pergantian/pemilihan kecamatan secara dinamis.
-  2. Mendigitalisasi pelayanan administrasi kecamatan (PATEN) yang terhubung dengan pengantar desa/kelurahan, tata naskah persuratan dinas, dan pelaporan rutin triwulanan dari desa/kelurahan ke masing-masing kecamatan secara terisolasi, terpantau, dan aman.
+  2. Mendigitalisasi pelayanan administrasi kecamatan (SIP-PAKADES) yang terhubung dengan pengantar desa/kelurahan, tata naskah persuratan dinas, dan pelaporan rutin triwulanan dari desa/kelurahan ke masing-masing kecamatan secara terisolasi, terpantau, dan aman.
 
 ---
 
@@ -56,7 +56,7 @@ Dokumen perencanaan arsitektur, fitur, desain UI/UX, keamanan, kontrak API, skem
   - **Animasi Halus:** Transisi antar-seksi, *staggered card reveal*, dan *micro-interaction* tombol menggunakan Framer Motion.
   - **WebGL & Subtle 3D:**
     - *Hero section* landing page menggunakan kanvas 3D interaktif ringan berbasis Three.js / React Three Fiber (visualisasi gelombang geometris langit biru-kuning atau ilustrasi 3D stilistik kecamatan aktif).
-    - Efek *subtle 3D tilt/depth* pada kartu profil desa/kelurahan, kartu layanan PATEN, dan destinasi wisata.
+    - Efek *subtle 3D tilt/depth* pada kartu profil desa/kelurahan, kartu layanan SIP-PAKADES, dan destinasi wisata.
 - **Aturan Teknis Optimasi WebGL di Perangkat Warga:**
   1. Seluruh komponen Three.js dimuat via **`next/dynamic` dengan `ssr: false`** agar tidak memblokir SSR dan *First Contentful Paint*.
   2. Resolusi render dibatasi dengan **`dpr={[1, 1.5]}`**, geometri ringan, serta jeda animasi otomatis saat tab tidak aktif.
@@ -68,7 +68,7 @@ Dokumen perencanaan arsitektur, fitur, desain UI/UX, keamanan, kontrak API, skem
 - **Implementasi Teknis:** Dikelola lewat Zustand `store/useThemeStore.ts` (persist ke `localStorage` dengan key `sippakades-admin-theme`, default `"light"`), diterapkan sebagai atribut/kelas terisolasi (`.dark` / `data-admin-theme="dark"`) pada wrapper root `app/(admin)/admin/layout.tsx` menggunakan CSS variables di `globals.css` agar seluruh komponen UI, tabel, modal, badge, dan grafik beradaptasi mulus tanpa *flicker*.
 
 ### Aset Visual Resmi & Standar Format WebP
-- **`frontend/public/img/logo-konsel.webp`:** Logo resmi 3D Kabupaten Konawe Selatan berlatar transparan (`.webp`), digunakan pada header & footer `(publish)`, halaman login `(auth)`, header/sidebar `(admin)`, ikon aplikasi, serta kop dokumen ekspor PDF dan draf surat rekomendasi.
+- **`frontend/public/img/logo-konsel.webp`:** Logo resmi 3D Kabusip-pakades Konawe Selatan berlatar transparan (`.webp`), digunakan pada header & footer `(publish)`, halaman login `(auth)`, header/sidebar `(admin)`, ikon aplikasi, serta kop dokumen ekspor PDF dan draf surat rekomendasi.
 - **`frontend/public/img/camat-laeya.webp`:** Foto resmi Camat Kecamatan Laeya (**Ansar**) berlatar transparan (`.webp`), digunakan pada seksi Sambutan Camat di landing page `(publish)` (ketika Kecamatan Laeya aktif) serta data awal perangkat pemerintahan Kecamatan Laeya pada seeder; untuk kecamatan lain, foto pimpinan tampil dinamis sesuai data masing-masing kecamatan.
 - **Kebijakan Optimasi Media WebP:** Seluruh aset gambar statis UI maupun unggahan gambar publik (foto perangkat pemerintahan, galeri destinasi wisata, thumbnail berita) dikonversi otomatis ke format **`.webp`** (melalui library `Pillow` di `backend/app/services/upload_service.py`) demi kecepatan muat dan efisiensi penyimpanan; sedangkan dokumen privat pemohon dan lampiran resmi laporan (PDF/XLSX) tetap disimpan dalam format aslinya.
 
@@ -103,7 +103,7 @@ sip-pakades/
 │   │   │   ├── desa-kelurahan/                   # Direktori & detail desa/kelurahan per kecamatan + perangkat
 │   │   │   ├── potensi-wilayah/                  # Katalog & grafik potensi wilayah kecamatan aktif
 │   │   │   ├── destinasi-wisata/                 # Galeri & peta destinasi wisata
-│   │   │   ├── layanan/                          # Info syarat PATEN & lacak status nomor registrasi
+│   │   │   ├── layanan/                          # Info syarat SIP-PAKADES & lacak status nomor registrasi
 │   │   │   └── lokasi/                           # Peta kantor kecamatan aktif & desa/kelurahannya + kontak/jam layanan
 │   │   ├── (auth)/
 │   │   │   ├── layout.tsx
@@ -129,7 +129,7 @@ sip-pakades/
 │   │           │   ├── kategori-wisata/          # Master Kategori Destinasi Wisata
 │   │           │   ├── jenis-laporan/            # Master jenis pelaporan triwulanan
 │   │           │   ├── periode-laporan/          # Master periode & tenggat triwulanan
-│   │           │   ├── jenis-layanan/            # Master layanan PATEN & SLA
+│   │           │   ├── jenis-layanan/            # Master layanan SIP-PAKADES & SLA
 │   │           │   └── klasifikasi-surat/        # Master kode klasifikasi tata naskah dinas
 │   │           ├── pemerintahan/
 │   │           │   ├── profil-wilayah/           # Profil kecamatan & desa/kelurahan
@@ -140,7 +140,7 @@ sip-pakades/
 │   │           │   ├── triwulan/                 # Input, ajukan, revisi & riwayat laporan triwulanan
 │   │           │   └── verifikasi/               # Antrean verifikasi & catatan perbaikan kecamatan
 │   │           ├── pelayanan/
-│   │           │   └── permohonan/               # Loket PATEN, unggah syarat privat, proses & cetak draf
+│   │           │   └── permohonan/               # Loket SIP-PAKADES, unggah syarat privat, proses & cetak draf
 │   │           ├── persuratan/
 │   │           │   ├── surat-masuk/              # Pencatatan surat masuk & disposisi Camat/Sekcam
 │   │           │   └── surat-keluar/             # Penomoran otomatis & arsip surat keluar
@@ -195,7 +195,7 @@ sip-pakades/
     │   ├── test_auth.py
     │   ├── test_rbac_isolation.py                # Uji isolasi data antar-kecamatan, antar-desa, & dokumen privat
     │   ├── test_reports_workflow.py              # Uji transisi status pelaporan & penguncian draf
-    │   └── test_services_workflow.py             # Uji alur PATEN & pelacakan publik
+    │   └── test_services_workflow.py             # Uji alur SIP-PAKADES & pelacakan publik
     └── app/
         ├── api/
         │   ├── deps.py                           # Dependency AsyncSession, current_user, RBAC, district_id & village_id scope
@@ -269,7 +269,7 @@ sip-pakades/
 ### A. Landing Page & Portal Publik `(publish)` + Area Login `(auth)`
 - **Pemilih Kecamatan Dinamis (*District Switcher* / Parameter `district`):** Portal publik memuat data berdasarkan kecamatan aktif yang dipilih pada header (dengan **Kecamatan Laeya** sebagai *default* awal), sehingga ketika kecamatan lain diaktifkan melalui Master Kecamatan, seluruh tampilan publik (profil, daftar desa/kelurahan, potensi, wisata, peta kantor, dan pelacakan layanan) langsung menyesuaikan secara dinamis tanpa perubahan kode.
 
-1. **Hero Section 3D Interaktif & Identitas Resmi:** Identitas kecamatan aktif (default: Kecamatan Laeya) menampilkan logo resmi Kabupaten Konawe Selatan (`logo-konsel.webp`) pada header/identitas portal, kanvas WebGL bernuansa *soft sky blue* & *soft yellow*, akses cepat layanan warga, dan tombol **Login Petugas** menuju `/login`.
+1. **Hero Section 3D Interaktif & Identitas Resmi:** Identitas kecamatan aktif (default: Kecamatan Laeya) menampilkan logo resmi Kabusip-pakades Konawe Selatan (`logo-konsel.webp`) pada header/identitas portal, kanvas WebGL bernuansa *soft sky blue* & *soft yellow*, akses cepat layanan warga, dan tombol **Login Petugas** menuju `/login`.
 2. **Sambutan Pimpinan & Informasi Penyelenggaraan Pemerintahan (`/pemerintahan`):**
    - **Seksi Sambutan Camat / Pimpinan Kecamatan Aktif:** Menampilkan profil singkat dan foto resmi pimpinan kecamatan (default Kecamatan Laeya menampilkan foto resmi Camat **Ansar** dari `camat-laeya.webp` dalam bingkai *glassmorphism*).
    - Visi-misi, tugas pokok kecamatan, dan bagan struktur organisasi kecamatan aktif.
@@ -282,9 +282,9 @@ sip-pakades/
 5. **Destinasi Wisata (`/destinasi-wisata`):**
    - Katalog destinasi wisata lokal sesuai kategori `master_tourism_categories`, lengkap dengan deskripsi, fasilitas, galeri foto, dan titik koordinat peta.
 6. **Lokasi Kantor Kecamatan & Wilayah (`/lokasi`):**
-   - Peta interaktif **Leaflet + OpenStreetMap** yang menampilkan lokasi Kantor Kecamatan aktif (default: Puunggaluku, Kec. Laeya) dan sebaran desa/kelurahannya, dilengkapi alamat, jam pelayanan PATEN, dan kontak resmi.
+   - Peta interaktif **Leaflet + OpenStreetMap** yang menampilkan lokasi Kantor Kecamatan aktif (default: Puunggaluku, Kec. Laeya) dan sebaran desa/kelurahannya, dilengkapi alamat, jam pelayanan SIP-PAKADES, dan kontak resmi.
 7. **Info Persyaratan & Lacak Status Pelayanan (`/layanan`):**
-   - Daftar persyaratan dan estimasi waktu (`sla_days`) tiap layanan PATEN.
+   - Daftar persyaratan dan estimasi waktu (`sla_days`) tiap layanan SIP-PAKADES.
    - Fitur **Lacak Status Permohonan** berbasis nomor registrasi (dilindungi `rate_limit`): hanya menampilkan status progres (`diterima` / `perlu_kelengkapan` / `diproses` / `selesai`), jenis layanan, asal kecamatan/desa, dan nama pemohon yang di-*masking* (contoh: `A*** S***`) tanpa mengekspos NIK atau berkas pribadi.
 
 ### B. Data Pemerintahan & Publikasi `(admin/pemerintahan` & `admin/publikasi)`
@@ -307,20 +307,20 @@ sip-pakades/
   - `terverifikasi`: Status final (terkunci permanen), mencatat `verified_by` dan `verified_at`.
   - Seluruh perpindahan status dan catatan dicatat pada tabel **`report_status_histories`**.
 
-### D. Pelayanan Administrasi (Kecamatan & Desa/Kelurahan — PATEN) `(admin/pelayanan)`
+### D. Pelayanan Administrasi (Kecamatan & Desa/Kelurahan — SIP-PAKADES) `(admin/pelayanan)`
 - **3 Layanan Utama v1** (mengacu kewenangan kecamatan pada PP No. 17 Tahun 2018, masing-masing memiliki target waktu `sla_days` di `master_service_types`):
   1. **Rekomendasi / Dispensasi Nikah** (surat pengantar/rekomendasi ke KUA, termasuk dispensasi nikah < 10 hari kerja).
   2. **Rekomendasi Izin Usaha Mikro & Kecil (IUMK) / Keterangan Usaha**.
-  3. **Pengantar Administrasi Kependudukan & Pertanahan** (rekomendasi pindah datang antar-kecamatan/kabupaten, SKTM keperluan khusus/RS/beasiswa, serta pengesahan/register surat keterangan ahli waris).
+  3. **Pengantar Administrasi Kependudukan & Pertanahan** (rekomendasi pindah datang antar-kecamatan/kabusip-pakades, SKTM keperluan khusus/RS/beasiswa, serta pengesahan/register surat keterangan ahli waris).
 - **Keterlibatan Desa/Kelurahan & Loket Kecamatan:**
-  - Mendukung pengajuan dari **Operator Desa/Kelurahan** (menyertakan unggahan **Surat Pengantar Desa/Kelurahan** beserta berkas warga desanya) maupun input langsung oleh **Petugas Loket PATEN Kecamatan** (atau pengajuan awal dari portal publik bila diaktifkan).
+  - Mendukung pengajuan dari **Operator Desa/Kelurahan** (menyertakan unggahan **Surat Pengantar Desa/Kelurahan** beserta berkas warga desanya) maupun input langsung oleh **Petugas Loket SIP-PAKADES Kecamatan** (atau pengajuan awal dari portal publik bila diaktifkan).
 - **Alur Status Pelayanan & Riwayat (`service_status_histories`):**
   `diterima` → `perlu_kelengkapan` *(disertai catatan kekurangan berkas)* → `diproses` → `selesai`.
 - **Integrasi Output:** Permohonan berstatus `selesai` dapat menghasilkan **cetak draf PDF surat rekomendasi/keterangan** dan tertaut ke buku agenda **Surat Keluar**.
 
 ### E. Persuratan Kecamatan (Tata Naskah Dinas — Permendagri No. 1 Tahun 2023) `(admin/persuratan)`
 - **Master Klasifikasi Kode Surat (`master_letter_classifications`):** Kode klasifikasi resmi (misalnya `140` Pemerintahan Desa, `400` Kesejahteraan Rakyat, `500` Perekonomian, `800` Kepegawaian) untuk penomoran surat keluar otomatis.
-- **Surat Masuk & Disposisi:** Pencatatan surat masuk (dari desa/kelurahan di lingkup kecamatan, OPD kabupaten, atau masyarakat), unggah scan PDF, serta lembar disposisi berjenjang dari Camat/Sekcam ke Kasi terkait dengan status tindak lanjut (`baru` → `didisposisikan` → `ditindaklanjuti` → `selesai`).
+- **Surat Masuk & Disposisi:** Pencatatan surat masuk (dari desa/kelurahan di lingkup kecamatan, OPD kabusip-pakades, atau masyarakat), unggah scan PDF, serta lembar disposisi berjenjang dari Camat/Sekcam ke Kasi terkait dengan status tindak lanjut (`baru` → `didisposisikan` → `ditindaklanjuti` → `selesai`).
 - **Surat Keluar:** Pencatatan dan penomoran otomatis surat keluar (Surat Pengantar, Surat Rekomendasi, Surat Keterangan, Surat Tugas/Undangan) beserta arsip PDF tertandatangani.
 
 ### F. Pemantauan, Pencarian, & Rekap Otomatis `(admin/pemantauan)`
@@ -363,7 +363,7 @@ sip-pakades/
 | **Profil Wilayah, Perangkat, Potensi, Wisata** | Penuh | **Penuh (`district_id`)** | Lihat (`district_id`) | Lihat (`district_id`) | **Hanya `village_id` sendiri** | Lihat Ringkas Publik |
 | **Pelaporan Triwulanan (Input / Revisi)** | Pantau | Kelola (`district_id`) | Lihat (`district_id`) | Lihat Bidang | **Hanya `village_id` sendiri** | — |
 | **Verifikasi Laporan Triwulanan** | — / Override | Admin (`district_id`) | **Verifikasi Akhir (`district_id`)** | **Verifikasi Bidang (`district_id`)** | — | — |
-| **Pelayanan Administrasi (PATEN)** | Pantau | Kelola (`district_id`) | Pantau & Setujui | **Proses Penuh (`district_id`)** | **Ajukan/Pantau pengantar desanya** | Info Syarat & Lacak *(masked)* |
+| **Pelayanan Administrasi (SIP-PAKADES)** | Pantau | Kelola (`district_id`) | Pantau & Setujui | **Proses Penuh (`district_id`)** | **Ajukan/Pantau pengantar desanya** | Info Syarat & Lacak *(masked)* |
 | **Akses Unduh Dokumen Pribadi Pemohon** | Audit / Terbatas | Audit (`district_id`) | Terbatas (`district_id`) | **Berwenang Penuh (`district_id`)** | Hanya berkas unggahan desanya | **Dilarang** |
 | **Persuratan & Disposisi Kecamatan** | Pantau | Penuh (`district_id`) | **Disposisi & Pantau** | Tindak Lanjut Disposisi | — | — |
 | **Pemantauan & Ekspor Rekap** | **Penuh (Lintas Kec.)** | Penuh (`district_id`) | Penuh (`district_id`) | Sesuai Bidang (`district_id`) | Rekap `village_id`-nya sendiri | — |
@@ -386,7 +386,7 @@ sip-pakades/
 Mengikuti pengelompokan model `edusetara` (`models/auth/`, `models/master/`, `models/operational/`):
 
 1. **Domain Auth (`models/auth/`):**
-   - `users`, `roles`, `menus`, `role_permissions`, `refresh_sessions` (`users` menyimpan `district_id` [nullable untuk Superadmin Kabupaten] dan `village_id` [nullable untuk level Kecamatan/Kabupaten]).
+   - `users`, `roles`, `menus`, `role_permissions`, `refresh_sessions` (`users` menyimpan `district_id` [nullable untuk Superadmin Kabusip-pakades] dan `village_id` [nullable untuk level Kecamatan/Kabusip-pakades]).
 2. **Domain Master (`models/master/`):**
    - `master_districts` — Master Kecamatan (kode Kemendagri/wilayah, nama, slug, tipe, alamat kantor, jam layanan, visi-misi, koordinat lat/lng, `is_active`, `is_default`).
    - `master_villages` — Master Desa/Kelurahan terhubung ke `district_id` (kode wilayah, nama, tipe `desa`/`kelurahan`, deskripsi profil, luas, batas wilayah, koordinat lat/lng, `is_active`).
@@ -395,7 +395,7 @@ Mengikuti pengelompokan model `edusetara` (`models/auth/`, `models/master/`, `mo
    - `master_tourism_categories` — Master Kategori Destinasi Wisata (bahari, alam, budaya, agro, religi, dll.).
    - `master_report_types` — Master jenis pelaporan triwulanan (kode, nama, deskripsi, skema indikator ringkas, lampiran wajib).
    - `report_periods` — Master periode triwulan (`year`, `quarter`, `deadline_at`, `is_open`).
-   - `master_service_types` — Master jenis layanan PATEN (kode, nama, daftar syarat, `sla_days`, template surat).
+   - `master_service_types` — Master jenis layanan SIP-PAKADES (kode, nama, daftar syarat, `sla_days`, template surat).
    - `master_letter_classifications` — Master klasifikasi kode surat tata naskah dinas.
 3. **Domain Operasional (`models/operational/`):**
    > Seluruh tabel operasional membawa kolom `district_id` (serta `village_id` bila berada di level desa/kelurahan) guna menjamin isolasi data dan agregasi multi-kecamatan yang konsisten.
@@ -403,7 +403,7 @@ Mengikuti pengelompokan model `edusetara` (`models/auth/`, `models/master/`, `mo
    - `government_announcements`, `government_regulations` — Berita/pengumuman serta dokumen regulasi/SOP publik.
    - `regional_potentials`, `tourist_destinations` — Potensi wilayah (merujuk `potential_category_id`, nilai/satuan) dan destinasi wisata (merujuk `tourism_category_id`, fasilitas, galeri, koordinat).
    - `quarterly_reports`, `report_attachments`, `report_status_histories` — Data pelaporan triwulanan, lampiran (`file_path`, `sha256_hash`), versi pengajuan, status, catatan revisi, dan riwayat status.
-   - `service_requests`, `service_documents`, `service_status_histories` — Permohonan layanan PATEN (`registration_number`, `district_id`, `village_id`, `service_type_id`, `status`, `sla_due_at`), dokumen privat pemohon, dan riwayat status.
+   - `service_requests`, `service_documents`, `service_status_histories` — Permohonan layanan SIP-PAKADES (`registration_number`, `district_id`, `village_id`, `service_type_id`, `status`, `sla_due_at`), dokumen privat pemohon, dan riwayat status.
    - `incoming_letters`, `letter_dispositions`, `outgoing_letters` — Persuratan masuk, disposisi Camat/Sekcam, dan surat keluar bernomor otomatis.
 4. **Domain Audit & Sistem:**
    - `audit_logs` — Jejak audit seluruh aktivitas penting & akses dokumen privat.
@@ -472,7 +472,7 @@ Karena pengembangan difokuskan pada sisi **Frontend terlebih dahulu** sebelum **
 | **Master Data (9 Modul)** | `GET /admin/master/{kecamatan\|desa\|jabatan\|kategori-potensi\|kategori-wisata\|jenis-laporan\|periode-laporan\|jenis-layanan\|klasifikasi-surat}/{read\|option}`, `POST .../create`, `PUT .../update/{id}`, `DELETE .../delete/{id}` | Mendukung *cascading filter* `district_id` pada `/desa/option` & `/desa/read` |
 | **Pemerintahan & Publikasi** | `/admin/pemerintahan/{profil-wilayah\|perangkat\|potensi\|wisata}/{read\|create\|update/{id}\|delete/{id}}`, `/admin/publikasi/{berita\|regulasi}/{read\|create\|update/{id}\|delete/{id}}` | Terisolasi sesuai `district_id` & `village_id` user login |
 | **Pelaporan Triwulanan** | `GET /admin/pelaporan/triwulan/read`, `POST .../create`, `PUT .../update/{id}`, `DELETE .../delete/{id}`, `POST .../{id}/attachments`, `POST .../{id}/submit`, `POST .../{id}/verify`, `GET .../{id}/histories` | Validasi kunci draf saat `diajukan` & wajib `revision_note` saat dikembalikan |
-| **Pelayanan PATEN** | `GET /admin/pelayanan/permohonan/read`, `POST .../create`, `PUT .../update/{id}`, `PATCH .../{id}/status`, `POST .../{id}/documents`, `GET .../{id}/draft-pdf`, `GET /admin/pelayanan/dokumen/{doc_id}/download` | Dokumen pemohon privat; endpoint download memvalidasi RBAC & menulis `audit_logs` |
+| **Pelayanan SIP-PAKADES** | `GET /admin/pelayanan/permohonan/read`, `POST .../create`, `PUT .../update/{id}`, `PATCH .../{id}/status`, `POST .../{id}/documents`, `GET .../{id}/draft-pdf`, `GET /admin/pelayanan/dokumen/{doc_id}/download` | Dokumen pemohon privat; endpoint download memvalidasi RBAC & menulis `audit_logs` |
 | **Persuratan** | `/admin/persuratan/surat-masuk/{read\|create\|update/{id}\|{id}/dispositions}`, `/admin/persuratan/surat-keluar/{read\|create\|update/{id}\|next-number}` | Penomoran otomatis berbasis kode klasifikasi surat |
 | **Pemantauan & Ekspor** | `GET /admin/pemantauan/summary`, `GET .../completeness`, `GET .../timeliness`, `GET .../sla`, `GET .../export/{xlsx\|pdf}` | Filter berjenjang `district_id`, `village_id`, `period_year`, `period_quarter` |
 | **Sistem** | `/admin/sistem/pengguna/{read\|create\|update/{id}\|delete/{id}}`, `GET /admin/sistem/audit-log/read`, `GET /admin/sistem/pencadangan/read`, `POST /admin/sistem/pencadangan/trigger` | Akses khusus Admin Kecamatan / Superadmin Kab. sesuai matriks RBAC |
@@ -536,10 +536,10 @@ Karena pengembangan difokuskan pada sisi **Frontend terlebih dahulu** sebelum **
   "verified_at": null
 }
 
-// 4. ServiceRequestItem (Pelayanan PATEN Admin) & PublicServiceTrackResponse (Publik)
+// 4. ServiceRequestItem (Pelayanan SIP-PAKADES Admin) & PublicServiceTrackResponse (Publik)
 {
   "id": "uuid",
-  "registration_number": "PATEN-740511-2026-0042",
+  "registration_number": "SIP-740511-2026-0042",
   "district_id": "uuid-laeya",
   "village_id": "uuid-puunggaluku",
   "service_type_id": "uuid-nikah",
@@ -578,14 +578,14 @@ Karena pengembangan difokuskan pada sisi **Frontend terlebih dahulu** sebelum **
   - Bangun seluruh halaman publik: `/pemerintahan`, `/desa-kelurahan`, `/potensi-wilayah`, `/destinasi-wisata`, `/lokasi` (peta Leaflet), `/layanan` (syarat + lacak nomor registrasi *masked*), dan halaman login `/login`.
 - **Tahap 3 — Frontend Dashboard Admin `(admin)` + Light/Dark Mode (Seluruh Modul):**
   - Bangun layout `(admin)`, sidebar berbasis role (`_data/admin-menu.ts`), **tombol Light/Dark mode (`admin-theme-toggle.tsx`)**, serta komponen UI bersama (`_components/ui/`).
-  - Implementasikan seluruh halaman modul mengikuti pola 4 file `edusetara` (`page.tsx`, `types.ts`, `hooks/crud.tsx`, `components/`): Master Data (9 modul dengan *golden pattern* `Master Kecamatan → Master Desa/Kelurahan`), Pemerintahan & Publikasi, Pelaporan Triwulanan & Verifikasi, Pelayanan PATEN, Persuratan & Disposisi, Pemantauan 3 pilar + Ekspor, serta Sistem (Pengguna, Audit Log, Pencadangan).
+  - Implementasikan seluruh halaman modul mengikuti pola 4 file `edusetara` (`page.tsx`, `types.ts`, `hooks/crud.tsx`, `components/`): Master Data (9 modul dengan *golden pattern* `Master Kecamatan → Master Desa/Kelurahan`), Pemerintahan & Publikasi, Pelaporan Triwulanan & Verifikasi, Pelayanan SIP-PAKADES, Persuratan & Disposisi, Pemantauan 3 pilar + Ekspor, serta Sistem (Pengguna, Audit Log, Pencadangan).
   - Review penuh UI/UX (Light & Dark mode, responsivitas mobile/desktop, alur filter & status) dan verifikasi `eslint` / `tsc` / `next build` sebelum masuk ke pembangunan backend.
 - **Tahap 4 — Fondasi Backend FastAPI, MySQL Lokal (`sippakades`) & Modul Auth/Master:**
   - Siapkan database MySQL lokal `sippakades` (`127.0.0.1:3306`, konfigurasi lokal di `backend/.env` yang di-ignore git; placeholder di `backend/.env.example`).
   - Setup `backend/` (`main.py`, `pyproject.toml`, FastAPI, SQLAlchemy async + `asyncmy`, Alembic, `app/core/` [Argon2id, PyJWT, HttpOnly cookie, `refresh_sessions`, CSRF, rate limit], `CRUDBase`, dan `upload_service.py` dengan konversi otomatis gambar publik ke `.webp` + storage privat `SHA-256`).
   - Buat migrasi awal + `seed_master.py` (25 kecamatan Kab. Konawe Selatan, 17 desa/kelurahan Kec. Laeya, Camat Ansar + `camat-laeya.webp`, role RBAC, dan seluruh data master) lalu implementasikan endpoint Auth, Users, dan 9 modul Master sesuai `API_CONTRACT.md`.
 - **Tahap 5 — Backend Modul Operasional, Persuratan, Pemantauan & Ekspor:**
-  - Implementasi endpoint publik `/api/v1/publish/*`, Pemerintahan & Publikasi, mesin workflow Pelaporan Triwulanan (penguncian draf, revisi, riwayat status), Pelayanan PATEN (dokumen privat terotorisasi, lacak publik *masked*, cetak draf PDF), Persuratan & Disposisi, Pemantauan 3 pilar, ekspor Excel (`openpyxl`) & PDF, serta `audit_logs` dan skrip `backend/scripts/backup_db.sh` + `backup_logs`.
+  - Implementasi endpoint publik `/api/v1/publish/*`, Pemerintahan & Publikasi, mesin workflow Pelaporan Triwulanan (penguncian draf, revisi, riwayat status), Pelayanan SIP-PAKADES (dokumen privat terotorisasi, lacak publik *masked*, cetak draf PDF), Persuratan & Disposisi, Pemantauan 3 pilar, ekspor Excel (`openpyxl`) & PDF, serta `audit_logs` dan skrip `backend/scripts/backup_db.sh` + `backup_logs`.
 - **Tahap 6 — Integrasi Live (`NEXT_PUBLIC_API_MODE=live`), Pengujian & Dokumentasi:**
   - Hubungkan Frontend ke Backend FastAPI live (`NEXT_PUBLIC_API_MODE=live`) dan verifikasi penuh seluruh alur end-to-end (Auth/CSRF/refresh cookie, CRUD, upload WebP & dokumen privat, workflow laporan/layanan, ekspor).
   - Jalankan pengujian menyeluruh: `pytest` (termasuk **uji isolasi RBAC antar-kecamatan `district_id`, antar-desa `village_id`, & dokumen privat**), `ruff check`, lint/typecheck/`next build` frontend, uji performa WebGL di mobile, verifikasi backup/restore MySQL, serta penyusunan `README.md` dan panduan menambah modul baru *(plus opsi integrasi Celery + Redis bila diperlukan pada tahap lanjut)*.

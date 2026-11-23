@@ -3,50 +3,290 @@
 :root {
   --sky-soft-50: #f0f9ff;
   --sky-soft-100: #e0f2fe;
+  --sky-soft-200: #bae6fd;
   --sky-soft-300: #7dd3fc;
   --sky-soft-400: #38bdf8;
+  --sky-soft-500: #0ea5e9;
   --sky-soft-600: #0284c7;
   --yellow-soft-100: #fef9c3;
   --yellow-soft-200: #fef08a;
   --yellow-soft-300: #fde047;
+  --yellow-soft-400: #facc15;
+  --yellow-soft-500: #eab308;
 
   /* Admin theme variables (Light default) */
   --admin-bg: #f0f9ff;
   --admin-bg-accent: #fef9c3;
-  --admin-surface: rgba(255, 255, 255, 0.78);
+  --admin-surface: rgba(255, 255, 255, 0.88);
   --admin-surface-solid: #ffffff;
-  --admin-border: rgba(125, 211, 252, 0.45);
+  --admin-border: rgba(186, 230, 253, 0.7);
   --admin-text: #0f172a;
   --admin-text-muted: #475569;
-  --admin-input-bg: rgba(255, 255, 255, 0.9);
+  --admin-input-bg: rgba(255, 255, 255, 0.95);
 }
 
 [data-admin-theme="dark"] {
   --admin-bg: #0b1220;
   --admin-bg-accent: #132038;
-  --admin-surface: rgba(15, 23, 42, 0.78);
+  --admin-surface: rgba(17, 28, 46, 0.88);
   --admin-surface-solid: #111c2e;
-  --admin-border: rgba(56, 189, 248, 0.22);
+  --admin-border: rgba(56, 189, 248, 0.3);
   --admin-text: #f1f5f9;
   --admin-text-muted: #94a3b8;
-  --admin-input-bg: rgba(15, 23, 42, 0.92);
+  --admin-input-bg: rgba(15, 23, 42, 0.95);
 }
 
 body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 55%, #fef9c3 100%);
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 45%, #fef9c3 100%);
   color: #0f172a;
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
-.glass-panel {
-  background: rgba(255, 255, 255, 0.74);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(125, 211, 252, 0.5);
-  box-shadow: 0 10px 30px -12px rgba(2, 132, 199, 0.16);
+/* ==========================================================================
+   CLAYMORPHISM CORE & AMBIENT GRAPHICS
+   ========================================================================== */
+
+/* Background animated clay ambient orbs */
+.clay-ambient-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
 }
 
+.clay-blob-1 {
+  position: absolute;
+  top: -8%;
+  left: -6%;
+  width: 52vw;
+  height: 52vw;
+  max-width: 680px;
+  max-height: 680px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #bae6fd 0%, #7dd3fc 45%, #38bdf8 85%);
+  filter: blur(85px);
+  opacity: 0.55;
+  animation: float-blob-1 18s ease-in-out infinite alternate;
+}
+
+.clay-blob-2 {
+  position: absolute;
+  top: 30%;
+  right: -8%;
+  width: 48vw;
+  height: 48vw;
+  max-width: 620px;
+  max-height: 620px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fef08a 0%, #fde047 45%, #facc15 85%);
+  filter: blur(90px);
+  opacity: 0.45;
+  animation: float-blob-2 22s ease-in-out infinite alternate;
+}
+
+.clay-blob-3 {
+  position: absolute;
+  bottom: -12%;
+  left: 18%;
+  width: 55vw;
+  height: 55vw;
+  max-width: 720px;
+  max-height: 720px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #e0f2fe 0%, #a7f3d0 40%, #7dd3fc 85%);
+  filter: blur(95px);
+  opacity: 0.42;
+  animation: float-blob-3 26s ease-in-out infinite alternate;
+}
+
+@keyframes float-blob-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(45px, 65px) scale(1.08); }
+  100% { transform: translate(-35px, 45px) scale(0.95); }
+}
+
+@keyframes float-blob-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-55px, -45px) scale(1.1); }
+  100% { transform: translate(30px, 35px) scale(0.92); }
+}
+
+@keyframes float-blob-3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(35px, -55px) scale(1.06); }
+  100% { transform: translate(-45px, -25px) scale(0.96); }
+}
+
+/* Claymorphic card style */
+.glass-panel, .clay-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 2rem;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    12px 18px 36px -4px rgba(186, 230, 253, 0.55),
+    -8px -8px 24px 0 rgba(255, 255, 255, 0.95),
+    inset 3px 3px 7px rgba(255, 255, 255, 0.95),
+    inset -3px -3px 8px rgba(14, 165, 233, 0.08);
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.clay-card-hover:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    16px 24px 44px -4px rgba(186, 230, 253, 0.68),
+    -10px -10px 28px 0 rgba(255, 255, 255, 1),
+    inset 4px 4px 9px rgba(255, 255, 255, 0.98),
+    inset -4px -4px 10px rgba(14, 165, 233, 0.12);
+}
+
+.clay-card-sky {
+  background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 55%, #bae6fd 100%);
+  border-radius: 2rem;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    12px 16px 32px -4px rgba(2, 132, 199, 0.2),
+    -8px -8px 20px 0 rgba(255, 255, 255, 0.95),
+    inset 3px 3px 7px rgba(255, 255, 255, 0.95),
+    inset -4px -4px 9px rgba(2, 132, 199, 0.15);
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.clay-card-yellow {
+  background: linear-gradient(145deg, #fefce8 0%, #fef9c3 55%, #fef08a 100%);
+  border-radius: 2rem;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    12px 16px 32px -4px rgba(234, 179, 8, 0.18),
+    -8px -8px 20px 0 rgba(255, 255, 255, 0.95),
+    inset 3px 3px 7px rgba(255, 255, 255, 0.95),
+    inset -4px -4px 9px rgba(202, 138, 4, 0.14);
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Claymorphic buttons */
+.clay-btn {
+  border-radius: 9999px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.clay-btn-sky {
+  background: linear-gradient(145deg, #38bdf8 0%, #0ea5e9 45%, #0284c7 100%);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    6px 10px 22px rgba(2, 132, 199, 0.38),
+    -4px -4px 12px rgba(255, 255, 255, 0.7),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.7),
+    inset -3px -3px 7px rgba(3, 105, 161, 0.5);
+}
+
+.clay-btn-sky:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    8px 14px 28px rgba(2, 132, 199, 0.45),
+    -5px -5px 14px rgba(255, 255, 255, 0.8),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.8),
+    inset -3px -3px 8px rgba(3, 105, 161, 0.6);
+}
+
+.clay-btn-sky:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    2px 4px 10px rgba(2, 132, 199, 0.3),
+    inset 3px 3px 6px rgba(3, 105, 161, 0.6),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.5);
+}
+
+.clay-btn-yellow {
+  background: linear-gradient(145deg, #fef08a 0%, #fde047 45%, #eab308 100%);
+  color: #0f172a;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    6px 10px 22px rgba(202, 138, 4, 0.32),
+    -4px -4px 12px rgba(255, 255, 255, 0.75),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.9),
+    inset -3px -3px 7px rgba(161, 98, 7, 0.4);
+}
+
+.clay-btn-yellow:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    8px 14px 28px rgba(202, 138, 4, 0.4),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.95),
+    inset -3px -3px 8px rgba(161, 98, 7, 0.5);
+}
+
+.clay-btn-yellow:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    2px 4px 10px rgba(202, 138, 4, 0.25),
+    inset 3px 3px 6px rgba(161, 98, 7, 0.5),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.6);
+}
+
+.clay-pill {
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    4px 6px 14px rgba(186, 230, 253, 0.35),
+    -3px -3px 8px rgba(255, 255, 255, 0.95),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.95),
+    inset -2px -2px 4px rgba(14, 165, 233, 0.08);
+}
+
+.clay-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    5px 6px 14px rgba(2, 132, 199, 0.16),
+    -3px -3px 8px rgba(255, 255, 255, 0.9),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.95),
+    inset -2px -2px 4px rgba(2, 132, 199, 0.1);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.clay-icon-badge:hover {
+  transform: rotate(-5deg) scale(1.1);
+}
+
+.clay-input {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1.25rem;
+  border: 2px solid #bae6fd;
+  box-shadow:
+    inset 2px 3px 6px rgba(15, 23, 42, 0.06),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.9),
+    0 4px 12px rgba(186, 230, 253, 0.25);
+  transition: all 0.2s ease;
+}
+
+.clay-input:focus {
+  border-color: #0284c7;
+  outline: none;
+  box-shadow:
+    0 0 0 4px rgba(56, 189, 248, 0.25),
+    inset 2px 3px 6px rgba(15, 23, 42, 0.04),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.9);
+}
+
+/* Admin shell & panels */
 .admin-shell {
   background: radial-gradient(circle at top right, var(--admin-bg-accent) 0%, var(--admin-bg) 52%);
   color: var(--admin-text);
@@ -55,14 +295,44 @@ body {
 
 .admin-glass {
   background: var(--admin-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid var(--admin-border);
-  box-shadow: 0 10px 30px -12px rgba(2, 132, 199, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 2rem;
+  border: 2px solid var(--admin-border);
+  box-shadow:
+    10px 16px 32px -4px rgba(2, 132, 199, 0.14),
+    -6px -6px 18px rgba(255, 255, 255, 0.9),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.95),
+    inset -3px -3px 8px rgba(2, 132, 199, 0.08);
+  transition: all 0.25s ease;
 }
 
 .admin-input {
   background: var(--admin-input-bg);
-  border: 1px solid var(--admin-border);
+  border-radius: 1.25rem;
+  border: 2px solid var(--admin-border);
   color: var(--admin-text);
+  box-shadow:
+    inset 2px 3px 6px rgba(15, 23, 42, 0.05),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.8);
+}
+
+/* Dark mode overrides */
+[data-admin-theme="dark"] .admin-glass {
+  background: rgba(17, 28, 46, 0.92);
+  border: 2px solid rgba(56, 189, 248, 0.25);
+  box-shadow:
+    14px 18px 36px -4px rgba(0, 0, 0, 0.55),
+    -8px -8px 20px 0 rgba(30, 41, 59, 0.4),
+    inset 3px 3px 6px rgba(56, 189, 248, 0.15),
+    inset -4px -4px 10px rgba(0, 0, 0, 0.5);
+}
+
+[data-admin-theme="dark"] .admin-input {
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid rgba(56, 189, 248, 0.35);
+  color: #f1f5f9;
+  box-shadow:
+    inset 2px 3px 6px rgba(0, 0, 0, 0.5),
+    inset -2px -2px 6px rgba(56, 189, 248, 0.1);
 }

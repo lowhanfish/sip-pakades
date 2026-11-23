@@ -630,7 +630,7 @@ export async function handleAdminExtendedMock<T>(
         changed_at: now,
       });
       writeLS(ADMIN_KEYS.SERVICES, list);
-      appendAudit(currentUser, "STATUS_CHANGE", "service_requests", id, `Status PATEN -> ${status}`);
+      appendAudit(currentUser, "STATUS_CHANGE", "service_requests", id, `Status SIP-PAKADES -> ${status}`);
       return { success: true, message: "Status pelayanan diperbarui", data: list[idx] } as T;
     }
   }

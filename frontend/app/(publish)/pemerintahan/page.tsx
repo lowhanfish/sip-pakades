@@ -26,17 +26,29 @@ export default function PemerintahanPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-6 pb-10 space-y-10">
-      <div className="glass-panel rounded-3xl p-6 md:p-8 space-y-2">
-        <span className="text-xs font-bold text-sky-700 uppercase tracking-wider">
-          Informasi Penyelenggaraan Pemerintahan
-        </span>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">
-          Pemerintah Kecamatan {district?.name ?? "Laeya"}
-        </h1>
-        <p className="text-sm text-slate-600 max-w-2xl">
-          Profil kepemimpinan, visi-misi, struktur organisasi, berita kegiatan
-          pemerintahan, serta dokumen regulasi publik.
-        </p>
+      <div className="clay-card p-6 md:p-10 space-y-4 relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-200/90 border border-yellow-300 text-xs font-bold text-slate-800">
+              <Users className="w-3.5 h-3.5 text-sky-600" />
+              Informasi Penyelenggaraan Pemerintahan
+            </span>
+            <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+              Pemerintah Kecamatan {district?.name ?? "Laeya"}
+            </h1>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Profil kepemimpinan Camat, visi-misi, struktur organisasi perangkat kecamatan, warta kegiatan kedinasan, serta regulasi daerah.
+            </p>
+          </div>
+          <div className="hidden md:block w-36 h-28 rounded-2xl overflow-hidden relative shadow-md shrink-0">
+            <Image
+              src="/img/gedung-kecamatan.webp"
+              alt="Kantor Kecamatan"
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Pimpinan & Struktur */}

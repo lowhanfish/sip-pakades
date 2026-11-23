@@ -1,6 +1,6 @@
 # Single Source of Truth (SSOT) Kontrak API — SIP-PAKADES
 **Sistem Informasi Pemerintahan & Pelayanan Administrasi Kecamatan dan Desa**  
-**Kabupaten Konawe Selatan (Kecamatan Pilot: Laeya)**
+**Kabusip-pakades Konawe Selatan (Kecamatan Pilot: Laeya)**
 
 > [!IMPORTANT]
 > Dokumen ini merupakan **Single Source of Truth (SSOT)** kontrak data antara **Frontend (`frontend/`)** dan **Backend FastAPI (`backend/`)** sesuai [planning.md](file:///Users/dinaskominfo/kiken/Project/project/sip-pakades/planning.md) serta disiplin arsitektur referensi `edusetara`.  
@@ -96,7 +96,7 @@ Setiap endpoint `/api/v1/admin/*` menegakkan pembatasan cakupan di `backend/app/
 | `VillageType` | `desa`, `kelurahan` | Jenis wilayah di bawah kecamatan |
 | `OfficialLevel` | `kecamatan`, `desa` | Tingkatan jabatan & perangkat |
 | `ReportStatus` | `draf`, `diajukan`, `perlu_perbaikan`, `terverifikasi` | Siklus laporan rutin triwulanan |
-| `ServiceStatus` | `diterima`, `perlu_kelengkapan`, `diproses`, `selesai` | Siklus pelayanan administrasi PATEN |
+| `ServiceStatus` | `diterima`, `perlu_kelengkapan`, `diproses`, `selesai` | Siklus pelayanan administrasi SIP-PAKADES |
 | `LetterDirection` | `masuk`, `keluar` | Arah tata naskah persuratan |
 | `DispositionStatus` | `baru`, `didisposisikan`, `ditindaklanjuti`, `selesai` | Status disposisi surat masuk |
 | `TimelinessStatus` | `tepat_waktu`, `terlambat`, `perlu_perbaikan`, `belum_lapor` | Indikator ketepatan waktu laporan |
@@ -174,7 +174,7 @@ Setiap endpoint `/api/v1/admin/*` menegakkan pembatasan cakupan di `backend/app/
 | `GET` | `/publish/districts/{slug}/announcements` | `?type=&search=&skip=0&limit=9` | `PaginatedResponse<PublicAnnouncementItem>` — Hanya berita/pengumuman berstatus `terbit`. |
 | `GET` | `/publish/districts/{slug}/announcements/{announcement_slug}` | `announcement_slug` | `ApiEnvelope<PublicAnnouncementDetail>` — Konten lengkap berita/pengumuman. |
 | `GET` | `/publish/districts/{slug}/regulations` | `?search=&category=&skip=0&limit=20` | `PaginatedResponse<PublicRegulationItem>` — Dokumen Perdes/SK/SOP publik beserta `file_url` PDF publik. |
-| `GET` | `/publish/services/types` | `?district_slug=laeya` | `ApiEnvelope<PublicServiceTypeItem[]>` — Daftar layanan PATEN, daftar syarat (`requirements[]`), dan estimasi `sla_days`. |
+| `GET` | `/publish/services/types` | `?district_slug=laeya` | `ApiEnvelope<PublicServiceTypeItem[]>` — Daftar layanan SIP-PAKADES, daftar syarat (`requirements[]`), dan estimasi `sla_days`. |
 | `GET` | `/publish/services/track/{registration_number}` | `registration_number` *(rate-limited)* | `ApiEnvelope<PublicServiceTrackResponse>` — Pelacakan progres non-sensitif berdasarkan nomor registrasi. |
 
 ### Contoh Response `GET /api/v1/publish/services/track/{registration_number}`
@@ -183,7 +183,7 @@ Setiap endpoint `/api/v1/admin/*` menegakkan pembatasan cakupan di `backend/app/
   "success": true,
   "message": "Status permohonan ditemukan",
   "data": {
-    "registration_number": "PATEN-740511-2026-0042",
+    "registration_number": "SIP-740511-2026-0042",
     "district_name": "Laeya",
     "village_name": "Puunggaluku",
     "service_type_name": "Rekomendasi / Dispensasi Nikah",
@@ -251,7 +251,7 @@ Seluruh modul Master mengikuti pola endpoint seragam:
 | Fitur & Prefix Endpoint | Endpoint & Operasi | Field Inti |
 | :--- | :--- | :--- |
 | **Berita & Pengumuman**<br>`/admin/publikasi/berita` | `GET /read`, `GET /detail/{id}`, `POST /create`, `PUT /update/{id}`, `DELETE /delete/{id}`, `POST /{id}/thumbnail` *(multipart → WebP)* | `district_id`, `village_id` *(nullable)*, `title`, `slug`, `category` (`berita` \| `pengumuman` \| `agenda`), `excerpt`, `content` *(HTML sanitasi / Tiptap)*, `thumbnail_url` *(`.webp`)*, `status` (`PublicationStatus`), `published_at`. |
-| **Regulasi & Dokumen Publik**<br>`/admin/publikasi/regulasi` | `GET /read`, `GET /detail/{id}`, `POST /create`, `PUT /update/{id}`, `DELETE /delete/{id}`, `POST /{id}/file` *(multipart PDF publik)* | `district_id`, `village_id` *(nullable)*, `title`, `regulation_number`, `year`, `category` (`Perdes` \| `SK Camat` \| `SOP PATEN` \| `Edaran`), `description`, `file_url` *(PDF publik)*, `file_size`, `sha256_hash`, `status` (`PublicationStatus`). |
+| **Regulasi & Dokumen Publik**<br>`/admin/publikasi/regulasi` | `GET /read`, `GET /detail/{id}`, `POST /create`, `PUT /update/{id}`, `DELETE /delete/{id}`, `POST /{id}/file` *(multipart PDF publik)* | `district_id`, `village_id` *(nullable)*, `title`, `regulation_number`, `year`, `category` (`Perdes` \| `SK Camat` \| `SOP SIP-PAKADES` \| `Edaran`), `description`, `file_url` *(PDF publik)*, `file_size`, `sha256_hash`, `status` (`PublicationStatus`). |
 
 ---
 
@@ -285,14 +285,14 @@ Seluruh modul Master mengikuti pola endpoint seragam:
 
 ---
 
-## 8. Kontrak Modul Pelayanan Administrasi PATEN (`/api/v1/admin/pelayanan/*`)
+## 8. Kontrak Modul Pelayanan Administrasi SIP-PAKADES (`/api/v1/admin/pelayanan/*`)
 
-### 8.1 Daftar Endpoint Pelayanan PATEN
+### 8.1 Daftar Endpoint Pelayanan SIP-PAKADES
 | Method | Endpoint | Role Berwenang | Deskripsi & Payload/Response |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/permohonan/read` | Semua role internal *(sesuai scope)* | `PaginatedResponse<ServiceRequestListItem>` — Di daftar, NIK tampil ter-*masking* (`applicant_nik_masked`). |
 | `GET` | `/permohonan/detail/{id}` | Sesuai scope | `ApiEnvelope<ServiceRequestDetail>` — Menampilkan detail permohonan, daftar dokumen privat (`documents[]`), dan `histories[]`. |
-| `POST` | `/permohonan/create` | `kasi_pelayanan`, `admin_kecamatan`, `operator_desa` *(untuk desanya)* | Body: `{ district_id?, village_id, service_type_id, applicant_name, applicant_nik, applicant_phone, applicant_address, village_cover_letter_no?, request_payload, notes? }`. Backend otomatis generate `registration_number` (`PATEN-{KODE_KEC}-{TAHUN}-{URUT}`), `sla_due_at`, dan status awal `diterima`. |
+| `POST` | `/permohonan/create` | `kasi_pelayanan`, `admin_kecamatan`, `operator_desa` *(untuk desanya)* | Body: `{ district_id?, village_id, service_type_id, applicant_name, applicant_nik, applicant_phone, applicant_address, village_cover_letter_no?, request_payload, notes? }`. Backend otomatis generate `registration_number` (`SIP-{KODE_KEC}-{TAHUN}-{URUT}`), `sla_due_at`, dan status awal `diterima`. |
 | `PUT` | `/permohonan/update/{id}` | `kasi_pelayanan`, `admin_kecamatan`, `operator_desa` *(saat `diterima`/`perlu_kelengkapan`)* | Memperbarui data pemohon/isian sebelum `selesai`. |
 | `PATCH` | `/permohonan/{id}/status` | `kasi_pelayanan`, `camat_sekcam`, `admin_kecamatan` | Body: `{ "status": ServiceStatus, "note": string, "public_note"?: string }`. Jika ke `perlu_kelengkapan`, `note` wajib diisi. Mencatat ke `service_status_histories`. |
 | `GET` | `/permohonan/{id}/histories` | Sesuai scope | `ApiEnvelope<ServiceStatusHistoryItem[]>` |
@@ -301,7 +301,7 @@ Seluruh modul Master mengikuti pola endpoint seragam:
 | `GET` | `/permohonan/{id}/draft-pdf` | `kasi_pelayanan`, `camat_sekcam`, `admin_kecamatan` | Mengunduh draf PDF surat rekomendasi/pengantar resmi kecamatan (`application/pdf`). |
 | `GET` | `/dokumen/{doc_id}/download` | `kasi_pelayanan`, `camat_sekcam`, `admin_kecamatan` *(+ `operator_desa` khusus berkas desanya)* | Mengunduh file privat pemohon; **wajib** mencatat `DOWNLOAD_PRIVATE_DOC` ke `audit_logs`. |
 
-### 8.2 State Machine Pelayanan PATEN
+### 8.2 State Machine Pelayanan SIP-PAKADES
 - `diterima` → `perlu_kelengkapan` *(wajib `note` kekurangan berkas)* atau langsung `diproses`
 - `perlu_kelengkapan` → `diproses` *(setelah berkas dilengkapi)*
 - `diproses` → `selesai` *(mencatat `completed_at`, opsional terhubung ke `outgoing_letter_id`)*
@@ -366,18 +366,18 @@ Seluruh modul Master mengikuti pola endpoint seragam:
 | **Foto Perangkat, Potensi, Wisata, Thumbnail Berita** | `.jpg`, `.jpeg`, `.png`, `.webp` *(cek magic bytes)* | 5 MB | **Ya** *(otomatis via `Pillow`)* | Direktori publik `/media/public/...` (dapat diakses langsung oleh landing page) |
 | **Dokumen Regulasi Publik & Scan Surat Dinas** | `.pdf`, `.jpg`, `.png` *(scan surat boleh gambar/PDF)* | 10 MB | Tidak *(PDF tetap asli)* | Regulasi: publik `/media/public/regulations/...`; Surat Dinas: privat terautentikasi |
 | **Lampiran Laporan Triwulanan (`report_attachments`)** | `.pdf`, `.xlsx`, `.xls` | 10 MB | Tidak *(asli + `sha256_hash`)* | Direktori privat + endpoint `/admin/pelaporan/triwulan/{id}/attachments/{att_id}/download` |
-| **Dokumen Pribadi Pemohon PATEN (`service_documents`)** | `.pdf`, `.jpg`, `.jpeg`, `.png` | 5 MB | Tidak *(asli + nama UUID + `sha256_hash`)* | **Direktori privat non-publik**; hanya via `/admin/pelayanan/dokumen/{doc_id}/download` + wajib tulis `audit_logs` |
+| **Dokumen Pribadi Pemohon SIP-PAKADES (`service_documents`)** | `.pdf`, `.jpg`, `.jpeg`, `.png` | 5 MB | Tidak *(asli + nama UUID + `sha256_hash`)* | **Direktori privat non-publik**; hanya via `/admin/pelayanan/dokumen/{doc_id}/download` + wajib tulis `audit_logs` |
 
 ### 12.2 Akun Simulasi Standar Fase Frontend-First (`frontend/lib/mock/`)
 Selama `NEXT_PUBLIC_API_MODE=mock`, halaman `/login` menyediakan pengisian cepat *(quick-fill)* untuk menguji seluruh tampilan & pembatasan menu berbasis RBAC:
 
 | Username | Role (`RoleCode`) | Cakupan Wilayah | Tujuan Pengujian UI |
 | :--- | :--- | :--- | :--- |
-| `superadmin` | `superadmin_kab` | Lintas seluruh 25 Kecamatan | Kelola 9 Master Data Global, switch antar-kecamatan, pemantauan kabupaten, backup DB |
+| `superadmin` | `superadmin_kab` | Lintas seluruh 25 Kecamatan | Kelola 9 Master Data Global, switch antar-kecamatan, pemantauan kabusip-pakades, backup DB |
 | `admin_laeya` | `admin_kecamatan` | Kecamatan Laeya | Kelola user kec. Laeya, desa kec. Laeya, persuratan, berita/regulasi, pemantauan |
 | `camat_laeya` | `camat_sekcam` | Kecamatan Laeya (`Ansar`) | Disposisi surat masuk, verifikasi akhir laporan triwulanan, dashboard pimpinan |
-| `kasi_laeya` | `kasi_pelayanan` | Kecamatan Laeya | Loket PATEN (3 layanan), akses unduh dokumen privat, tindak lanjut disposisi |
-| `op_torobulu` | `operator_desa` | Desa Torobulu (Kec. Laeya) | Input profil/perangkat/potensi/wisata Desa Torobulu, lapor triwulanan & pengantar PATEN |
+| `kasi_laeya` | `kasi_pelayanan` | Kecamatan Laeya | Loket SIP-PAKADES (3 layanan), akses unduh dokumen privat, tindak lanjut disposisi |
+| `op_torobulu` | `operator_desa` | Desa Torobulu (Kec. Laeya) | Input profil/perangkat/potensi/wisata Desa Torobulu, lapor triwulanan & pengantar SIP-PAKADES |
 | `op_puunggaluku` | `operator_desa` | Kel. Puunggaluku (Kec. Laeya) | Uji isolasi data antar-desa/kelurahan terhadap akun `op_torobulu` |
 
 ### 12.3 Aturan Paritas Transisi `mock` → `live`

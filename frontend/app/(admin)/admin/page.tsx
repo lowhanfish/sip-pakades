@@ -61,10 +61,10 @@ export default function AdminDashboardPage() {
               {user?.village_name ? ` • ${user.village_name}` : ""}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             <Link
               href="/admin/pelaporan/triwulan"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold px-4 py-2.5 transition"
+              className="clay-btn clay-btn-sky text-xs px-4 py-2.5"
             >
               <ClipboardList className="w-4 h-4" />
               Laporan Triwulanan
@@ -72,7 +72,7 @@ export default function AdminDashboardPage() {
             </Link>
             <Link
               href="/admin/pelayanan/permohonan"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-yellow-300/90 hover:bg-yellow-300 text-slate-900 text-xs font-semibold px-4 py-2.5 transition"
+              className="clay-btn clay-btn-yellow text-xs px-4 py-2.5 text-slate-900"
             >
               <FileCheck2 className="w-4 h-4" />
               Pelayanan SIP-PAKADES
@@ -82,9 +82,14 @@ export default function AdminDashboardPage() {
       </GlassCard>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <GlassCard className="space-y-1">
-          <div className="text-xs opacity-70">Kelengkapan Data Wilayah</div>
-          <div className="text-2xl font-extrabold text-sky-500">
+        <GlassCard className="space-y-2 hover:scale-[1.01] transition">
+          <div className="flex items-center justify-between">
+            <span className="text-xs opacity-75 font-medium">Data Wilayah</span>
+            <span className="w-8 h-8 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600 shadow-sm">
+              <ClipboardList className="w-4 h-4" />
+            </span>
+          </div>
+          <div className="text-2xl font-black text-sky-600">
             {s?.avg_completeness_pct ?? 86.4}%
           </div>
           <div className="text-[11px] opacity-75">
@@ -92,39 +97,51 @@ export default function AdminDashboardPage() {
           </div>
         </GlassCard>
 
-        <GlassCard className="space-y-1">
-          <div className="text-xs opacity-70">Laporan Triwulan Tepat Waktu</div>
+        <GlassCard className="space-y-2 hover:scale-[1.01] transition">
+          <div className="flex items-center justify-between">
+            <span className="text-xs opacity-75 font-medium">Laporan Tepat Waktu</span>
+            <span className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
+              <CheckCircle2 className="w-4 h-4" />
+            </span>
+          </div>
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-extrabold text-emerald-500">
+            <span className="text-2xl font-black text-emerald-600">
               {s?.reports_on_time_count ?? 2}
             </span>
-            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
           </div>
           <div className="text-[11px] opacity-75">
             Perlu tindak lanjut: {s?.reports_pending_count ?? 1} laporan
           </div>
         </GlassCard>
 
-        <GlassCard className="space-y-1">
-          <div className="text-xs opacity-70">Kepatuhan SLA SIP-PAKADES</div>
+        <GlassCard className="space-y-2 hover:scale-[1.01] transition">
+          <div className="flex items-center justify-between">
+            <span className="text-xs opacity-75 font-medium">SLA SIP-PAKADES</span>
+            <span className="w-8 h-8 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600 shadow-sm">
+              <ShieldCheck className="w-4 h-4" />
+            </span>
+          </div>
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-extrabold text-sky-500">
+            <span className="text-2xl font-black text-sky-600">
               {s?.services_sla_compliance_pct ?? 100}%
             </span>
-            <ShieldCheck className="w-5 h-5 text-sky-500" />
           </div>
           <div className="text-[11px] opacity-75">
-            {s?.services_completed ?? 1} dari {s?.services_total ?? 2} permohonan selesai
+            {s?.services_completed ?? 1} dari {s?.services_total ?? 2} selesai
           </div>
         </GlassCard>
 
-        <GlassCard className="space-y-1">
-          <div className="text-xs opacity-70">Agenda Persuratan</div>
+        <GlassCard className="space-y-2 hover:scale-[1.01] transition">
+          <div className="flex items-center justify-between">
+            <span className="text-xs opacity-75 font-medium">Agenda Persuratan</span>
+            <span className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shadow-sm">
+              <Mail className="w-4 h-4" />
+            </span>
+          </div>
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-extrabold">
+            <span className="text-2xl font-black text-amber-600">
               {(s?.incoming_letters_count ?? 1) + (s?.outgoing_letters_count ?? 1)}
             </span>
-            <Mail className="w-5 h-5 text-yellow-500" />
           </div>
           <div className="text-[11px] opacity-75">
             Masuk: {s?.incoming_letters_count ?? 1} • Keluar: {s?.outgoing_letters_count ?? 1}

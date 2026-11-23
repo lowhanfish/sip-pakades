@@ -69,16 +69,16 @@ export default function LokasiPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-6 pb-10 space-y-8">
-      <div className="glass-panel rounded-3xl p-6 md:p-8 space-y-2">
-        <span className="text-xs font-bold text-sky-700 uppercase tracking-wider">
-          Peta &amp; Kontak Resmi
-        </span>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">
+      <div className="clay-card p-6 md:p-10 space-y-3 relative overflow-hidden">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-200/90 border border-yellow-300 text-xs font-bold text-slate-800">
+          <MapPin className="w-3.5 h-3.5 text-sky-600" />
+          Peta Wilayah &amp; Kontak Resmi
+        </div>
+        <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
           Lokasi Kantor Kecamatan {district?.name ?? "Laeya"}
         </h1>
-        <p className="text-sm text-slate-600">
-          Titik koordinat Kantor Kecamatan, sebaran desa/kelurahan, serta
-          destinasi wisata lokal.
+        <p className="text-sm text-slate-600 leading-relaxed max-w-2xl">
+          Peta interaktif titik koordinat Kantor Kecamatan, sebaran 17 desa dan kelurahan, serta objek destinasi wisata lokal Kabupaten Konawe Selatan.
         </p>
       </div>
 

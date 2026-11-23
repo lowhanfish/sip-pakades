@@ -271,7 +271,7 @@ export const MOCK_ANNOUNCEMENTS: PublicAnnouncementItem[] = [
   {
     id: "ann-2",
     district_id: DISTRICT_LAEYA_ID,
-    slug: "jadwal-pelayanan-paten-kecamatan-laeya",
+    slug: "jadwal-pelayanan-sip-pakades-kecamatan-laeya",
     title: "Maklumat Pelayanan SIP-PAKADES & Pengurusan Rekomendasi Nikah / IUMK",
     category: "pengumuman",
     excerpt:

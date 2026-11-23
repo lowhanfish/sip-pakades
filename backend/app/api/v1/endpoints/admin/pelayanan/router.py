@@ -317,7 +317,7 @@ async def upload_private_document(
     resolve_village_scope(current_user, sr.village_id)
 
     path, orig_name, size, mime, sha256 = await save_private_file(
-        file, "paten_docs", allow_excel=False, max_mb=5
+        file, "sip_docs", allow_excel=False, max_mb=5
     )
     doc = ServiceDocument(
         service_request_id=sr.id,

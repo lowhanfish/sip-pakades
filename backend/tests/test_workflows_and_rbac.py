@@ -25,9 +25,9 @@ async def test_publish_endpoints_and_masked_tracking(client: AsyncClient):
     assert body["applicant_name_masked"] == "A*** S***"
     assert "applicant_nik" not in body
 
-    # Uji kompatibilitas jika dicari dengan kode lama
-    trk_old = await client.get("/api/v1/publish/services/track/PATEN-740511-2026-0042")
-    assert trk_old.status_code == 200
+    # Uji verifikasi pencarian berkas SIP-PAKADES
+    trk_sip = await client.get("/api/v1/publish/services/track/SIP-740511-2026-0042")
+    assert trk_sip.status_code == 200
 
 
 async def test_quarterly_report_workflow_and_rbac_isolation(client: AsyncClient):

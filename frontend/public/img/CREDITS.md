@@ -17,9 +17,8 @@ Cari judul file di https://commons.wikimedia.org untuk melihat pembuat foto dan 
 | berita-rakor.webp | Musyawarah.jpg | CC0 |
 | berita-musrenbang.webp | Musdes Penetapan Rencana Kerja Pembangunan Desa Beluk 2020.jpg (dipangkas) | CC BY-SA 4.0 |
 | berita-layanan.webp | Mall Pelayanan Publik Salatiga.jpg | CC BY-SA 4.0 |
-| pelayanan-dokumen.webp, pelayanan-3d-clay.webp | Mall Pelayanan Publik Salatiga (2).jpg | CC BY-SA 4.0 |
+| pelayanan-dokumen.webp | Mall Pelayanan Publik Salatiga (2).jpg | CC BY-SA 4.0 |
 | desa-kelurahan.webp | Village Meeting Hall of Pandansari.jpg | CC BY-SA 4.0 |
-| wilayah-3d-clay.webp | Hamparan Sawah Desa Ngampel.jpg | CC BY-SA 4.0 |
 
 ## AI-generated (2026-11-24)
 - hero-kantor.webp, langit.webp: generated with Figma AI (gpt-image-2.5-flare) for SIP-PAKADES; not photographs of a real building.

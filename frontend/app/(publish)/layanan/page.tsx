@@ -1,9 +1,8 @@
 "use client";
 
 import { PageHero } from "@/components/motion/PageHero";
-import Image from "next/image";
 import { FormEvent, useState } from "react";
-import { CheckCircle2, Clock, FileCheck2, Search, Sparkles } from "lucide-react";
+import { CheckCircle2, Clock, FileCheck2, Search } from "lucide-react";
 import { Subtle3DCard } from "@/components/three/Subtle3DCard";
 import { usePublicDistrictStore } from "@/store/usePublicDistrictStore";
 import {

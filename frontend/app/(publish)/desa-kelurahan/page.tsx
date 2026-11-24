@@ -2,7 +2,6 @@
 
 import { AreaIcon } from "@/components/ui/AreaIcon";
 import { PageHero } from "@/components/motion/PageHero";
-import Image from "next/image";
 import { useState } from "react";
 import { Building2, Search, Users, X } from "lucide-react";
 import { Subtle3DCard } from "@/components/three/Subtle3DCard";

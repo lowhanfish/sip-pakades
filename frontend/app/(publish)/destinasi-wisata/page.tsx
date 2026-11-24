@@ -2,7 +2,7 @@
 
 import { PageHero } from "@/components/motion/PageHero";
 import Image from "next/image";
-import { Clock, Compass, MapPin, Sparkles, Ticket } from "lucide-react";
+import { Clock, Compass, MapPin, Ticket } from "lucide-react";
 import { Subtle3DCard } from "@/components/three/Subtle3DCard";
 import { usePublicDistrictStore } from "@/store/usePublicDistrictStore";
 import { usePublicTourism } from "../hooks/usePublishData";

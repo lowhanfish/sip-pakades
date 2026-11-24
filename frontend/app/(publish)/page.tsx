@@ -15,7 +15,6 @@ import {
   Search,
   Eye,
   Target,
-  ShieldCheck,
   Clock,
   Ruler,
   Sprout,

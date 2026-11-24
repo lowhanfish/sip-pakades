@@ -105,20 +105,3 @@ export function CountUp({ value, className = "" }: { value: number; className?: 
     </span>
   );
 }
-
-/** Infinite horizontal text band. */
-export function Marquee({ items, className = "" }: { items: string[]; className?: string }) {
-  const row = [...items, ...items];
-  return (
-    <div className={`marquee ${className}`} aria-hidden="true">
-      <div className="marquee-track">
-        {row.map((t, i) => (
-          <span key={i} className="marquee-item">
-            {t}
-            <span className="marquee-dot" />
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}

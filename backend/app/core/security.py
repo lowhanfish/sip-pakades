@@ -28,21 +28,25 @@ def create_access_token(
     subject: str,
     extra_claims: dict[str, Any] | None = None,
     expires_delta: timedelta | None = None,
+    token_type: str = "access",
 ) -> str:
     settings = get_settings()
     expire = datetime.now(UTC) + (
         expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
-    payload: dict[str, Any] = {"sub": subject, "type": "access", "exp": expire}
+    payload: dict[str, Any] = {"sub": subject, "type": token_type, "exp": expire}
     if extra_claims:
         payload.update(extra_claims)
+        payload["type"] = token_type  # klaim tambahan tidak boleh menimpa jenis token
     return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 
-def create_refresh_token(subject: str, jti: str) -> tuple[str, datetime]:
+def create_refresh_token(
+    subject: str, jti: str, token_type: str = "refresh"
+) -> tuple[str, datetime]:
     settings = get_settings()
     expire = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    payload = {"sub": subject, "jti": jti, "type": "refresh", "exp": expire}
+    payload = {"sub": subject, "jti": jti, "type": token_type, "exp": expire}
     token = jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     return token, expire
 

@@ -16,12 +16,19 @@ from app.api.deps import (
     resolve_village_scope,
     write_audit_log,
 )
+from app.core.crypto import unpack_nik_field
 from app.core.csrf import verify_csrf
 from app.core.exceptions import AppError
 from app.db.session import get_db
 from app.models.auth import User
 from app.models.master import MasterDistrict, MasterServiceType, MasterVillage
-from app.models.operational import ServiceDocument, ServiceRequest, ServiceStatusHistory
+from app.models.operational import (
+    OutgoingLetter,
+    ServiceDocument,
+    ServiceRequest,
+    ServiceStatusHistory,
+)
+from app.services.service_workflow import NOTE_REQUIRED, REVIEW_ROLES, allowed_next
 from app.services.upload_service import save_private_file
 
 router = APIRouter(prefix="/pelayanan", tags=["Pelayanan SIP-PAKADES"])
@@ -44,10 +51,12 @@ class ServiceStatusPayload(BaseModel):
     status: str
     note: str = ""
     public_note: str | None = None
+    # Wajib true saat meneruskan ke Camat: petugas menyatakan sudah memeriksa berkas dan data.
+    documents_verified: bool = False
 
 
 def _mask_nik(nik: str) -> str:
-    clean = nik.strip()
+    clean = unpack_nik_field(nik).strip()
     if len(clean) < 8:
         return "******"
     return f"{clean[:6]}******{clean[-4:]}"
@@ -71,9 +80,15 @@ async def _serialize_service(db: AsyncSession, s: ServiceRequest) -> dict:
         )
     ).scalars().all()
 
+    letter = (
+        await db.execute(select(OutgoingLetter).where(OutgoingLetter.service_request_id == s.id))
+    ).scalar_one_or_none()
+
     return {
         "id": s.id,
         "registration_number": s.registration_number,
+        "letter_number": letter.letter_number if letter else None,
+        "has_signed_letter": bool(s.status == "selesai" and letter and letter.scan_file_path),
         "district_id": s.district_id,
         "village_id": s.village_id,
         "village_name": (
@@ -89,6 +104,10 @@ async def _serialize_service(db: AsyncSession, s: ServiceRequest) -> dict:
         "applicant_address": s.applicant_address,
         "village_cover_letter_no": s.village_cover_letter_no,
         "status": s.status,
+        "next_statuses": list(allowed_next(s.status)),
+        "from_citizen": s.citizen_id is not None,
+        "request_data": s.request_payload or {},
+        "verified_at": s.verified_at,
         "sla_days": s.sla_days,
         "sla_due_at": s.sla_due_at,
         "notes": s.notes,
@@ -98,6 +117,7 @@ async def _serialize_service(db: AsyncSession, s: ServiceRequest) -> dict:
                 "doc_code": d.doc_code,
                 "doc_label": d.doc_label,
                 "file_name": d.file_name,
+                "file_size": d.file_size,
                 "mime_type": d.mime_type,
                 "is_private": d.is_private,
             }
@@ -132,7 +152,8 @@ async def read_services(
     scoped_dist = resolve_district_scope(current_user, district_id)
     scoped_vill = resolve_village_scope(current_user, village_id)
 
-    stmt = select(ServiceRequest)
+    # Draf warga belum dikirim, jadi belum terlihat oleh petugas.
+    stmt = select(ServiceRequest).where(ServiceRequest.status != "draf")
     if scoped_dist:
         stmt = stmt.where(ServiceRequest.district_id == scoped_dist)
     if scoped_vill:
@@ -250,7 +271,7 @@ async def update_service_status(
     item_id: str,
     payload: ServiceStatusPayload,
     request: Request,
-    current_user: User = Depends(require_roles("kasi_pelayanan", "camat_sekcam", "admin_kecamatan")),
+    current_user: User = Depends(require_roles(*REVIEW_ROLES)),
     db: AsyncSession = Depends(get_db),
 ):
     sr = (
@@ -259,24 +280,48 @@ async def update_service_status(
     if not sr:
         raise AppError("Permohonan tidak ditemukan.", code="NOT_FOUND", status_code=404)
     resolve_district_scope(current_user, sr.district_id)
+    if sr.status == "draf":
+        raise AppError("Permohonan tidak ditemukan.", code="NOT_FOUND", status_code=404)
 
-    valid_statuses = ("diterima", "perlu_kelengkapan", "diproses", "selesai")
-    if payload.status not in valid_statuses:
-        raise AppError("Status pelayanan tidak valid.", code="VALIDATION_ERROR", status_code=422)
-    if payload.status == "perlu_kelengkapan" and not payload.note.strip():
-        raise AppError("Catatan kekurangan berkas wajib diisi.", code="VALIDATION_ERROR", status_code=422)
+    target = payload.status
+    if target == "selesai":
+        raise AppError(
+            "Surat diselesaikan lewat penandatanganan elektronik oleh Camat, bukan dengan mengubah status.",
+            code="INVALID_STATUS_TRANSITION",
+            status_code=409,
+        )
+    if target not in allowed_next(sr.status):
+        raise AppError(
+            f"Status tidak dapat diubah dari '{sr.status}' ke '{target}'.",
+            code="INVALID_STATUS_TRANSITION",
+            status_code=409,
+        )
+    note = payload.note.strip()
+    if target in NOTE_REQUIRED and not note:
+        raise AppError(NOTE_REQUIRED[target], code="VALIDATION_ERROR", status_code=422)
+    if target == "menunggu_ttd":
+        if not payload.documents_verified:
+            raise AppError(
+                "Centang pernyataan bahwa berkas dan data sudah diperiksa sebelum meneruskan ke Camat.",
+                code="VALIDATION_ERROR",
+                status_code=422,
+            )
+        sr.verified_by = current_user.id
+        sr.verified_at = datetime.now(UTC)
 
-    sr.status = payload.status
-    if payload.status == "selesai":
-        sr.completed_at = datetime.now(UTC)
+    default_public = {
+        "diproses": "Permohonan sedang diperiksa petugas.",
+        "menunggu_ttd": "Berkas telah diverifikasi dan diteruskan ke Camat untuk ditandatangani.",
+    }
+    sr.status = target
     sr.updated_by = current_user.id
 
     db.add(
         ServiceStatusHistory(
             service_request_id=sr.id,
-            status=payload.status,
-            note=payload.note.strip() or f"Status diubah ke {payload.status}",
-            public_note=payload.public_note or payload.note.strip() or f"Status: {payload.status}",
+            status=target,
+            note=note or f"Status diubah ke {target}",
+            public_note=payload.public_note or note or default_public.get(target, f"Status: {target}"),
             changed_by=current_user.id,
             changed_by_name=current_user.full_name,
         )
@@ -289,7 +334,7 @@ async def update_service_status(
         action="STATUS_CHANGE",
         entity_type="service_requests",
         entity_id=sr.id,
-        summary=f"Status SIP-PAKADES {sr.registration_number} -> {payload.status}",
+        summary=f"Status SIP-PAKADES {sr.registration_number} -> {target}",
         request=request,
     )
     return {
@@ -357,6 +402,8 @@ async def download_private_document(
 
     resolve_district_scope(current_user, sr.district_id)
     resolve_village_scope(current_user, sr.village_id)
+    if sr.status == "draf":
+        raise AppError("Dokumen tidak ditemukan.", code="NOT_FOUND", status_code=404)
 
     await write_audit_log(
         db,

@@ -86,3 +86,60 @@ async def save_private_file(
         file.content_type or "application/octet-stream",
         sha256_hash,
     )
+
+
+CITIZEN_DOC_MAX_MB = 10
+_MAGIC: list[tuple[bytes, str, str]] = [
+    (b"%PDF-", ".pdf", "application/pdf"),
+    (b"\xff\xd8\xff", ".jpg", "image/jpeg"),
+    (b"\x89PNG\r\n\x1a\n", ".png", "image/png"),
+]
+
+
+def _sniff_document(raw: bytes) -> tuple[str, str] | None:
+    for magic, ext, mime in _MAGIC:
+        if raw.startswith(magic):
+            return ext, mime
+    if raw[:4] == b"RIFF" and raw[8:12] == b"WEBP":
+        return ".webp", "image/webp"
+    return None
+
+
+async def save_citizen_document(
+    file: UploadFile, request_id: str
+) -> tuple[str, str, int, str, str]:
+    """Simpan lampiran warga. Jenis berkas ditentukan dari isi, bukan dari nama/Content-Type."""
+    max_bytes = CITIZEN_DOC_MAX_MB * 1024 * 1024
+    raw = await file.read(max_bytes + 1)
+    if not raw:
+        raise AppError("Berkas kosong.", code="FILE_VALIDATION_ERROR", status_code=422)
+    if len(raw) > max_bytes:
+        raise AppError(
+            f"Ukuran berkas melebihi batas {CITIZEN_DOC_MAX_MB} MB.",
+            code="FILE_VALIDATION_ERROR",
+            status_code=422,
+        )
+    sniffed = _sniff_document(raw)
+    if not sniffed:
+        raise AppError(
+            "Berkas harus berupa PDF, JPG, PNG, atau WebP yang valid.",
+            code="FILE_VALIDATION_ERROR",
+            status_code=422,
+        )
+    ext, mime = sniffed
+    target_dir = get_settings().storage_path / "private" / "sip_docs" / request_id
+    target_dir.mkdir(parents=True, exist_ok=True)
+    full_path = target_dir / f"{uuid.uuid4()}{ext}"
+    full_path.write_bytes(raw)
+    display = Path(file.filename or "berkas").name[:200] or "berkas"
+    return str(full_path), display, len(raw), mime, hashlib.sha256(raw).hexdigest()
+
+
+def delete_private_file(path: str) -> None:
+    """Hapus berkas hanya bila berada di dalam direktori penyimpanan private."""
+    try:
+        p = Path(path).resolve()
+        if p.is_relative_to((get_settings().storage_path / "private").resolve()) and p.is_file():
+            p.unlink()
+    except OSError:
+        pass

@@ -57,3 +57,9 @@ class MasterServiceType(Base, MasterBaseMixin):
         String(36), ForeignKey("master_letter_classifications.id"), nullable=True
     )
     template_code = Column(String(50), nullable=True)
+    # perizinan | nonperizinan | rekomendasi | legalisasi
+    category = Column(String(20), default="rekomendasi", nullable=False)
+    # Layanan legalisasi/rekomendasi atas surat desa wajib melampirkan surat desanya.
+    requires_village_letter = Column(Boolean, default=True, nullable=False)
+    # Definisi isian form dinamis: [{key,label,type,required,options,max_length}]
+    form_fields = Column(JSON, nullable=True)

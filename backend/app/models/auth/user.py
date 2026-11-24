@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Text
 from sqlalchemy.sql import func
 
 from app.db.base import Base
@@ -20,6 +20,8 @@ class User(Base):
     district_id = Column(String(36), ForeignKey("master_districts.id"), nullable=True, index=True)
     village_id = Column(String(36), ForeignKey("master_villages.id"), nullable=True, index=True)
     avatar_url = Column(String(255), nullable=True)
+    # NIK penandatangan (Camat) untuk TTE, terenkripsi. Passphrase tidak pernah disimpan.
+    signer_nik_encrypted = Column(Text, nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
     last_login_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)

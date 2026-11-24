@@ -27,6 +27,25 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    # Kunci Fernet untuk mengenkripsi data sensitif (NIK). Wajib di production.
+    # Buat dengan: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+    DATA_ENCRYPTION_KEY: str = ""
+
+    # --- Tanda Tangan Elektronik (gateway Esign Konsel) ---
+    # disabled = fitur nonaktif | mock = simulasi lokal (DILARANG di production) | live = gateway sungguhan
+    TTE_MODE: str = "disabled"
+    TTE_BASE_URL: str = ""
+    TTE_CLIENT_ID: str = ""
+    TTE_CLIENT_SECRET: str = ""
+    TTE_SCOPE: str = "sign:create sign:read document:download"
+    # Isi bila gateway membatasi origin aplikasi. Kosongkan jika tidak dibatasi.
+    TTE_ORIGIN: str = ""
+    # Satu karakter marker posisi tanda tangan; harus sama dengan yang dicetak pada PDF.
+    TTE_TAG_COORDINATE: str = "€"
+    TTE_TIMEOUT_SECONDS: int = 90
+    # Dipakai pada QR verifikasi keaslian surat.
+    PUBLIC_BASE_URL: str = "http://localhost:3000"
+
     COOKIE_SECURE: bool = False
     COOKIE_SAMESITE: str = "lax"
     STORAGE_DIR: str = "./storage"

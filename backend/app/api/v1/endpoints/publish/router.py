@@ -17,7 +17,9 @@ from app.models.operational import (
     GovernmentAnnouncement,
     GovernmentOfficial,
     GovernmentRegulation,
+    OutgoingLetter,
     RegionalPotential,
+    ServiceOffering,
     ServiceRequest,
     ServiceStatusHistory,
     TouristDestination,
@@ -431,12 +433,19 @@ async def publish_regulations(slug: str, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/services/types")
-async def publish_service_types(db: AsyncSession = Depends(get_db)):
-    rows = (
-        await db.execute(
-            select(MasterServiceType).where(MasterServiceType.is_active.is_(True))
-        )
-    ).scalars().all()
+async def publish_service_types(
+    district_id: str | None = None, db: AsyncSession = Depends(get_db)
+):
+    # Hanya layanan yang sudah diaktifkan Camat (lihat ServiceOffering) yang boleh tayang.
+    stmt = (
+        select(MasterServiceType)
+        .join(ServiceOffering, ServiceOffering.service_type_id == MasterServiceType.id)
+        .where(MasterServiceType.is_active.is_(True), ServiceOffering.is_active.is_(True))
+        .distinct()
+    )
+    if district_id:
+        stmt = stmt.where(ServiceOffering.district_id == district_id)
+    rows = (await db.execute(stmt)).scalars().all()
     return {
         "success": True,
         "message": "OK",
@@ -461,7 +470,8 @@ async def publish_track_service(registration_number: str, db: AsyncSession = Dep
     sr = (
         await db.execute(
             select(ServiceRequest).where(
-                ServiceRequest.registration_number.in_(possible_codes)
+                ServiceRequest.registration_number.in_(possible_codes),
+                ServiceRequest.status != "draf",
             )
         )
     ).scalar_one_or_none()
@@ -514,5 +524,47 @@ async def publish_track_service(registration_number: str, db: AsyncSession = Dep
                 }
                 for h in histories
             ],
+        },
+    }
+
+
+@router.get("/verifikasi/{code}", dependencies=[Depends(limit_track_requests)])
+async def publish_verify_letter(code: str, db: AsyncSession = Depends(get_db)):
+    """Pemeriksaan keaslian surat dari kode pada QR. Hanya surat yang sudah ditandatangani yang valid."""
+    sr = (
+        await db.execute(
+            select(ServiceRequest).where(
+                ServiceRequest.verification_code == code.strip().upper(),
+                ServiceRequest.status == "selesai",
+            )
+        )
+    ).scalar_one_or_none()
+    letter = (
+        (
+            await db.execute(
+                select(OutgoingLetter).where(OutgoingLetter.service_request_id == sr.id)
+            )
+        ).scalar_one_or_none()
+        if sr
+        else None
+    )
+    if not sr or not letter:
+        raise AppError("Kode verifikasi tidak ditemukan atau surat belum ditandatangani.", code="NOT_FOUND", status_code=404)
+    district = (
+        await db.execute(select(MasterDistrict).where(MasterDistrict.id == sr.district_id))
+    ).scalar_one_or_none()
+    srv = (
+        await db.execute(select(MasterServiceType).where(MasterServiceType.id == sr.service_type_id))
+    ).scalar_one_or_none()
+    return {
+        "success": True,
+        "message": "Surat terdaftar dan sah",
+        "data": {
+            "valid": True,
+            "letter_number": letter.letter_number,
+            "service_type_name": srv.name if srv else "-",
+            "district_name": district.name if district else "-",
+            "applicant_name_masked": _mask_name(sr.applicant_name),
+            "signed_at": sr.completed_at,
         },
     }

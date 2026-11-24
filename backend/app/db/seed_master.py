@@ -229,6 +229,7 @@ async def run_seed(db: AsyncSession) -> None:
     srv_types = [
         MasterServiceType(
             id="srv-nikah",
+            category="rekomendasi",
             code="SIP-NKH",
             name="Rekomendasi / Dispensasi Nikah",
             description="Surat pengantar dan rekomendasi nikah ke KUA Kecamatan.",
@@ -241,6 +242,7 @@ async def run_seed(db: AsyncSession) -> None:
         ),
         MasterServiceType(
             id="srv-iumk",
+            category="perizinan",
             code="SIP-IUMK",
             name="Rekomendasi Izin Usaha Mikro & Kecil (IUMK)",
             description="Surat keterangan dan rekomendasi izin usaha mikro/kecil.",
@@ -253,6 +255,7 @@ async def run_seed(db: AsyncSession) -> None:
         ),
         MasterServiceType(
             id="srv-kependudukan",
+            category="rekomendasi",
             code="SIP-ADK",
             name="Pengantar Administrasi Kependudukan & Pertanahan",
             description="Rekomendasi pindah datang, SKTM khusus, & register ahli waris.",

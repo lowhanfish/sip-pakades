@@ -9,8 +9,10 @@ from app.models.operational.letter import IncomingLetter, LetterDisposition, Out
 from app.models.operational.report import QuarterlyReport, ReportAttachment, ReportStatusHistory
 from app.models.operational.service_request import (
     ServiceDocument,
+    ServiceOffering,
     ServiceRequest,
     ServiceStatusHistory,
+    SigningTransaction,
 )
 
 __all__ = [
@@ -23,6 +25,8 @@ __all__ = [
     "ReportAttachment",
     "ReportStatusHistory",
     "ServiceRequest",
+    "SigningTransaction",
+    "ServiceOffering",
     "ServiceDocument",
     "ServiceStatusHistory",
     "IncomingLetter",

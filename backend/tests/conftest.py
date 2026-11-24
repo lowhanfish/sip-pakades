@@ -4,6 +4,8 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from app.core import rate_limit
+from app.core.config import get_settings
 from app.db.base import Base
 from app.db.seed_master import run_seed
 from app.db.session import get_db
@@ -34,3 +36,19 @@ async def client(test_db: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(transport=transport, base_url="http://testserver") as ac:
         yield ac
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limiters():
+    """Pembatas laju bersifat global di memori proses; kosongkan agar tes tidak saling memengaruhi."""
+    for obj in vars(rate_limit).values():
+        if isinstance(obj, rate_limit.SlidingWindowRateLimiter):
+            obj._hits.clear()
+    yield
+
+
+@pytest.fixture(autouse=True)
+def _isolated_storage(tmp_path, monkeypatch):
+    """Berkas unggahan dan surat bertanda tangan selama tes ditulis ke folder sementara."""
+    monkeypatch.setattr(get_settings(), "STORAGE_DIR", str(tmp_path / "storage"))
+    yield

@@ -56,7 +56,8 @@ def register_exception_handlers(app: FastAPI) -> None:
         errs = [
             {
                 "field": ".".join(str(x) for x in e.get("loc", []) if x != "body"),
-                "message": str(e.get("msg", "Input tidak valid")),
+                # Pydantic menambahkan awalan "Value error, " pada pesan validator buatan sendiri.
+                "message": str(e.get("msg", "Input tidak valid")).removeprefix("Value error, "),
             }
             for e in exc.errors()
         ]

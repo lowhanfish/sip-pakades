@@ -1,5 +1,6 @@
 from app.models.audit import AuditLog, BackupLog
 from app.models.auth import RefreshSession, Role, User
+from app.models.citizen import Citizen, CitizenSession
 from app.models.master import (
     MasterDistrict,
     MasterLetterClassification,
@@ -23,8 +24,10 @@ from app.models.operational import (
     ReportAttachment,
     ReportStatusHistory,
     ServiceDocument,
+    ServiceOffering,
     ServiceRequest,
     ServiceStatusHistory,
+    SigningTransaction,
     TouristDestination,
 )
 
@@ -32,6 +35,8 @@ __all__ = [
     "Role",
     "User",
     "RefreshSession",
+    "Citizen",
+    "CitizenSession",
     "MasterDistrict",
     "MasterVillage",
     "MasterOfficialPosition",
@@ -50,6 +55,8 @@ __all__ = [
     "ReportAttachment",
     "ReportStatusHistory",
     "ServiceRequest",
+    "SigningTransaction",
+    "ServiceOffering",
     "ServiceDocument",
     "ServiceStatusHistory",
     "IncomingLetter",

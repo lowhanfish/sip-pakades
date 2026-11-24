@@ -35,3 +35,23 @@ async def limit_login_requests(request: Request) -> None:
 async def limit_track_requests(request: Request) -> None:
     ip = request.client.host if request.client else "unknown"
     public_track_limiter.check(f"track:{ip}")
+
+
+citizen_register_limiter = SlidingWindowRateLimiter(max_requests=5, window_seconds=600)
+citizen_login_limiter = SlidingWindowRateLimiter(max_requests=20, window_seconds=60)
+
+
+async def limit_citizen_register(request: Request) -> None:
+    ip = request.client.host if request.client else "unknown"
+    citizen_register_limiter.check(f"citizen-register:{ip}")
+
+
+async def limit_citizen_login(request: Request) -> None:
+    ip = request.client.host if request.client else "unknown"
+    citizen_login_limiter.check(f"citizen-login:{ip}")
+
+
+citizen_upload_limiter = SlidingWindowRateLimiter(max_requests=30, window_seconds=60)
+
+
+signing_limiter = SlidingWindowRateLimiter(max_requests=10, window_seconds=60)

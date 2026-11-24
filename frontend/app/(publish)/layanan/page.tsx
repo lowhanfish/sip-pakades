@@ -40,7 +40,7 @@ export default function LayananPage() {
         description="Persyaratan dokumen layanan terpadu serta pelacakan progres berkas secara transparan, akuntabel, dan aman."
         image="/img/pelayanan-dokumen.webp"
       />
-    <div className="container-page pt-7 pb-8 space-y-6">
+    <div className="container-page pt-5 pb-8 space-y-6">
 
       {/* Lacak Status */}
       <Subtle3DCard className="p-6 md:p-8 space-y-5">

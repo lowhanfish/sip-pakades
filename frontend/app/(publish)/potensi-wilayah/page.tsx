@@ -46,7 +46,7 @@ export default function PotensiWilayahPage() {
       />
     </div>
       </PageHero>
-    <div className="container-page pt-7 pb-8 space-y-6">
+    <div className="container-page pt-5 pb-8 space-y-6">
 
       {chartSummary.length > 0 && (
         <Subtle3DCard className="card-accent p-6 md:p-8">

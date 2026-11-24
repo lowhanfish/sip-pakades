@@ -76,7 +76,7 @@ export default function LokasiPage() {
         description="Peta interaktif titik koordinat Kantor Kecamatan, sebaran desa dan kelurahan, serta objek destinasi wisata lokal."
         image="/img/gedung-kecamatan.webp"
       />
-    <div className="container-page pt-7 pb-8 space-y-6">
+    <div className="container-page pt-5 pb-8 space-y-6">
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <Subtle3DCard className="lg:col-span-8 p-4">

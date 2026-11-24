@@ -28,7 +28,7 @@ export default function DestinasiWisataPage() {
         description="Jelajahi keindahan pesisir pantai bahari, air terjun alami, dan kawasan ekowisata mangrove di Kabupaten Konawe Selatan."
         image="/img/wisata-torobulu.webp"
       />
-    <div className="container-page pt-7 pb-8 space-y-6">
+    <div className="container-page pt-5 pb-8 space-y-6">
 
       {isLoading ? (
         <div className="text-center py-12 text-sm text-sky-700 font-semibold">

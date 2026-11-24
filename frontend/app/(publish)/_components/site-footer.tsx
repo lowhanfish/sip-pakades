@@ -75,12 +75,6 @@ export function SiteFooter() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/login"
-              className="text-amber-300 hover:text-amber-200 font-bold"
-            >
-              Login Petugas
-            </Link>
           </div>
         </div>
       </div>

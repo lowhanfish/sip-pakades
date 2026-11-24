@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Download, Eye, Lock, Plus, Search, X } from "lucide-react";
+import Swal from "sweetalert2";
 import { fetchData } from "@/lib/api_secure";
 import { useUrlStore } from "@/store/useUrlStore";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -14,6 +15,28 @@ import { swallAlert } from "@/lib/show_swall";
 import { formatDateTimeId } from "@/utilities/pagination";
 import { isMockMode } from "@/lib/mock";
 
+const STATUS_LABEL: Record<string, string> = {
+  diterima: "DITERIMA",
+  diproses: "DIPERIKSA",
+  perlu_kelengkapan: "PERLU PERBAIKAN",
+  menunggu_ttd: "MENUNGGU TTD",
+  selesai: "SELESAI",
+  ditolak: "DITOLAK",
+};
+
+async function confirmReject(): Promise<boolean> {
+  const r = await Swal.fire({
+    title: "Tolak permohonan ini?",
+    text: "Alasan penolakan akan dilihat warga. Permohonan yang ditolak tidak dapat dibuka kembali.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya, Tolak",
+    cancelButtonText: "Batal",
+    confirmButtonColor: "#dc2626",
+  });
+  return r.isConfirmed;
+}
+
 export default function PelayananPermohonanPage() {
   const baseUrl = useUrlStore((s) => s.URL.APP);
   const user = useAuthStore((s) => s.user);
@@ -24,6 +47,7 @@ export default function PelayananPermohonanPage() {
   const [openCreate, setOpenCreate] = useState(false);
   const [detail, setDetail] = useState<ServiceRequestItem | null>(null);
   const [statusNote, setStatusNote] = useState("");
+  const [docsVerified, setDocsVerified] = useState(false);
   const [form, setForm] = useState({
     village_id: user?.village_id ?? "",
     service_type_id: "srv-nikah",
@@ -76,12 +100,13 @@ export default function PelayananPermohonanPage() {
     mutationFn: ({ id, status }: { id: string; status: ServiceStatus }) =>
       fetchData<ApiEnvelope<ServiceRequestItem>>(
         `${baseUrl}/api/v1/admin/pelayanan/permohonan/${id}/status`,
-        { method: "PATCH", body: { status, note: statusNote } }
+        { method: "PATCH", body: { status, note: statusNote, documents_verified: docsVerified } }
       ),
     onSuccess: (res) => {
       qc.invalidateQueries({ queryKey: ["pelayanan-permohonan"] });
       setDetail(res.data);
       setStatusNote("");
+      setDocsVerified(false);
       swallAlert(res.message, "success");
     },
     onError: (err: Error) => swallAlert("Gagal", "error", err.message),
@@ -161,10 +186,12 @@ export default function PelayananPermohonanPage() {
             className="admin-input rounded-xl px-3 py-2 text-xs"
           >
             <option value="">Semua Status</option>
-            <option value="diterima">Diterima</option>
-            <option value="perlu_kelengkapan">Perlu Kelengkapan</option>
-            <option value="diproses">Diproses</option>
+            <option value="diterima">Diterima (perlu diverifikasi)</option>
+            <option value="diproses">Sedang Diperiksa</option>
+            <option value="perlu_kelengkapan">Menunggu Perbaikan Warga</option>
+            <option value="menunggu_ttd">Menunggu Tanda Tangan Camat</option>
             <option value="selesai">Selesai</option>
+            <option value="ditolak">Ditolak</option>
           </select>
         </div>
 
@@ -200,7 +227,7 @@ export default function PelayananPermohonanPage() {
                     <td className="py-3 px-3">
                       <StatusBadge
                         variant={s.status}
-                        label={s.status.replace("_", " ").toUpperCase()}
+                        label={STATUS_LABEL[s.status] ?? s.status.toUpperCase()}
                       />
                     </td>
                     <td className="py-3 px-3 text-right">
@@ -341,7 +368,17 @@ export default function PelayananPermohonanPage() {
               <div><span className="opacity-65">Wilayah:</span> <strong>{detail.village_name}</strong></div>
               <div><span className="opacity-65">Pengantar Desa:</span> <strong>{detail.village_cover_letter_no || "-"}</strong></div>
               <div><span className="opacity-65">Target SLA:</span> <strong>{formatDateTimeId(detail.sla_due_at)}</strong></div>
+              {detail.from_citizen && <div className="col-span-2"><span className="opacity-65">Sumber:</span> <strong>Diajukan warga melalui portal</strong></div>}
             </div>
+
+            {detail.request_data && Object.keys(detail.request_data).length > 0 && (
+              <div className="rounded-2xl border border-sky-400/20 p-3 space-y-1.5 text-xs">
+                <div className="font-bold">Isian Permohonan</div>
+                {Object.entries(detail.request_data).map(([k, v]) => (
+                  <div key={k}><span className="opacity-65 capitalize">{k.replace(/_/g, " ")}:</span> <span className="whitespace-pre-line">{v}</span></div>
+                ))}
+              </div>
+            )}
 
             <div className="rounded-2xl border border-sky-400/20 p-3 space-y-2 text-xs">
               <div className="flex items-center gap-1.5 font-bold">
@@ -352,13 +389,39 @@ export default function PelayananPermohonanPage() {
                 <div className="opacity-65">Belum ada lampiran dokumen.</div>
               ) : (
                 detail.documents.map((d) => (
-                  <div key={d.id} className="flex items-center justify-between bg-sky-500/5 rounded-lg px-3 py-1.5">
-                    <span>{d.doc_label} ({d.file_name})</span>
-                    <span className="text-[10px] font-bold text-amber-600">PRIVAT</span>
+                  <div key={d.id} className="flex items-center justify-between gap-2 bg-sky-500/5 rounded-lg px-3 py-1.5">
+                    <span className="min-w-0 truncate">{d.doc_label} ({d.file_name})</span>
+                    <a
+                      href={`${baseUrl}/api/v1/admin/pelayanan/dokumen/${d.id}/download`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-sky-600 hover:bg-sky-500/10"
+                    >
+                      <Download className="w-3 h-3" />
+                      Buka
+                    </a>
                   </div>
                 ))
               )}
             </div>
+
+            {detail.has_signed_letter && (
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-400/10 p-3 text-xs">
+                <span>
+                  Surat sudah ditandatangani secara elektronik
+                  {detail.letter_number && <> · <span className="font-mono font-bold">{detail.letter_number}</span></>}
+                </span>
+                <a
+                  href={`${baseUrl}/api/v1/admin/penandatangan/${detail.id}/surat`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-1.5 font-semibold text-white"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Unduh Surat
+                </a>
+              </div>
+            )}
 
             <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-sky-400/20">
               <span className="text-[11px] opacity-70">Dokumen Cetak Rekomendasi Resmi</span>
@@ -372,39 +435,83 @@ export default function PelayananPermohonanPage() {
               </button>
             </div>
 
-            {canProcessStatus && detail.status !== "selesai" && (
+            {canProcessStatus && (detail.next_statuses ?? []).length > 0 && (
               <div className="rounded-2xl border border-sky-400/20 p-3 space-y-2.5 text-xs">
-                <div className="font-bold">Perbarui Status Pelayanan</div>
-                <input
-                  type="text"
-                  value={statusNote}
-                  onChange={(e) => setStatusNote(e.target.value)}
-                  placeholder="Catatan proses / kekurangan berkas..."
-                  className="admin-input w-full rounded-xl px-3 py-2 text-xs"
-                />
+                <div className="font-bold">Verifikasi &amp; Tindak Lanjut</div>
+                <label className="block">
+                  <span className="mb-1 block opacity-70">Catatan (dilihat warga)</span>
+                  <input
+                    type="text"
+                    value={statusNote}
+                    onChange={(e) => setStatusNote(e.target.value)}
+                    placeholder="Wajib untuk minta perbaikan atau menolak..."
+                    className="admin-input w-full rounded-xl px-3 py-2 text-xs"
+                  />
+                </label>
+                {(detail.next_statuses ?? []).includes("menunggu_ttd") && (
+                  <label className="flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={docsVerified}
+                      onChange={(e) => setDocsVerified(e.target.checked)}
+                      className="mt-0.5"
+                    />
+                    <span>Saya sudah memeriksa kelengkapan berkas dan kesesuaian data pemohon.</span>
+                  </label>
+                )}
                 <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => statusMut.mutate({ id: detail.id, status: "perlu_kelengkapan" })}
-                    className="px-3 py-1.5 rounded-lg bg-amber-400 text-slate-900 font-semibold cursor-pointer"
-                  >
-                    Perlu Kelengkapan
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => statusMut.mutate({ id: detail.id, status: "diproses" })}
-                    className="px-3 py-1.5 rounded-lg bg-sky-500 text-white font-semibold cursor-pointer"
-                  >
-                    Diproses
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => statusMut.mutate({ id: detail.id, status: "selesai" })}
-                    className="px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-semibold cursor-pointer"
-                  >
-                    Selesai
-                  </button>
+                  {(detail.next_statuses ?? []).includes("diproses") && (
+                    <button type="button" disabled={statusMut.isPending}
+                      onClick={() => statusMut.mutate({ id: detail.id, status: "diproses" })}
+                      className="px-3 py-1.5 rounded-lg bg-indigo-500 text-white font-semibold cursor-pointer disabled:opacity-50">
+                      Mulai Periksa
+                    </button>
+                  )}
+                  {(detail.next_statuses ?? []).includes("menunggu_ttd") && (
+                    <button type="button" disabled={!docsVerified || statusMut.isPending}
+                      onClick={() => statusMut.mutate({ id: detail.id, status: "menunggu_ttd" })}
+                      className="px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-50">
+                      Verifikasi &amp; Teruskan ke Camat
+                    </button>
+                  )}
+                  {(detail.next_statuses ?? []).includes("perlu_kelengkapan") && (
+                    <button type="button" disabled={!statusNote.trim() || statusMut.isPending}
+                      onClick={() => statusMut.mutate({ id: detail.id, status: "perlu_kelengkapan" })}
+                      className="px-3 py-1.5 rounded-lg bg-amber-400 text-slate-900 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-50">
+                      Minta Perbaikan
+                    </button>
+                  )}
+                  {(detail.next_statuses ?? []).includes("ditolak") && (
+                    <button type="button" disabled={!statusNote.trim() || statusMut.isPending}
+                      onClick={async () => {
+                        if (await confirmReject()) statusMut.mutate({ id: detail.id, status: "ditolak" });
+                      }}
+                      className="px-3 py-1.5 rounded-lg bg-red-500 text-white font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-50">
+                      Tolak
+                    </button>
+                  )}
                 </div>
+                {detail.status === "menunggu_ttd" && (
+                  <p className="rounded-lg bg-blue-500/10 px-3 py-2 text-blue-700">
+                    Berkas sudah terverifikasi dan menunggu tanda tangan Camat. Camat menandatangani lewat menu
+                    Penandatanganan Surat (TTE).
+                  </p>
+                )}
+              </div>
+            )}
+
+            {detail.histories.length > 0 && (
+              <div className="rounded-2xl border border-sky-400/20 p-3 space-y-2 text-xs">
+                <div className="font-bold">Riwayat Proses</div>
+                <ol className="space-y-2">
+                  {detail.histories.map((h, i) => (
+                    <li key={`${h.status}-${i}`} className="border-l-2 border-sky-400/40 pl-3">
+                      <div className="font-semibold">{STATUS_LABEL[h.status] ?? h.status} · <span className="opacity-70 font-normal">{h.changed_by_name}</span></div>
+                      {h.note && <div className="opacity-80">{h.note}</div>}
+                      <div className="text-[10px] opacity-60">{formatDateTimeId(h.changed_at)}</div>
+                    </li>
+                  ))}
+                </ol>
               </div>
             )}
           </div>

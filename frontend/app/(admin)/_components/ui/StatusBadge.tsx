@@ -16,7 +16,9 @@ const STATUS_STYLE_MAP: Record<string, string> = {
   diterima: "bg-sky-500/15 text-sky-700 border-sky-400/40",
   perlu_kelengkapan: "bg-amber-500/20 text-amber-800 border-amber-400/50",
   diproses: "bg-indigo-500/15 text-indigo-700 border-indigo-400/40",
+  menunggu_ttd: "bg-blue-500/15 text-blue-700 border-blue-400/40",
   selesai: "bg-emerald-500/15 text-emerald-700 border-emerald-400/40",
+  ditolak: "bg-red-500/15 text-red-700 border-red-400/40",
 };
 
 interface StatusBadgeProps {

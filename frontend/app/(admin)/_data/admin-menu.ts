@@ -55,6 +55,8 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
     group: "Pelayanan & Persuratan",
     items: [
       { code: "pelayanan-permohonan", label: "Pelayanan SIP-PAKADES", href: "/admin/pelayanan/permohonan", roles: ALL_INTERNAL_ROLES },
+      { code: "pelayanan-ttd", label: "Penandatanganan Surat", href: "/admin/penandatangan", roles: ["camat_sekcam"] },
+      { code: "pelayanan-katalog", label: "Pengaturan Layanan", href: "/admin/pelayanan/layanan", roles: ["superadmin_kab", "admin_kecamatan", "camat_sekcam"] },
       { code: "persuratan-masuk", label: "Surat Masuk & Disposisi", href: "/admin/persuratan/surat-masuk", roles: KECAMATAN_LEAD_ROLES },
       { code: "persuratan-keluar", label: "Surat Keluar", href: "/admin/persuratan/surat-keluar", roles: KECAMATAN_LEAD_ROLES },
     ],

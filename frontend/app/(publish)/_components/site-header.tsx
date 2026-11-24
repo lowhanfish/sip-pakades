@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LogIn, MapPin, Menu, X } from "lucide-react";
+import { MapPin, Menu, UserRound, X } from "lucide-react";
 import { SITE_NAV_LINKS } from "./site-navigation";
 import { usePublicDistricts } from "../hooks/usePublishData";
 import { usePublicDistrictStore } from "@/store/usePublicDistrictStore";
@@ -79,9 +79,9 @@ export function SiteHeader() {
             </select>
           </div>
 
-          <Link href="/login" className="clay-btn clay-btn-sky px-4 py-2 text-[13px]">
-            <LogIn className="w-3.5 h-3.5" />
-            <span>Login</span>
+          <Link href="/masyarakat/dashboard" className="clay-btn clay-btn-yellow whitespace-nowrap px-3 py-2 text-[13px] sm:px-4">
+            <UserRound className="w-3.5 h-3.5" />
+            <span>Akun Warga</span>
           </Link>
 
           <button

@@ -103,6 +103,13 @@ export interface ServiceRequestItem {
   applicant_address: string;
   village_cover_letter_no: string | null;
   status: ServiceStatus;
+  /** Status yang boleh dituju dari status sekarang (ditentukan backend). */
+  next_statuses?: ServiceStatus[];
+  letter_number?: string | null;
+  has_signed_letter?: boolean;
+  from_citizen?: boolean;
+  request_data?: Record<string, string>;
+  verified_at?: string | null;
   sla_days: number;
   sla_due_at: string;
   notes: string | null;
@@ -111,6 +118,7 @@ export interface ServiceRequestItem {
     doc_code: string;
     doc_label: string;
     file_name: string;
+    file_size?: number;
     mime_type: string;
     is_private: boolean;
   }>;

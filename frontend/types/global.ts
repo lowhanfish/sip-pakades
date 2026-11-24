@@ -8,7 +8,13 @@ export type RoleCode =
 export type VillageType = "desa" | "kelurahan";
 export type OfficialLevel = "kecamatan" | "desa";
 export type ReportStatus = "draf" | "diajukan" | "perlu_perbaikan" | "terverifikasi";
-export type ServiceStatus = "diterima" | "perlu_kelengkapan" | "diproses" | "selesai";
+export type ServiceStatus =
+  | "diterima"
+  | "perlu_kelengkapan"
+  | "diproses"
+  | "menunggu_ttd"
+  | "selesai"
+  | "ditolak";
 export type LetterDirection = "masuk" | "keluar";
 export type DispositionStatus = "baru" | "didisposisikan" | "ditindaklanjuti" | "selesai";
 export type TimelinessStatus = "tepat_waktu" | "terlambat" | "perlu_perbaikan" | "belum_lapor";

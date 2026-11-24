@@ -1,7 +1,8 @@
 "use client";
 
+import { PageHero } from "@/components/motion/PageHero";
 import Image from "next/image";
-import { FileText, Newspaper, Users } from "lucide-react";
+import { Eye, FileText, Newspaper, Users } from "lucide-react";
 import { Subtle3DCard } from "@/components/three/Subtle3DCard";
 import { usePublicDistrictStore } from "@/store/usePublicDistrictStore";
 import {
@@ -25,96 +26,73 @@ export default function PemerintahanPage() {
   const regulations = regRes?.data ?? [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-6 pb-10 space-y-10">
-      <div className="clay-card p-6 md:p-10 space-y-4 relative overflow-hidden">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-200/90 border border-yellow-300 text-xs font-bold text-slate-800">
-              <Users className="w-3.5 h-3.5 text-sky-600" />
-              Informasi Penyelenggaraan Pemerintahan
-            </span>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-              Pemerintah Kecamatan {district?.name ?? "Laeya"}
-            </h1>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Profil kepemimpinan Camat, visi-misi, struktur organisasi perangkat kecamatan, warta kegiatan kedinasan, serta regulasi daerah.
-            </p>
-          </div>
-          <div className="hidden md:block w-36 h-28 rounded-2xl overflow-hidden relative shadow-md shrink-0">
-            <Image
-              src="/img/gedung-kecamatan.webp"
-              alt="Kantor Kecamatan"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </div>
+    <>
+      <PageHero
+        eyebrow="Penyelenggaraan Pemerintahan"
+        title={`Pemerintah Kecamatan ${district?.name ?? "Laeya"}`}
+        description="Profil kepemimpinan Camat, visi-misi, struktur organisasi, warta kegiatan kedinasan, serta regulasi daerah."
+        image="/img/gedung-kecamatan.webp"
+      />
+    <div className="container-page pt-7 pb-8 space-y-6">
 
       {/* Pimpinan & Struktur */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <Subtle3DCard className="lg:col-span-5 p-6 space-y-4">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+        <Subtle3DCard className="lg:col-span-5 card-accent p-6 space-y-5">
           <div className="flex items-center gap-4">
-            <div className="w-20 h-24 rounded-2xl overflow-hidden bg-gradient-to-b from-sky-100 to-yellow-100 border border-white flex items-end justify-center shrink-0">
+            <div className="relative h-28 w-24 shrink-0 overflow-hidden rounded-xl bg-sky-200 shadow-md shadow-sky-900/10 ring-1 ring-sky-100">
               {leader?.photo_url ? (
-                <Image
-                  src={leader.photo_url}
-                  alt={leader.full_name}
-                  width={80}
-                  height={96}
-                  className="object-contain h-full w-auto"
-                />
+                <Image src={leader.photo_url} alt={leader.full_name} fill sizes="96px" className="object-contain object-bottom" />
               ) : (
-                <Users className="w-8 h-8 text-sky-600 mb-6" />
+                <Users className="absolute bottom-6 left-1/2 h-8 w-8 -translate-x-1/2 text-sky-600" />
               )}
             </div>
-            <div>
-              <div className="text-xs font-bold text-sky-700">
-                {leader?.position_name}
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-orange-400" />
+                <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-sky-700">{leader?.position_name}</span>
               </div>
-              <div className="text-lg font-extrabold text-slate-900">
-                {leader?.full_name}
-              </div>
-              {leader?.nip && (
-                <div className="text-[11px] font-mono text-slate-500">
-                  NIP. {leader.nip}
-                </div>
-              )}
+              <div className="mt-1 text-2xl leading-tight text-slate-900">{leader?.full_name}</div>
+              {leader?.nip && <div className="mt-1 text-xs font-mono text-slate-400">NIP. {leader.nip}</div>}
             </div>
           </div>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            {leader?.welcome_message}
-          </p>
-          <div className="rounded-2xl bg-white/75 border border-sky-200/70 p-4 space-y-1.5 text-xs">
-            <div className="font-bold text-sky-800">Visi Kecamatan</div>
-            <p className="text-slate-700">{district?.vision}</p>
+
+          <div className="border-l-[3px] border-sky-300 pl-4">
+            <p className="text-sm italic leading-relaxed text-slate-600" style={{ fontFamily: "var(--font-display)" }}>
+              {leader?.welcome_message}
+            </p>
+          </div>
+
+          <div className="relative overflow-hidden rounded-xl bg-sky-900 p-4 text-white">
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/15 text-amber-300"><Eye className="h-3.5 w-3.5" /></span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-sky-100">Visi Kecamatan</span>
+            </div>
+            <p className="mt-2.5 text-sm leading-snug" style={{ fontFamily: "var(--font-display)" }}>{district?.vision}</p>
           </div>
         </Subtle3DCard>
 
-        <Subtle3DCard className="lg:col-span-7 p-6 space-y-4">
-          <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-sky-600" />
-            <h2 className="text-lg font-extrabold text-slate-900">
-              Struktur Organisasi Kecamatan
-            </h2>
+        <Subtle3DCard className="lg:col-span-7 card-accent p-6 space-y-5">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-lg shadow-sky-500/30"><Users className="h-5 w-5" /></span>
+            <h2 className="text-xl text-slate-900">Struktur Organisasi Kecamatan</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {org.map((node, idx) => (
               <div
                 key={idx}
-                className="rounded-2xl bg-white/80 border border-sky-200/70 p-4 space-y-1"
+                className="flex items-center gap-3.5 rounded-2xl border border-sky-100 bg-gradient-to-br from-sky-50/70 to-white p-3.5 transition hover:border-sky-300 hover:shadow-md hover:shadow-sky-900/5"
               >
-                <div className="text-[11px] font-bold text-sky-700">
-                  {node.position}
+                <span
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-sky-600 text-base font-bold text-white shadow-md shadow-sky-500/25"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {(node.name ?? "?").trim().charAt(0)}
+                </span>
+                <div className="min-w-0">
+                  <div className="text-[11px] font-bold uppercase tracking-wide text-sky-700">{node.position}</div>
+                  <div className="truncate text-sm font-bold text-slate-900">{node.name}</div>
+                  {node.nip && <div className="text-[11px] font-mono text-slate-400">NIP. {node.nip}</div>}
                 </div>
-                <div className="text-sm font-bold text-slate-900">
-                  {node.name}
-                </div>
-                {node.nip && (
-                  <div className="text-[11px] font-mono text-slate-500">
-                    NIP. {node.nip}
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -122,82 +100,61 @@ export default function PemerintahanPage() {
       </div>
 
       {/* Berita & Regulasi */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Subtle3DCard className="p-6 space-y-4">
-          <div className="flex items-center gap-2">
-            <Newspaper className="w-5 h-5 text-sky-600" />
-            <h2 className="text-lg font-extrabold text-slate-900">
-              Berita &amp; Pengumuman Pemerintahan
-            </h2>
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+        <Subtle3DCard className="p-6 space-y-5">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-lg shadow-sky-500/30"><Newspaper className="h-5 w-5" /></span>
+            <h2 className="text-xl text-slate-900">Berita &amp; Pengumuman</h2>
           </div>
           <div className="space-y-3">
             {announcements.length === 0 ? (
-              <div className="text-xs text-slate-500">
-                Belum ada berita untuk kecamatan ini.
-              </div>
+              <div className="text-sm text-slate-500">Belum ada berita untuk kecamatan ini.</div>
             ) : (
               announcements.map((a) => (
-                <div
+                <article
                   key={a.id}
-                  className="clay-tile p-4 flex flex-col sm:flex-row gap-3.5 items-start"
+                  className="flex flex-col items-start gap-4 rounded-2xl border border-sky-100/80 bg-white/70 p-3 transition hover:border-sky-300 hover:bg-white hover:shadow-md hover:shadow-sky-900/5 sm:flex-row"
                 >
-                  <div className="relative w-full sm:w-28 h-24 rounded-xl overflow-hidden shrink-0 shadow-sm border border-white bg-sky-100">
-                    <Image
-                      src={a.thumbnail_url || "/img/berita-rakor.webp"}
-                      alt={a.title}
-                      fill
-                      sizes="112px"
-                      className="object-cover"
-                    />
+                  <div className="relative h-24 w-full shrink-0 overflow-hidden rounded-xl bg-sky-100 sm:w-32">
+                    <Image src={a.thumbnail_url || "/img/berita-rakor.webp"} alt={a.title} fill sizes="128px" className="object-cover" />
                   </div>
-                  <div className="flex-1 min-w-0 space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px]">
-                      <span className="px-2 py-0.5 rounded-full bg-white text-sky-800 font-bold uppercase shadow-2xs">
-                        {a.category}
-                      </span>
-                      <span className="text-slate-500">
-                        {formatDateId(a.published_at)}
-                      </span>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="font-bold uppercase tracking-wide text-sky-700">{a.category}</span>
+                      <span className="text-slate-400">• {formatDateId(a.published_at)}</span>
                     </div>
-                    <h3 className="text-sm font-bold text-slate-900">{a.title}</h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {a.content}
-                    </p>
+                    <h3 className="text-sm font-bold leading-snug text-slate-900">{a.title}</h3>
+                    <p className="line-clamp-2 text-xs leading-relaxed text-slate-600">{a.content}</p>
                   </div>
-                </div>
+                </article>
               ))
             )}
           </div>
         </Subtle3DCard>
 
-        <Subtle3DCard className="p-6 space-y-4">
-          <div className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-sky-600" />
-            <h2 className="text-lg font-extrabold text-slate-900">
-              Dokumen Regulasi &amp; SOP Layanan
-            </h2>
+        <Subtle3DCard className="p-6 space-y-5">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-orange-500 text-white shadow-lg shadow-orange-500/30"><FileText className="h-5 w-5" /></span>
+            <h2 className="text-xl text-slate-900">Regulasi &amp; SOP Layanan</h2>
           </div>
           <div className="space-y-3">
             {regulations.length === 0 ? (
-              <div className="text-xs text-slate-500">
-                Belum ada dokumen regulasi publik.
-              </div>
+              <div className="text-sm text-slate-500">Belum ada dokumen regulasi publik.</div>
             ) : (
               regulations.map((r) => (
                 <div
                   key={r.id}
-                  className="rounded-2xl bg-white/80 border border-sky-200/70 p-4 space-y-1.5"
+                  className="flex items-start gap-3.5 rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50/60 to-white p-3.5 transition hover:border-orange-300 hover:shadow-md hover:shadow-orange-900/5"
                 >
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="px-2 py-0.5 rounded-full bg-yellow-200/80 text-slate-900 font-bold">
-                      {r.category}
-                    </span>
-                    <span className="font-mono text-slate-500">
-                      {r.regulation_number}
-                    </span>
+                  <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-orange-500 shadow-sm ring-1 ring-orange-100"><FileText className="h-5 w-5" /></span>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                      <span className="rounded-full bg-orange-100 px-2 py-0.5 font-bold text-orange-800">{r.category}</span>
+                      <span className="font-mono text-slate-400">{r.regulation_number}</span>
+                    </div>
+                    <h3 className="text-sm font-bold leading-snug text-slate-900">{r.title}</h3>
+                    <p className="text-xs leading-relaxed text-slate-600">{r.description}</p>
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900">{r.title}</h3>
-                  <p className="text-xs text-slate-600">{r.description}</p>
                 </div>
               ))
             )}
@@ -205,5 +162,6 @@ export default function PemerintahanPage() {
         </Subtle3DCard>
       </div>
     </div>
+    </>
   );
 }

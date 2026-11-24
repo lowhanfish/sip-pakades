@@ -13,9 +13,9 @@ export function SiteFooter() {
   const district = data?.data?.district;
 
   return (
-    <footer className="mt-16 px-4 pb-8">
-      <div className="max-w-7xl mx-auto glass-panel rounded-3xl p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="space-y-3">
+    <footer className="mt-24 border-t border-white/10 bg-sky-900 text-sky-100/85">
+      <div className="container-page py-9 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="space-y-4">
           <div className="flex items-center gap-3">
             <Image
               src="/img/logo-konsel.webp"
@@ -24,60 +24,60 @@ export function SiteFooter() {
               height={51}
             />
             <div>
-              <div className="text-base font-extrabold text-slate-900">
+              <div className="text-base font-extrabold text-white">
                 SIP-PAKADES
               </div>
-              <div className="text-xs font-semibold text-sky-700">
+              <div className="text-xs font-medium text-sky-200/70">
                 Kecamatan {district?.name ?? "Laeya"} • Kab. Konawe Selatan
               </div>
             </div>
           </div>
-          <p className="text-xs text-slate-600 leading-relaxed">
+          <p className="text-sm text-sky-100/70 leading-relaxed">
             Sistem Informasi Penyelenggaraan Pemerintahan, Pelayanan Administrasi
             Kecamatan, dan Pelaporan Desa/Kelurahan (SIP-PAKADES).
           </p>
         </div>
 
-        <div className="space-y-2.5 text-xs text-slate-700">
-          <div className="font-bold text-slate-900 text-sm">
+        <div className="space-y-3 text-sm text-sky-100/80">
+          <div className="font-bold text-white text-sm">
             Kantor Kecamatan {district?.name ?? "Laeya"}
           </div>
           <div className="flex items-start gap-2">
-            <MapPin className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+            <MapPin className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
             <span>
               {district?.office_address ??
                 "Jl. Poros Kendari - Andoolo, Kel. Puunggaluku"}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-sky-600 shrink-0" />
+            <Clock className="w-4 h-4 text-amber-300 shrink-0" />
             <span>{district?.service_hours ?? "Senin–Jumat, 08.00–16.00 WITA"}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Phone className="w-4 h-4 text-sky-600 shrink-0" />
+            <Phone className="w-4 h-4 text-amber-300 shrink-0" />
             <span>{district?.phone ?? "(0401) 319xxxx"}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Mail className="w-4 h-4 text-sky-600 shrink-0" />
+            <Mail className="w-4 h-4 text-amber-300 shrink-0" />
             <span>{district?.email ?? "kec.laeya@konaweselatankab.go.id"}</span>
           </div>
         </div>
 
         <div className="space-y-2.5">
-          <div className="font-bold text-slate-900 text-sm">Navigasi Portal</div>
-          <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="font-bold text-white text-sm">Navigasi Portal</div>
+          <div className="grid grid-cols-2 gap-2.5 text-sm">
             {SITE_NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-slate-600 hover:text-sky-700 font-medium transition"
+                className="text-sky-100/70 hover:text-white font-medium transition"
               >
                 {link.label}
               </Link>
             ))}
             <Link
               href="/login"
-              className="text-sky-700 hover:text-sky-900 font-bold"
+              className="text-amber-300 hover:text-amber-200 font-bold"
             >
               Login Petugas
             </Link>
@@ -85,7 +85,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto text-center text-[11px] text-slate-500 pt-5">
+      <div className="border-t border-white/10 py-5 text-center text-xs text-sky-200/60">
         &copy; {new Date().getFullYear()} Pemerintah Kabupaten Konawe Selatan —
         SIP-PAKADES Kecamatan {district?.name ?? "Laeya"}.
       </div>

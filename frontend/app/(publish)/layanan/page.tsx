@@ -1,5 +1,6 @@
 "use client";
 
+import { PageHero } from "@/components/motion/PageHero";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { CheckCircle2, Clock, FileCheck2, Search, Sparkles } from "lucide-react";
@@ -32,39 +33,22 @@ export default function LayananPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-6 pb-12 space-y-10">
-      <div className="clay-card p-6 md:p-10 space-y-4 relative overflow-hidden">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-200/90 border border-yellow-300 text-xs font-bold text-slate-800">
-              <Sparkles className="w-3.5 h-3.5 text-sky-600" />
-              Pelayanan Administrasi Kecamatan (SIP-PAKADES)
-            </span>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-              Persyaratan Layanan &amp; Lacak Permohonan
-            </h1>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Informasi standar persyaratan dokumen layanan terpadu kecamatan serta pelacakan progres berkas secara transparan, akuntabel, dan aman.
-            </p>
-          </div>
-          <div className="hidden md:block w-36 h-28 rounded-2xl overflow-hidden relative shadow-md shrink-0">
-            <Image
-              src="/img/pelayanan-dokumen.webp"
-              alt="Layanan SIP-PAKADES"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </div>
+    <>
+      <PageHero
+        eyebrow="Pelayanan Administrasi Kecamatan"
+        title="Persyaratan Layanan &amp; Lacak Permohonan"
+        description="Persyaratan dokumen layanan terpadu serta pelacakan progres berkas secara transparan, akuntabel, dan aman."
+        image="/img/pelayanan-dokumen.webp"
+      />
+    <div className="container-page pt-7 pb-8 space-y-6">
 
       {/* Lacak Status */}
       <Subtle3DCard className="p-6 md:p-8 space-y-5">
         <div className="space-y-1">
-          <h2 className="text-lg font-black text-slate-900">
+          <h2 className="text-2xl text-slate-900">
             Lacak Status Permohonan Layanan
           </h2>
-          <p className="text-xs text-slate-600">
+          <p className="text-sm text-slate-600">
             Data pribadi pemohon (NIK &amp; dokumen lampiran) dilindungi dan tidak ditampilkan ke publik.
           </p>
         </div>
@@ -86,7 +70,7 @@ export default function LayananPage() {
           </button>
         </form>
 
-        <div className="flex flex-wrap items-center gap-2 text-xs">
+        <div className="flex flex-wrap items-center gap-2 text-sm">
           <span className="text-slate-500 font-semibold">Contoh kode uji:</span>
           {SAMPLE_REG_NUMBERS.map((code) => (
             <button
@@ -96,7 +80,7 @@ export default function LayananPage() {
                 setInputCode(code);
                 setActiveCode(code);
               }}
-              className="clay-pill px-3 py-1 font-mono text-[11px] text-slate-800 hover:scale-105 transition cursor-pointer"
+              className="clay-pill px-3 py-1 font-mono text-xs text-slate-800 hover:scale-105 transition cursor-pointer"
             >
               {code}
             </button>
@@ -104,10 +88,10 @@ export default function LayananPage() {
         </div>
 
         {trackQuery.isFetching && (
-          <div className="text-xs text-sky-700">Memeriksa status berkas...</div>
+          <div className="text-sm text-sky-700">Memeriksa status berkas...</div>
         )}
         {trackQuery.isError && (
-          <div className="rounded-2xl bg-rose-50 border border-rose-200 p-4 text-xs text-rose-700">
+          <div className="rounded-2xl bg-rose-50 border border-rose-200 p-4 text-sm text-rose-700">
             {(trackQuery.error as Error).message}
           </div>
         )}
@@ -115,19 +99,19 @@ export default function LayananPage() {
           <div className="rounded-2xl bg-white/85 border border-sky-200 p-5 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-sky-100 pb-3">
               <div>
-                <div className="text-xs font-mono font-bold text-sky-700">
+                <div className="text-sm font-mono font-bold text-sky-700">
                   {trackQuery.data.data.registration_number}
                 </div>
-                <div className="text-base font-extrabold text-slate-900">
+                <div className="text-xl text-slate-900">
                   {trackQuery.data.data.service_type_name}
                 </div>
               </div>
-              <span className="self-start px-3 py-1 rounded-full bg-yellow-200 text-slate-900 font-extrabold uppercase text-xs">
+              <span className="self-start px-3 py-1 rounded-full bg-amber-100 text-slate-900 font-extrabold uppercase text-sm">
                 {trackQuery.data.data.status.replace("_", " ")}
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
               <div>
                 <div className="text-slate-500">Pemohon (Masked)</div>
                 <div className="font-bold">{trackQuery.data.data.applicant_name_masked}</div>
@@ -149,14 +133,14 @@ export default function LayananPage() {
             </div>
 
             <div className="space-y-2 pt-2">
-              <div className="text-xs font-bold text-slate-900">
+              <div className="text-sm font-bold text-slate-900">
                 Riwayat Progres Berkas
               </div>
               <div className="space-y-2">
                 {trackQuery.data.data.timeline.map((step, idx) => (
                   <div
                     key={idx}
-                    className="flex items-start gap-3 rounded-xl bg-sky-50/70 border border-sky-100 p-3 text-xs"
+                    className="flex items-start gap-3 rounded-xl bg-sky-50/70 border border-sky-100 p-3 text-sm"
                   >
                     <Clock className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
                     <div className="space-y-0.5">
@@ -183,41 +167,39 @@ export default function LayananPage() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {serviceTypes.map((srv, idx) => (
-            <Subtle3DCard key={srv.id} delay={idx * 0.05} className="p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <FileCheck2 className="w-6 h-6 text-sky-600" />
-                <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-yellow-200 text-slate-900">
-                  SLA {srv.sla_days} Hari Kerja
-                </span>
+            <Subtle3DCard key={srv.id} delay={idx * 0.05} className="card-lift card-accent p-6 flex flex-col space-y-4">
+              <span className="pointer-events-none absolute right-5 top-1 select-none text-7xl font-bold leading-none text-sky-100/80" style={{ fontFamily: "var(--font-display)" }}>
+                {idx + 1}
+              </span>
+              <span className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-lg shadow-sky-500/30">
+                <FileCheck2 className="h-5 w-5" />
+              </span>
+              <div className="relative">
+                <h3 className="text-xl text-slate-900 leading-snug">{srv.name}</h3>
+                <p className="text-sm text-slate-600 mt-1.5 leading-relaxed">{srv.description}</p>
               </div>
-              <div>
-                <h3 className="text-base font-extrabold text-slate-900">
-                  {srv.name}
-                </h3>
-                <p className="text-xs text-slate-600 mt-1">{srv.description}</p>
-              </div>
-              <div className="space-y-2 pt-2 border-t border-sky-200/60">
-                <div className="text-xs font-bold text-slate-800">
-                  Berkas Persyaratan:
-                </div>
-                <ul className="space-y-1.5 text-xs text-slate-700">
+              <div className="relative flex-1 space-y-2 pt-3 border-t border-slate-100">
+                <div className="text-xs font-bold uppercase tracking-wide text-sky-700">Berkas persyaratan</div>
+                <ul className="space-y-1.5 text-sm text-slate-700">
                   {srv.requirements.map((req) => (
                     <li key={req.code} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                       <span>
                         {req.label}{" "}
-                        {!req.required && (
-                          <span className="text-slate-400">(opsional)</span>
-                        )}
+                        {!req.required && <span className="text-slate-400">(opsional)</span>}
                       </span>
                     </li>
                   ))}
                 </ul>
+              </div>
+              <div className="relative flex items-center gap-1.5 pt-3 border-t border-slate-100 text-xs font-medium text-slate-500">
+                <Clock className="w-3.5 h-3.5" /> Estimasi {srv.sla_days} hari kerja
               </div>
             </Subtle3DCard>
           ))}
         </div>
       </div>
     </div>
+    </>
   );
 }

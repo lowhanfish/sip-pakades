@@ -1,6 +1,5 @@
 import { SiteHeader } from "./_components/site-header";
 import { SiteFooter } from "./_components/site-footer";
-import { ClayBackground } from "@/components/ui/ClayBackground";
 
 export default function PublishLayout({
   children,
@@ -8,10 +7,9 @@ export default function PublishLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      <ClayBackground />
+    <div className="site-shell min-h-screen flex flex-col">
       <SiteHeader />
-      <main className="flex-1 relative z-10">{children}</main>
+      <main className="flex-1">{children}</main>
       <SiteFooter />
     </div>
   );

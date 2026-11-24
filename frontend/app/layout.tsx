@@ -3,11 +3,8 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
+/** One clean, friendly geometric sans for everything (headings = heavier weights of the same family). */
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
 export const metadata: Metadata = {
   title: "SIP-PAKADES | Sistem Informasi Kecamatan & Desa Kab. Konawe Selatan",
@@ -24,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={plusJakarta.variable}>
+    <html lang="id" className={jakarta.variable}>
       <body className="antialiased">
         <Providers>{children}</Providers>
       </body>

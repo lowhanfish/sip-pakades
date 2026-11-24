@@ -20,12 +20,7 @@ export function Subtle3DCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.45, delay, ease: "easeOut" }}
-      whileHover={{
-        y: -6,
-        scale: 1.015,
-        transition: { type: "spring", stiffness: 340, damping: 20 },
-      }}
-      className={`clay-card rounded-3xl transition-all ${className}`}
+      className={`clay-card rounded-2xl ${className}`}
     >
       {children}
     </motion.div>

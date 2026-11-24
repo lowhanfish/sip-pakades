@@ -1,5 +1,6 @@
 "use client";
 
+import { PageHero } from "@/components/motion/PageHero";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
@@ -14,7 +15,7 @@ import {
 const DistrictMap = dynamic(() => import("@/components/maps/DistrictMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[440px] rounded-2xl bg-sky-100/70 animate-pulse flex items-center justify-center text-xs text-sky-700">
+    <div className="w-full h-[440px] rounded-2xl bg-sky-100/70 animate-pulse flex items-center justify-center text-sm text-sky-700">
       Memuat peta interaktif...
     </div>
   ),
@@ -68,19 +69,14 @@ export default function LokasiPage() {
   }, [district, villages, tourism]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-6 pb-10 space-y-8">
-      <div className="clay-card p-6 md:p-10 space-y-3 relative overflow-hidden">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-200/90 border border-yellow-300 text-xs font-bold text-slate-800">
-          <MapPin className="w-3.5 h-3.5 text-sky-600" />
-          Peta Wilayah &amp; Kontak Resmi
-        </div>
-        <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-          Lokasi Kantor Kecamatan {district?.name ?? "Laeya"}
-        </h1>
-        <p className="text-sm text-slate-600 leading-relaxed max-w-2xl">
-          Peta interaktif titik koordinat Kantor Kecamatan, sebaran 17 desa dan kelurahan, serta objek destinasi wisata lokal Kabupaten Konawe Selatan.
-        </p>
-      </div>
+    <>
+      <PageHero
+        eyebrow="Peta Wilayah &amp; Kontak Resmi"
+        title={`Lokasi Kantor Kecamatan ${district?.name ?? "Laeya"}`}
+        description="Peta interaktif titik koordinat Kantor Kecamatan, sebaran desa dan kelurahan, serta objek destinasi wisata lokal."
+        image="/img/gedung-kecamatan.webp"
+      />
+    <div className="container-page pt-7 pb-8 space-y-6">
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <Subtle3DCard className="lg:col-span-8 p-4">
@@ -94,10 +90,10 @@ export default function LokasiPage() {
         </Subtle3DCard>
 
         <Subtle3DCard className="lg:col-span-4 p-6 space-y-5">
-          <h2 className="text-lg font-extrabold text-slate-900">
+          <h2 className="text-2xl text-slate-900">
             Informasi Pelayanan
           </h2>
-          <div className="space-y-4 text-xs text-slate-700">
+          <div className="space-y-4 text-sm text-slate-700">
             <div className="flex items-start gap-3">
               <MapPin className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
               <div>
@@ -128,7 +124,7 @@ export default function LokasiPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-sky-50/90 border border-sky-200 p-4 space-y-1.5 text-[11px]">
+          <div className="rounded-2xl bg-sky-50/90 border border-sky-200 p-4 space-y-1.5 text-xs">
             <div className="font-bold text-slate-900">Legenda Peta</div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-sky-600 inline-block" />
@@ -146,5 +142,6 @@ export default function LokasiPage() {
         </Subtle3DCard>
       </div>
     </div>
+    </>
   );
 }

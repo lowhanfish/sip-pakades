@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LogOut, Menu, X, ExternalLink } from "lucide-react";
+import { LogOut, Menu, X, ExternalLink, ChevronDown } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useThemeStore } from "@/store/useThemeStore";
 import { getAdminMenusForRole } from "../_data/admin-menu";
@@ -20,6 +20,7 @@ export default function AdminLayout({
   const { user, isAuthenticated, isLoading, checkAuth, logout } = useAuthStore();
   const theme = useThemeStore((s) => s.theme);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     checkAuth();
@@ -93,31 +94,67 @@ export default function AdminLayout({
               </button>
             </div>
 
-            <nav className="space-y-5">
-              {navGroups.map((group) => (
-                <div key={group.group} className="space-y-1.5">
-                  <div className="px-3 text-[10px] font-bold uppercase tracking-wider opacity-55">
-                    {group.group}
+            <nav className="space-y-1.5">
+              {navGroups.map((group) => {
+                const hasActive = group.items.some((i) => pathname === i.href);
+                const single = group.items.length === 1;
+                const isOpen = openGroups[group.group] ?? hasActive;
+
+                if (single) {
+                  const item = group.items[0];
+                  const active = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.code}
+                      href={item.href}
+                      onClick={() => setSidebarOpen(false)}
+                      className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition ${
+                        active ? "bg-sky-500 text-white shadow-sm shadow-sky-500/30" : "hover:bg-sky-500/10"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div key={group.group}>
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      onClick={() => setOpenGroups((p) => ({ ...p, [group.group]: !isOpen }))}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[13px] font-bold transition cursor-pointer ${
+                        hasActive ? "text-sky-600" : "hover:bg-sky-500/10"
+                      }`}
+                    >
+                      <span className="capitalize">{group.group.toLowerCase()}</span>
+                      <ChevronDown className={`w-4 h-4 opacity-60 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    <div className={`grid transition-all duration-200 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                      <div className="overflow-hidden">
+                        <div className="ml-3 pl-3 border-l border-sky-400/25 py-1 space-y-0.5">
+                          {group.items.map((item) => {
+                            const active = pathname === item.href;
+                            return (
+                              <Link
+                                key={item.code}
+                                href={item.href}
+                                tabIndex={isOpen ? 0 : -1}
+                                onClick={() => setSidebarOpen(false)}
+                                className={`block px-3 py-2 rounded-lg text-xs font-medium transition ${
+                                  active ? "bg-sky-500 text-white font-semibold shadow-sm shadow-sky-500/30" : "opacity-80 hover:opacity-100 hover:bg-sky-500/10"
+                                }`}
+                              >
+                                {item.label}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  {group.items.map((item) => {
-                    const active = pathname === item.href;
-                    return (
-                      <Link
-                        key={item.code}
-                        href={item.href}
-                        onClick={() => setSidebarOpen(false)}
-                        className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
-                          active
-                            ? "bg-sky-500 text-white shadow-sm shadow-sky-500/30"
-                            : "hover:bg-sky-500/10"
-                        }`}
-                      >
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              ))}
+                );
+              })}
             </nav>
           </div>
 

@@ -35,20 +35,6 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
     ],
   },
   {
-    group: "Data Master",
-    items: [
-      { code: "master-kecamatan", label: "Master Kecamatan", href: "/admin/master/kecamatan", roles: KECAMATAN_LEAD_ROLES },
-      { code: "master-desa", label: "Master Desa/Kelurahan", href: "/admin/master/desa", roles: KECAMATAN_LEAD_ROLES },
-      { code: "master-jabatan", label: "Master Jabatan", href: "/admin/master/jabatan", roles: KECAMATAN_LEAD_ROLES },
-      { code: "master-kat-potensi", label: "Kategori Potensi", href: "/admin/master/kategori-potensi", roles: KECAMATAN_LEAD_ROLES },
-      { code: "master-kat-wisata", label: "Kategori Wisata", href: "/admin/master/kategori-wisata", roles: KECAMATAN_LEAD_ROLES },
-      { code: "master-jenis-laporan", label: "Jenis Pelaporan", href: "/admin/master/jenis-laporan", roles: KECAMATAN_LEAD_ROLES },
-      { code: "master-periode-laporan", label: "Periode Triwulan", href: "/admin/master/periode-laporan", roles: KECAMATAN_LEAD_ROLES },
-      { code: "master-jenis-layanan", label: "Jenis Layanan SIP-PAKADES", href: "/admin/master/jenis-layanan", roles: KECAMATAN_LEAD_ROLES },
-      { code: "master-klasifikasi-surat", label: "Klasifikasi Surat", href: "/admin/master/klasifikasi-surat", roles: KECAMATAN_LEAD_ROLES },
-    ],
-  },
-  {
     group: "Pemerintahan & Publikasi",
     items: [
       { code: "pemerintahan-perangkat", label: "Perangkat Pemerintahan", href: "/admin/pemerintahan/perangkat", roles: ALL_INTERNAL_ROLES },
@@ -81,6 +67,20 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
       { code: "sistem-pengguna", label: "Manajemen Pengguna", href: "/admin/sistem/pengguna", roles: ["superadmin_kab", "admin_kecamatan"] },
       { code: "sistem-audit", label: "Audit Log", href: "/admin/sistem/audit-log", roles: ["superadmin_kab", "admin_kecamatan", "camat_sekcam"] },
       { code: "sistem-backup", label: "Pencadangan DB", href: "/admin/sistem/pencadangan", roles: ["superadmin_kab"] },
+    ],
+  },
+  {
+    group: "Data Master",
+    items: [
+      { code: "master-kecamatan", label: "Master Kecamatan", href: "/admin/master/kecamatan", roles: KECAMATAN_LEAD_ROLES },
+      { code: "master-desa", label: "Master Desa/Kelurahan", href: "/admin/master/desa", roles: KECAMATAN_LEAD_ROLES },
+      { code: "master-jabatan", label: "Master Jabatan", href: "/admin/master/jabatan", roles: KECAMATAN_LEAD_ROLES },
+      { code: "master-kat-potensi", label: "Kategori Potensi", href: "/admin/master/kategori-potensi", roles: KECAMATAN_LEAD_ROLES },
+      { code: "master-kat-wisata", label: "Kategori Wisata", href: "/admin/master/kategori-wisata", roles: KECAMATAN_LEAD_ROLES },
+      { code: "master-jenis-laporan", label: "Jenis Pelaporan", href: "/admin/master/jenis-laporan", roles: KECAMATAN_LEAD_ROLES },
+      { code: "master-periode-laporan", label: "Periode Triwulan", href: "/admin/master/periode-laporan", roles: KECAMATAN_LEAD_ROLES },
+      { code: "master-jenis-layanan", label: "Jenis Layanan SIP-PAKADES", href: "/admin/master/jenis-layanan", roles: KECAMATAN_LEAD_ROLES },
+      { code: "master-klasifikasi-surat", label: "Klasifikasi Surat", href: "/admin/master/klasifikasi-surat", roles: KECAMATAN_LEAD_ROLES },
     ],
   },
 ];

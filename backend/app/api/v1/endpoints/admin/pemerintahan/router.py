@@ -285,6 +285,7 @@ async def read_tourism(
             "village_name": v.name if v else "-",
             "opening_hours": t.opening_hours,
             "ticket_info": t.ticket_info,
+            "cover_image_url": t.cover_image_url,
         }
         for t, c, v in rows
     ]

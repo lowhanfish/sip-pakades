@@ -2,7 +2,9 @@
 
 import { FormEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { Plus, Trash2, X } from "lucide-react";
+import { getTourismImage } from "@/lib/media";
 import { fetchData } from "@/lib/api_secure";
 import { useUrlStore } from "@/store/useUrlStore";
 import { OptionItem, PaginatedResponse } from "@/types/global";
@@ -120,6 +122,7 @@ export default function PemerintahanWisataPage() {
             <table className="w-full text-left text-xs">
               <thead>
                 <tr className="border-b border-sky-400/20 opacity-70">
+                  <th className="py-2.5 px-3 w-24">Foto</th>
                   <th className="py-2.5 px-3">Nama Destinasi</th>
                   <th className="py-2.5 px-3">Kategori</th>
                   <th className="py-2.5 px-3">Desa</th>
@@ -130,6 +133,17 @@ export default function PemerintahanWisataPage() {
               <tbody>
                 {(data?.data ?? []).map((t) => (
                   <tr key={t.id} className="border-b border-sky-400/10">
+                    <td className="py-3 px-3">
+                      <div className="relative w-20 h-14 rounded-xl overflow-hidden border border-white/70 shadow-sm">
+                        <Image
+                          src={t.cover_image_url || getTourismImage(t.name, t.category_name)}
+                          alt={t.name}
+                          fill
+                          sizes="80px"
+                          className="object-cover"
+                        />
+                      </div>
+                    </td>
                     <td className="py-3 px-3 font-semibold">{t.name}</td>
                     <td className="py-3 px-3">
                       <StatusBadge variant="kelurahan" label={t.category_name} />

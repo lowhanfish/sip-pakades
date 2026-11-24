@@ -96,13 +96,13 @@ Setiap endpoint `/api/v1/admin/*` menegakkan pembatasan cakupan di `backend/app/
 | `VillageType` | `desa`, `kelurahan` | Jenis wilayah di bawah kecamatan |
 | `OfficialLevel` | `kecamatan`, `desa` | Tingkatan jabatan & perangkat |
 | `ReportStatus` | `draf`, `diajukan`, `perlu_perbaikan`, `terverifikasi` | Siklus laporan rutin triwulanan |
-| `ServiceStatus` | `diterima`, `perlu_kelengkapan`, `diproses`, `selesai` | Siklus pelayanan administrasi SIP-PAKADES |
+| `ServiceStatus` | `draf`, `diterima`, `diproses`, `perlu_kelengkapan`, `menunggu_ttd`, `selesai`, `ditolak` | Siklus pelayanan administrasi SIP-PAKADES (`draf` hanya terlihat oleh warga pemilik) |
 | `LetterDirection` | `masuk`, `keluar` | Arah tata naskah persuratan |
 | `DispositionStatus` | `baru`, `didisposisikan`, `ditindaklanjuti`, `selesai` | Status disposisi surat masuk |
 | `TimelinessStatus` | `tepat_waktu`, `terlambat`, `perlu_perbaikan`, `belum_lapor` | Indikator ketepatan waktu laporan |
 | `PublicationStatus` | `draf`, `terbit`, `arsip` | Status berita/pengumuman & regulasi |
-| `AuditAction` | `LOGIN`, `LOGOUT`, `CREATE`, `UPDATE`, `DELETE`, `STATUS_CHANGE`, `DOWNLOAD_PRIVATE_DOC`, `EXPORT`, `BACKUP` | Jejak audit `audit_logs` |
-| `ErrorCode` | `VALIDATION_ERROR`, `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT`, `INVALID_STATUS_TRANSITION`, `LOCKED_RESOURCE`, `RATE_LIMITED`, `FILE_VALIDATION_ERROR`, `INTERNAL_ERROR` | Kode kesalahan standar API |
+| `AuditAction` | `LOGIN`, `LOGOUT`, `CREATE`, `UPDATE`, `DELETE`, `STATUS_CHANGE`, `DOWNLOAD_PRIVATE_DOC`, `EXPORT`, `BACKUP`, `ACTIVATE`, `DEACTIVATE`, `SIGN` | Jejak audit `audit_logs` |
+| `ErrorCode` | `VALIDATION_ERROR`, `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT`, `INVALID_STATUS_TRANSITION`, `LOCKED_RESOURCE`, `RATE_LIMITED`, `FILE_VALIDATION_ERROR`, `SERVICE_UNAVAILABLE`, `INTERNAL_ERROR` | Kode kesalahan standar API |
 
 ---
 
@@ -294,7 +294,7 @@ Seluruh modul Master mengikuti pola endpoint seragam:
 | `GET` | `/permohonan/detail/{id}` | Sesuai scope | `ApiEnvelope<ServiceRequestDetail>` — Menampilkan detail permohonan, daftar dokumen privat (`documents[]`), dan `histories[]`. |
 | `POST` | `/permohonan/create` | `kasi_pelayanan`, `admin_kecamatan`, `operator_desa` *(untuk desanya)* | Body: `{ district_id?, village_id, service_type_id, applicant_name, applicant_nik, applicant_phone, applicant_address, village_cover_letter_no?, request_payload, notes? }`. Backend otomatis generate `registration_number` (`SIP-{KODE_KEC}-{TAHUN}-{URUT}`), `sla_due_at`, dan status awal `diterima`. |
 | `PUT` | `/permohonan/update/{id}` | `kasi_pelayanan`, `admin_kecamatan`, `operator_desa` *(saat `diterima`/`perlu_kelengkapan`)* | Memperbarui data pemohon/isian sebelum `selesai`. |
-| `PATCH` | `/permohonan/{id}/status` | `kasi_pelayanan`, `camat_sekcam`, `admin_kecamatan` | Body: `{ "status": ServiceStatus, "note": string, "public_note"?: string }`. Jika ke `perlu_kelengkapan`, `note` wajib diisi. Mencatat ke `service_status_histories`. |
+| `PATCH` | `/permohonan/{id}/status` | `admin_kecamatan`, `kasi_pelayanan`, `camat_sekcam`, `superadmin_kab` | Body: `{ "status": ServiceStatus, "note": string, "public_note"?: string, "documents_verified"?: boolean }`. Mengikuti state machine 8.2 (`409 INVALID_STATUS_TRANSITION` bila tidak sah). `note` wajib untuk `perlu_kelengkapan` dan `ditolak`; `documents_verified: true` wajib untuk `menunggu_ttd`. **`selesai` tidak dapat diset lewat endpoint ini.** Draf warga tidak terlihat (`404`). |
 | `GET` | `/permohonan/{id}/histories` | Sesuai scope | `ApiEnvelope<ServiceStatusHistoryItem[]>` |
 | `POST` | `/permohonan/{id}/documents` | `kasi_pelayanan`, `admin_kecamatan`, `operator_desa` *(desanya)* | `multipart/form-data` (`file`: PDF/JPG/PNG maks 5 MB, `doc_code`, `doc_label`). Disimpan ke **storage privat** (nama UUID + `sha256_hash`, `is_private: true`). |
 | `DELETE` | `/permohonan/{id}/documents/{doc_id}` | `kasi_pelayanan`, `admin_kecamatan`, `operator_desa` *(sebelum `diproses`/`selesai`)* | Menghapus dokumen syarat pemohon sebelum selesai. |
@@ -302,9 +302,17 @@ Seluruh modul Master mengikuti pola endpoint seragam:
 | `GET` | `/dokumen/{doc_id}/download` | `kasi_pelayanan`, `camat_sekcam`, `admin_kecamatan` *(+ `operator_desa` khusus berkas desanya)* | Mengunduh file privat pemohon; **wajib** mencatat `DOWNLOAD_PRIVATE_DOC` ke `audit_logs`. |
 
 ### 8.2 State Machine Pelayanan SIP-PAKADES
-- `diterima` → `perlu_kelengkapan` *(wajib `note` kekurangan berkas)* atau langsung `diproses`
-- `perlu_kelengkapan` → `diproses` *(setelah berkas dilengkapi)*
-- `diproses` → `selesai` *(mencatat `completed_at`, opsional terhubung ke `outgoing_letter_id`)*
+```
+draf (warga) → diterima → diproses → menunggu_ttd → selesai
+                  │           │            │
+                  ├─► perlu_kelengkapan ◄──┘   (warga memperbaiki berkas/isian → kembali ke diterima)
+                  └─► ditolak                  (final; alasan wajib & terlihat warga)
+```
+- `diterima`: dari kirim warga atau loket. Petugas dapat `diproses`, `perlu_kelengkapan`, `menunggu_ttd` (verifikasi), atau `ditolak`.
+- `menunggu_ttd`: hanya dicapai lewat verifikasi (`documents_verified: true`); mencatat `verified_by`/`verified_at`.
+- `selesai`: **hanya diberikan sistem** setelah gateway TTE berhasil menandatangani (bagian 14). Hanya `camat_sekcam` yang menandatangani.
+- `selesai` dan `ditolak` bersifat final.
+- Warga hanya boleh mengubah berkas/isian saat `draf` atau `perlu_kelengkapan`.
 
 ---
 
@@ -384,3 +392,66 @@ Selama `NEXT_PUBLIC_API_MODE=mock`, halaman `/login` menyediakan pengisian cepat
 1. Seluruh fungsi pada `frontend/lib/mock/handlers.ts` **wajib** mengembalikan tipe JSON, kode error, dan aturan validasi status yang identik dengan Bab 1–11 dokumen ini.
 2. Komponen UI, `hooks/crud.tsx`, dan halaman Next.js **dilarang** mengakses `lib/mock/` secara langsung; seluruh komunikasi hanya melewati `lib/api.ts` dan `lib/api_secure.ts`.
 3. Ketika Backend FastAPI (Tahap 4–5) selesai, pengujian integrasi Tahap 6 memverifikasi kesamaan setiap endpoint terhadap dokumen ini sambil mengalihkan `.env.local` frontend dari `NEXT_PUBLIC_API_MODE=mock` menjadi `NEXT_PUBLIC_API_MODE=live`.
+
+---
+
+## 13. Kontrak Portal Masyarakat (`/api/v1/masyarakat/*`)
+
+Akun warga **terpisah** dari `users` petugas: tabel `citizens`, cookie `citizen_access_token` / `citizen_refresh_token` / `citizen_csrf_token`, jenis token `citizen_access` / `citizen_refresh`. Token warga ditolak di endpoint petugas, dan sebaliknya. Semua `POST/PATCH/DELETE` wajib header `X-CSRF-Token` yang sama dengan cookie `citizen_csrf_token`.
+
+### 13.1 Autentikasi (`/masyarakat/auth/*`)
+| Method | Endpoint | Deskripsi |
+| :--- | :--- | :--- |
+| `POST` | `/register` | Body: `{ email, password, full_name, phone?, district_id?, village_id? }`. Sandi ≥ 8 karakter memuat huruf & angka. `district_id` kosong = kecamatan default. Dibatasi 5×/10 menit per IP. |
+| `POST` | `/login` | Body: `{ email, password }`. Pesan galat sama untuk email tidak terdaftar/sandi salah. |
+| `POST` | `/refresh`, `/logout` | Rotasi sesi; token refresh yang dipakai ulang mencabut seluruh sesi akun. |
+| `GET` | `/me` | Profil warga (`nik_masked`, tanpa NIK utuh). |
+| `PATCH` | `/profile` | Body: `{ full_name?, phone?, nik?, village_id? }`. NIK disimpan **terenkripsi**; satu NIK satu akun (`409`). |
+| `POST` | `/change-password` | Body: `{ current_password, new_password }`. Mencabut sesi lain. |
+
+### 13.2 Layanan & Permohonan
+| Method | Endpoint | Deskripsi |
+| :--- | :--- | :--- |
+| `GET` | `/layanan` | Katalog layanan **aktif** di kecamatan warga (`form_fields`, `required_documents`). Kosong sampai Camat mengaktifkan. |
+| `GET` | `/permohonan` | Permohonan milik warga (paginasi). |
+| `POST` | `/permohonan` | Membuat **draf**: `{ service_type_id, village_id?, applicant_nik?, applicant_address?, village_cover_letter_no?, data }`. Maks 10 draf. |
+| `GET` | `/permohonan/{id}` | Detail + `timeline` (hanya catatan publik), `has_signed_letter`, `letter_number`. Milik warga lain → `404`. |
+| `PATCH` | `/permohonan/{id}` | Ubah `village_cover_letter_no`, `applicant_address`, `applicant_phone`, `data` — hanya saat `draf`/`perlu_kelengkapan` (`409` selain itu). |
+| `DELETE` | `/permohonan/{id}` | Hapus draf. |
+| `POST` | `/permohonan/{id}/dokumen` | `multipart`: `doc_code`, `file`. Jenis berkas ditentukan dari **isi** (PDF/JPG/PNG/WebP), maks 10 MB; satu berkas per `doc_code` (unggahan baru menggantikan). |
+| `DELETE` | `/permohonan/{id}/dokumen/{doc_id}` | Hapus lampiran (saat editable). |
+| `GET` | `/permohonan/{id}/dokumen/{doc_id}/unduh` | Unduh lampiran milik sendiri (`nosniff`, `no-store`). |
+| `POST` | `/permohonan/{id}/kirim` | Draf → `diterima` (membuat nomor registrasi); dari `perlu_kelengkapan` → `diterima` (nomor tetap). `422` + `errors[]` bila berkas/isian wajib belum lengkap. |
+| `GET` | `/permohonan/{id}/surat` | Unduh surat bertanda tangan (hanya `selesai`). |
+
+---
+
+## 14. Katalog Layanan Kecamatan & Penandatanganan TTE
+
+### 14.1 Pengaturan Layanan (`/api/v1/admin/pelayanan/layanan/*`)
+Dasar: PP 17/2018 Pasal 11 ayat (3) dan (6). Layanan **nonaktif secara bawaan** dan baru tayang ke warga setelah diaktifkan Camat.
+| Method | Endpoint | Role | Deskripsi |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/` | Role internal | Semua jenis layanan + status per kecamatan (`problems[]` = kekurangan aktivasi). `superadmin_kab` wajib `?district_id=`. |
+| `PUT` | `/{type_id}` | `admin_kecamatan`, `camat_sekcam`, `superadmin_kab` | Body: `{ legal_basis, legal_basis_reviewed_at, criteria_checks, not_village_function, notes }`. Mengubah layanan yang sedang tayang **menonaktifkannya** (perlu tinjauan ulang). |
+| `POST` | `/{type_id}/activate` | `camat_sekcam`, `superadmin_kab` | `422` + `errors[]` bila dasar hukum/kriteria belum lengkap. Perizinan wajib 4 kriteria, nonperizinan wajib 3 kriteria. |
+| `POST` | `/{type_id}/deactivate` | `admin_kecamatan`, `camat_sekcam`, `superadmin_kab` | Menonaktifkan. |
+
+`GET /api/v1/publish/services/types` hanya mengembalikan layanan yang aktif.
+
+### 14.2 Penandatanganan (`/api/v1/admin/penandatangan/*`) — hanya `camat_sekcam`
+| Method | Endpoint | Deskripsi |
+| :--- | :--- | :--- |
+| `GET` | `/status` | `{ tte: { mode, ready }, signer: { has_nik, nik_masked } }`. |
+| `PUT` / `DELETE` | `/nik` | Simpan/hapus NIK penandatangan (16 digit, terenkripsi). **Passphrase tidak pernah disimpan.** |
+| `GET` | `/antrean` | Surat berstatus `menunggu_ttd` di kecamatan Camat. |
+| `GET` | `/{id}/pratinjau` | PDF pratinjau (belum ditandatangani). |
+| `POST` | `/tandatangani` | Body: `{ request_ids: string[≤20], passphrase }`. Hasil per surat: `succeeded` / `failed` / `unknown` / `skipped`. Passphrase/sertifikat ditolak → sisa antrean **dihentikan**. `503` bila `TTE_MODE=disabled`. |
+| `POST` | `/transaksi/{tx_id}/periksa` | Memeriksa transaksi `unknown` ke gateway dan mengunduh PDF bila berhasil. |
+| `GET` | `/{id}/surat` | Unduh surat bertanda tangan (`REVIEW_ROLES`). |
+
+Aturan: hasil `unknown` (timeout/gangguan) **tidak pernah diulang otomatis**; satu surat hanya boleh punya satu transaksi berjalan (kolom unik `active_slot`); PDF hasil langsung disimpan di server (gateway hanya menyimpan ±24 jam).
+
+### 14.3 Verifikasi Keaslian Publik
+`GET /api/v1/publish/verifikasi/{kode}` → `{ valid, letter_number, service_type_name, district_name, applicant_name_masked, signed_at }`. `404` bila kode tidak ada atau surat belum `selesai`. Kode tercetak pada QR surat (`{PUBLIC_BASE_URL}/verifikasi/{kode}`); halaman publik: `/verifikasi/{kode}`.
+

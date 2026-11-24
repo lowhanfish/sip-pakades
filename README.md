@@ -48,6 +48,23 @@ uvicorn main:app --reload --host 127.0.0.1 --port 8000
 - Health Check: `http://127.0.0.1:8000/api/v1/health`
 - Swagger OpenAPI: `http://127.0.0.1:8000/docs`
 
+### Konfigurasi Tambahan (`backend/.env`)
+| Variabel | Fungsi |
+| :--- | :--- |
+| `DATA_ENCRYPTION_KEY` | Kunci Fernet untuk mengenkripsi NIK. **Wajib di production.** Buat: `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"` |
+| `TTE_MODE` | `disabled` (bawaan) \| `mock` (simulasi, hanya development) \| `live` (gateway Esign Konsel) |
+| `TTE_BASE_URL`, `TTE_CLIENT_ID`, `TTE_CLIENT_SECRET` | Kredensial aplikasi dari admin gateway. **Isi hanya di `.env`; jangan di-commit atau ditempel ke chat.** Admin gateway juga perlu mengizinkan IP/origin server. |
+| `TTE_TAG_COORDINATE` | Satu karakter marker posisi tanda tangan pada PDF (bawaan `€`, sesuai contoh panduan). |
+| `PUBLIC_BASE_URL` | Alamat situs publik; dipakai pada QR verifikasi surat. |
+
+Lambang pada kop surat: ganti `backend/app/assets/logo-konsel.png` (PNG transparan) dengan lambang resmi.
+
+### Portal Masyarakat & Penandatanganan
+- Warga mendaftar/masuk di `/masyarakat/masuk`; petugas masuk lewat URL `/login` (tidak ada tombolnya di situs publik).
+- Semua layanan **nonaktif** sampai Camat mengaktifkannya di **Pelayanan & Persuratan → Pengaturan Layanan**.
+- Alur: warga mengajukan → Admin Kecamatan verifikasi → Camat menandatangani di **Penandatanganan Surat** (NIK sekali, passphrase tiap kali) → warga mengunduh surat; keaslian dapat diperiksa lewat QR.
+- Belum tersedia: pemulihan kata sandi warga dan verifikasi email (perlu penyedia email).
+
 ### Akun Uji Default (Password: `demo1234`)
 | Username | Role | Cakupan |
 | :--- | :--- | :--- |

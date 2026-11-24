@@ -33,6 +33,7 @@ import {
 import { formatDateId } from "@/utilities/pagination";
 import { getPotentialImage, getTourismImage } from "@/lib/media";
 import { AreaIcon } from "@/components/ui/AreaIcon";
+import { ServiceMascot } from "@/components/ui/ServiceMascot";
 import { CinematicHero } from "@/components/motion/CinematicHero";
 import { CountUp, Reveal, ScrollProgress } from "@/components/motion/primitives";
 
@@ -280,7 +281,22 @@ export default function PublishHomePage() {
           </div>
 
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:order-2 lg:col-span-7">
+            {serviceTypes.length === 0 && (
+              <div className="flex flex-col items-center justify-center gap-4 text-center lg:order-2 lg:col-span-7">
+                <ServiceMascot className="w-full max-w-[460px] drop-shadow-[0_18px_30px_rgba(30,58,138,0.18)]" />
+                <div className="clay-card max-w-md space-y-3 px-6 py-5">
+                  <h3 className="text-lg font-bold text-slate-900">Layanan daring sedang disiapkan</h3>
+                  <p className="text-sm leading-relaxed text-slate-600">
+                    Kecamatan membuka layanan secara bertahap. Anda sudah bisa membuat Akun Warga sekarang,
+                    dan permohonan bisa diajukan begitu layanan dibuka.
+                  </p>
+                  <Link href="/masyarakat/masuk" className="clay-btn clay-btn-yellow mx-auto px-5 py-2.5 text-sm">
+                    Buat Akun Warga <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            )}
+            <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:order-2 lg:col-span-7 ${serviceTypes.length === 0 ? "hidden" : ""}`}>
               {serviceTypes.map((srv, idx) => (
                 <Subtle3DCard key={srv.id} delay={idx * 0.06} className={`card-lift card-accent p-5 flex flex-col justify-between gap-4 ${idx === 0 ? "sm:col-span-2" : ""}`}>
                   <div className="space-y-3">

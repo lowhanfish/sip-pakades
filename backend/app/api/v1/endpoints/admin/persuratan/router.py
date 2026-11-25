@@ -93,7 +93,7 @@ async def read_incoming(
 @router.post("/surat-masuk/create", status_code=201, dependencies=[Depends(verify_csrf)])
 async def create_incoming(
     payload: IncomingCreatePayload,
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan", "kasi_pelayanan")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan", "kasi_pelayanan")),
     db: AsyncSession = Depends(get_db),
 ):
     dist_id = resolve_district_scope(current_user, payload.district_id) or current_user.district_id

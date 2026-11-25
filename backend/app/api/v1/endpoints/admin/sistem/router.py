@@ -33,7 +33,7 @@ class UserCreatePayload(BaseModel):
 
 @router.get("/pengguna/read")
 async def read_users(
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan")),
     db: AsyncSession = Depends(get_db),
 ):
     stmt = select(User)
@@ -66,12 +66,21 @@ async def read_users(
 async def create_user(
     payload: UserCreatePayload,
     request: Request,
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan")),
     db: AsyncSession = Depends(get_db),
 ):
     if current_user.role_code != "superadmin_kab" and payload.role == "superadmin_kab":
-        raise AppError("Admin Kecamatan tidak dapat membuat Superadmin.", code="FORBIDDEN", status_code=403)
+        raise AppError("Hanya Superadmin yang dapat membuat Superadmin.", code="FORBIDDEN", status_code=403)
+    # Akun Camat berwenang menandatangani surat, jadi Admin Kecamatan tidak boleh membuatnya.
+    if current_user.role_code == "admin_kecamatan" and payload.role == "camat_sekcam":
+        raise AppError("Admin Kecamatan tidak dapat membuat akun Camat.", code="FORBIDDEN", status_code=403)
     dist_id = resolve_district_scope(current_user, payload.district_id) or current_user.district_id
+    if payload.village_id:
+        village = (
+            await db.execute(select(MasterVillage).where(MasterVillage.id == payload.village_id))
+        ).scalar_one_or_none()
+        if not village or (dist_id and village.district_id != dist_id):
+            raise AppError("Desa/kelurahan tidak berada di kecamatan tersebut.", code="VALIDATION_ERROR", status_code=422)
     user = User(
         username=payload.username.strip(),
         full_name=payload.full_name.strip(),
@@ -124,7 +133,7 @@ async def read_audit_logs(
 
 @router.get("/pencadangan/read")
 async def read_backups(
-    _: User = Depends(require_roles("superadmin_kab")),
+    _: User = Depends(require_roles("superadmin_kab", "camat_sekcam")),
     db: AsyncSession = Depends(get_db),
 ):
     rows = (await db.execute(select(BackupLog).order_by(BackupLog.started_at.desc()).limit(30))).scalars().all()
@@ -147,7 +156,7 @@ async def read_backups(
 @router.post("/pencadangan/trigger", dependencies=[Depends(verify_csrf)])
 async def trigger_backup(
     request: Request,
-    current_user: User = Depends(require_roles("superadmin_kab")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam")),
     db: AsyncSession = Depends(get_db),
 ):
     now = datetime.now(UTC)
@@ -210,7 +219,7 @@ async def trigger_backup(
 @router.get("/pencadangan/download/{item_id}")
 async def download_backup(
     item_id: str,
-    _: User = Depends(require_roles("superadmin_kab")),
+    _: User = Depends(require_roles("superadmin_kab", "camat_sekcam")),
     db: AsyncSession = Depends(get_db),
 ):
     log = (await db.execute(select(BackupLog).where(BackupLog.id == item_id))).scalar_one_or_none()

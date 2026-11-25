@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthStore } from "@/store/useAuthStore";
 import { FormEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, X } from "lucide-react";
@@ -11,6 +12,7 @@ import { StatusBadge } from "@/app/(admin)/_components/ui/StatusBadge";
 import { swallAlert } from "@/lib/show_swall";
 
 export default function SistemPenggunaPage() {
+  const user = useAuthStore((st) => st.user);
   const baseUrl = useUrlStore((s) => s.URL.APP);
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -161,7 +163,7 @@ export default function SistemPenggunaPage() {
                 className="admin-input w-full rounded-xl px-3 py-2 text-xs"
               >
                 <option value="admin_kecamatan">Admin Kecamatan</option>
-                <option value="camat_sekcam">Camat / Sekcam</option>
+                {user?.role !== "admin_kecamatan" && <option value="camat_sekcam">Camat / Sekcam</option>}
                 <option value="kasi_pelayanan">Kasi / Petugas Layanan</option>
                 <option value="operator_desa">Operator Desa/Kelurahan</option>
               </select>

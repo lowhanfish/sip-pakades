@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_user, require_roles
+from app.api.deps import get_current_user, require_roles, resolve_district_scope
 from app.api.v1.endpoints.admin.master.schema import DistrictCreate
 from app.core.csrf import verify_csrf
 from app.core.exceptions import AppError
@@ -130,13 +130,20 @@ async def create_district(
 async def update_district(
     item_id: str,
     payload: DistrictCreate,
-    current_user: User = Depends(require_roles("superadmin_kab")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam")),
     db: AsyncSession = Depends(get_db),
 ):
     item = await crud.get(db, item_id)
     if not item:
         raise AppError("Kecamatan tidak ditemukan.", code="NOT_FOUND", status_code=404)
+    resolve_district_scope(current_user, item.id)  # Camat hanya kecamatannya sendiri
     data = payload.model_dump()
+    if current_user.role_code != "superadmin_kab":
+        # Identitas wilayah dan kecamatan default adalah pengaturan tingkat kabupaten.
+        data["code"] = item.code
+        data["slug"] = item.slug
+        data["is_default"] = item.is_default
+        data["is_active"] = item.is_active
     if data.get("is_default"):
         await db.execute(update(MasterDistrict).values(is_default=False))
     data["updated_by"] = current_user.id

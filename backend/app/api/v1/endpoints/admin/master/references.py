@@ -27,7 +27,7 @@ def build_simple_master_router(
     tag: str,
     model: type,
     *,
-    write_roles: tuple[str, ...] = ("superadmin_kab", "admin_kecamatan"),
+    write_roles: tuple[str, ...] = ("superadmin_kab", "camat_sekcam", "admin_kecamatan"),
 ) -> APIRouter:
     r = APIRouter(prefix=prefix, tags=[tag])
     crud = CRUDBase(model)
@@ -131,13 +131,13 @@ def build_simple_master_router(
 
 
 jabatan_router = build_simple_master_router(
-    "/jabatan", "Master Jabatan", MasterOfficialPosition, write_roles=("superadmin_kab",)
+    "/jabatan", "Master Jabatan", MasterOfficialPosition, write_roles=("superadmin_kab", "camat_sekcam")
 )
 kategori_potensi_router = build_simple_master_router(
-    "/kategori-potensi", "Master Kategori Potensi", MasterPotentialCategory, write_roles=("superadmin_kab",)
+    "/kategori-potensi", "Master Kategori Potensi", MasterPotentialCategory, write_roles=("superadmin_kab", "camat_sekcam")
 )
 kategori_wisata_router = build_simple_master_router(
-    "/kategori-wisata", "Master Kategori Wisata", MasterTourismCategory, write_roles=("superadmin_kab",)
+    "/kategori-wisata", "Master Kategori Wisata", MasterTourismCategory, write_roles=("superadmin_kab", "camat_sekcam")
 )
 jenis_laporan_router = build_simple_master_router(
     "/jenis-laporan", "Master Jenis Laporan", MasterReportType

@@ -44,7 +44,7 @@ export function SimpleMasterManager({
   const user = useAuthStore((s) => s.user);
   const queryClient = useQueryClient();
   const canMutate =
-    user?.role === "superadmin_kab" || user?.role === "admin_kecamatan";
+    user?.role === "superadmin_kab" || user?.role === "camat_sekcam" || user?.role === "admin_kecamatan";
 
   const [page, setPage] = useState(1);
   const [limit] = useState(10);

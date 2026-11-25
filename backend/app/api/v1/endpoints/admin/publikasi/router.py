@@ -89,7 +89,7 @@ async def read_announcements(
 @router.post("/berita/create", status_code=201, dependencies=[Depends(verify_csrf)])
 async def create_announcement(
     payload: BeritaCreatePayload,
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan", "kasi_pelayanan", "operator_desa")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan", "kasi_pelayanan", "operator_desa")),
     db: AsyncSession = Depends(get_db),
 ):
     dist_id = await _resolve_target_district(current_user, payload.district_id, db)
@@ -119,7 +119,7 @@ async def create_announcement(
 @router.delete("/berita/delete/{item_id}", dependencies=[Depends(verify_csrf)])
 async def delete_announcement(
     item_id: str,
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan", "kasi_pelayanan")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan", "kasi_pelayanan")),
     db: AsyncSession = Depends(get_db),
 ):
     item = (await db.execute(select(GovernmentAnnouncement).where(GovernmentAnnouncement.id == item_id))).scalar_one_or_none()
@@ -159,7 +159,7 @@ async def read_regulations(
 @router.post("/regulasi/create", status_code=201, dependencies=[Depends(verify_csrf)])
 async def create_regulation(
     payload: RegulasiCreatePayload,
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan")),
     db: AsyncSession = Depends(get_db),
 ):
     dist_id = await _resolve_target_district(current_user, payload.district_id, db)
@@ -182,7 +182,7 @@ async def create_regulation(
 @router.delete("/regulasi/delete/{item_id}", dependencies=[Depends(verify_csrf)])
 async def delete_regulation(
     item_id: str,
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan")),
     db: AsyncSession = Depends(get_db),
 ):
     item = (await db.execute(select(GovernmentRegulation).where(GovernmentRegulation.id == item_id))).scalar_one_or_none()

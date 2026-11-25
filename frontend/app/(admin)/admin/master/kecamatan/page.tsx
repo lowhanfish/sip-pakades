@@ -14,7 +14,10 @@ import { DetailKecamatanModal } from "./components/DetailKecamatanModal";
 
 export default function MasterKecamatanPage() {
   const user = useAuthStore((s) => s.user);
-  const canMutate = user?.role === "superadmin_kab";
+  const canMutate = user?.role === "superadmin_kab"; // tambah & hapus: tingkat kabupaten
+  // Camat boleh memperbarui profil kecamatannya sendiri.
+  const canEdit = (item: KecamatanItem) =>
+    canMutate || (user?.role === "camat_sekcam" && user.district_id === item.id);
 
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
@@ -146,28 +149,28 @@ export default function MasterKecamatanPage() {
                         >
                           <Eye className="w-3.5 h-3.5" />
                         </button>
+                        {canEdit(item) && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingItem(item);
+                              setFormOpen(true);
+                            }}
+                            title="Ubah"
+                            className="p-1.5 rounded-lg hover:bg-yellow-400/20 cursor-pointer"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                         {canMutate && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditingItem(item);
-                                setFormOpen(true);
-                              }}
-                              title="Ubah"
-                              className="p-1.5 rounded-lg hover:bg-yellow-400/20 cursor-pointer"
-                            >
-                              <Pencil className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(item)}
-                              title="Hapus"
-                              className="p-1.5 rounded-lg hover:bg-rose-500/15 text-rose-500 cursor-pointer"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(item)}
+                            title="Hapus"
+                            className="p-1.5 rounded-lg hover:bg-rose-500/15 text-rose-500 cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         )}
                       </div>
                     </td>

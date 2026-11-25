@@ -115,7 +115,7 @@ async def option_villages(
 @router.post("/create", status_code=201, dependencies=[Depends(verify_csrf)])
 async def create_village(
     payload: VillageCreate,
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan")),
     db: AsyncSession = Depends(get_db),
 ):
     target_district = resolve_district_scope(current_user, payload.district_id)
@@ -133,7 +133,7 @@ async def create_village(
 async def update_village(
     item_id: str,
     payload: VillageCreate,
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan")),
     db: AsyncSession = Depends(get_db),
 ):
     item = await crud.get(db, item_id)
@@ -142,7 +142,7 @@ async def update_village(
     resolve_district_scope(current_user, item.district_id)
     data = payload.model_dump()
     data["district_id"] = (
-        item.district_id if current_user.role_code == "admin_kecamatan" else (payload.district_id or item.district_id)
+        item.district_id if current_user.role_code != "superadmin_kab" else (payload.district_id or item.district_id)
     )
     data["updated_by"] = current_user.id
     updated = await crud.update(db, db_obj=item, obj_in=data)
@@ -152,7 +152,7 @@ async def update_village(
 @router.delete("/delete/{item_id}", dependencies=[Depends(verify_csrf)])
 async def delete_village(
     item_id: str,
-    current_user: User = Depends(require_roles("superadmin_kab", "admin_kecamatan")),
+    current_user: User = Depends(require_roles("superadmin_kab", "camat_sekcam", "admin_kecamatan")),
     db: AsyncSession = Depends(get_db),
 ):
     item = await crud.get(db, item_id)

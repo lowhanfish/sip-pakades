@@ -186,7 +186,7 @@ async def create_service(
     payload: ServiceCreatePayload,
     request: Request,
     current_user: User = Depends(
-        require_roles("kasi_pelayanan", "admin_kecamatan", "operator_desa", "superadmin_kab")
+        require_roles("kasi_pelayanan", "camat_sekcam", "admin_kecamatan", "operator_desa", "superadmin_kab")
     ),
     db: AsyncSession = Depends(get_db),
 ):

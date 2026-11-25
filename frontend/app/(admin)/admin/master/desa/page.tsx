@@ -16,7 +16,7 @@ import { DetailDesaModal } from "./components/DetailDesaModal";
 export default function MasterDesaPage() {
   const user = useAuthStore((s) => s.user);
   const canMutate =
-    user?.role === "superadmin_kab" || user?.role === "admin_kecamatan";
+    user?.role === "superadmin_kab" || user?.role === "camat_sekcam" || user?.role === "admin_kecamatan";
 
   const [page, setPage] = useState(1);
   const [limit] = useState(10);

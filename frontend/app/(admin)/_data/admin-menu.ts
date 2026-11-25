@@ -66,9 +66,9 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
     items: [
       { code: "pemantauan-kelengkapan", label: "Kelengkapan & Ketepatan", href: "/admin/pemantauan/kelengkapan-ketepatan", roles: KECAMATAN_LEAD_ROLES },
       { code: "pemantauan-rekap", label: "Rekap & Ekspor", href: "/admin/pemantauan/rekap-ekspor", roles: ALL_INTERNAL_ROLES },
-      { code: "sistem-pengguna", label: "Manajemen Pengguna", href: "/admin/sistem/pengguna", roles: ["superadmin_kab", "admin_kecamatan"] },
+      { code: "sistem-pengguna", label: "Manajemen Pengguna", href: "/admin/sistem/pengguna", roles: ["superadmin_kab", "camat_sekcam", "admin_kecamatan"] },
       { code: "sistem-audit", label: "Audit Log", href: "/admin/sistem/audit-log", roles: ["superadmin_kab", "admin_kecamatan", "camat_sekcam"] },
-      { code: "sistem-backup", label: "Pencadangan DB", href: "/admin/sistem/pencadangan", roles: ["superadmin_kab"] },
+      { code: "sistem-backup", label: "Pencadangan DB", href: "/admin/sistem/pencadangan", roles: ["superadmin_kab", "camat_sekcam"] },
     ],
   },
   {

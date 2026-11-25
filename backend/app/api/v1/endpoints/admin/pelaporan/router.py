@@ -149,7 +149,7 @@ async def read_reports(
 async def create_report(
     payload: ReportCreatePayload,
     request: Request,
-    current_user: User = Depends(require_roles("operator_desa", "admin_kecamatan", "superadmin_kab")),
+    current_user: User = Depends(require_roles("operator_desa", "camat_sekcam", "admin_kecamatan", "superadmin_kab")),
     db: AsyncSession = Depends(get_db),
 ):
     dist_id = resolve_district_scope(current_user, payload.district_id) or current_user.district_id
@@ -307,7 +307,7 @@ async def download_attachment(
 async def submit_report(
     report_id: str,
     request: Request,
-    current_user: User = Depends(require_roles("operator_desa", "admin_kecamatan")),
+    current_user: User = Depends(require_roles("operator_desa", "camat_sekcam", "admin_kecamatan")),
     db: AsyncSession = Depends(get_db),
 ):
     rep = (

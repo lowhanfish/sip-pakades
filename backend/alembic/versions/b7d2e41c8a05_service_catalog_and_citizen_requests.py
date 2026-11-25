@@ -21,6 +21,9 @@ def upgrade() -> None:
     op.add_column('master_service_types', sa.Column('category', sa.String(length=20), nullable=False, server_default='rekomendasi'))
     op.add_column('master_service_types', sa.Column('requires_village_letter', sa.Boolean(), nullable=False, server_default=sa.true()))
     op.add_column('master_service_types', sa.Column('form_fields', sa.JSON(), nullable=True))
+    # Data lama: IUMK adalah perizinan, sehingga wajib memenuhi kriteria PP 17/2018 Pasal 11 ayat (3).
+    # Dicocokkan lewat id karena kodenya berbeda antar-database (SIP-IUMK / PATEN-IUMK).
+    op.execute("UPDATE master_service_types SET category = 'perizinan' WHERE id = 'srv-iumk'")
 
     op.add_column('service_requests', sa.Column('citizen_id', sa.String(length=36), nullable=True))
     op.create_index(op.f('ix_service_requests_citizen_id'), 'service_requests', ['citizen_id'], unique=False)
